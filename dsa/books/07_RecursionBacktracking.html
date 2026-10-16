@@ -1,0 +1,541 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>07 - Recursion Backtracking</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>07 - Recursion Backtracking</h1></header><main><nav class="toc"><a href="#p181">181. Subsequences with Sum K (Print All)</a><a href="#p182">182. Count Subsequences with Sum K</a><a href="#p183">183. Generate Parentheses</a><a href="#p184">184. Subsets I (Subset Sums)</a><a href="#p185">185. Subsets II (Unique)</a><a href="#p186">186. Combination Sum I</a><a href="#p187">187. Combination Sum II</a><a href="#p188">188. Combination Sum III</a><a href="#p189">189. Letter Combinations of Phone Number</a><a href="#p190">190. Palindrome Partitioning</a><a href="#p191">191. Word Search</a><a href="#p192">192. Permutations I</a><a href="#p193">193. Permutation Sequence</a><a href="#p194">194. Rat in a Maze</a><a href="#p195">195. Expression Add Operators</a><a href="#p196">196. Kth Permutation of Array</a><a href="#p197">197. Power Set using Recursion</a><a href="#p198">198. N-Queens</a><a href="#p199">199. Sudoku Solver</a><a href="#p200">200. M-Coloring Problem</a><a href="#p201">201. Word Break (Print All Sentences)</a></nav><section class="problem" id="p181">
+<h2>Problem 181: Subsequences with Sum K (Print All)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All subsequences summing to k.</p><div class="ex">Input: arr=[1,2,1], k=2<br>Output:<pre class="out">[[1,1],[2]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all subsets by bitmask and filter by sum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion with pick / not-pick, pruning by sum.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each index has two choices, giving at most 2^n paths with early pruning.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; subsequencesWithSumK(int[] arr, int k) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    go(arr, 0, k, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void go(int[] a, int i, int rem, List&lt;Integer&gt; cur, List&lt;List&lt;Integer&gt;&gt; res) {
+    if (i == a.length) { if (rem == 0) res.add(new ArrayList&lt;&gt;(cur)); return; }
+    cur.add(a[i]);
+    go(a, i + 1, rem - a[i], cur, res);
+    cur.remove(cur.size() - 1);
+    go(a, i + 1, rem, cur, res);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>At index i either take arr[i] or skip it</li><li>When i == n check if sum == k</li><li>Backtrack by removing the last element</li></ol></div></div>
+</div></section><section class="problem" id="p182">
+<h2>Problem 182: Count Subsequences with Sum K<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Number of subsequences summing to k.</p><div class="ex">Input: arr=[4,9,2,5,1], k=10<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all subsets and count.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion returning 1 or 0 at the leaves.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Summing results of both branches counts every valid subsequence.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countSubsequences(int[] arr, int k) {
+    return count(arr, 0, k);
+}
+
+private static int count(int[] a, int i, int rem) {
+    if (i == a.length) return rem == 0 ? 1 : 0;
+    return count(a, i + 1, rem - a[i]) + count(a, i + 1, rem);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Base: i == n returns 1 if sum == 0</li><li>Return count(take) + count(skip)</li></ol></div></div>
+</div></section><section class="problem" id="p183">
+<h2>Problem 183: Generate Parentheses<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All valid combinations of n pairs.</p><div class="ex">Input: n=3<br>Output:<pre class="out">[&quot;((()))&quot;,&quot;(()())&quot;,&quot;(())()&quot;,&quot;()(())&quot;,&quot;()()()&quot;]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all 2^(2n) strings and validate each.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtrack adding &#x27;(&#x27; if open &lt; n and &#x27;)&#x27; if close &lt; open.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only prefixes that can still be valid are extended.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;String&gt; generateParenthesis(int n) {
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    build(n, 0, 0, new StringBuilder(), res);
+    return res;
+}
+
+private static void build(int n, int o, int c, StringBuilder sb, List&lt;String&gt; res) {
+    if (sb.length() == 2 * n) { res.add(sb.toString()); return; }
+    if (o &lt; n) { sb.append(&#x27;(&#x27;); build(n, o + 1, c, sb, res); sb.deleteCharAt(sb.length() - 1); }
+    if (c &lt; o) { sb.append(&#x27;)&#x27;); build(n, o, c + 1, sb, res); sb.deleteCharAt(sb.length() - 1); }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>open and close counters</li><li>Add &#x27;(&#x27; when open &lt; n</li><li>Add &#x27;)&#x27; when close &lt; open</li><li>Record at length 2n</li></ol></div></div>
+</div></section><section class="problem" id="p184">
+<h2>Problem 184: Subsets I (Subset Sums)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sums of all subsets, sorted.</p><div class="ex">Input: arr=[2,3]<br>Output:<pre class="out">[0,2,3,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build every subset and add it up.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion carrying the running sum.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each leaf represents one subset and its sum.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; subsetSums(int[] arr) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    sums(arr, 0, 0, res);
+    Collections.sort(res);
+    return res;
+}
+
+private static void sums(int[] a, int i, int s, List&lt;Integer&gt; res) {
+    if (i == a.length) { res.add(s); return; }
+    sums(a, i + 1, s + a[i], res);
+    sums(a, i + 1, s, res);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>At each index add the value or not</li><li>Record the sum at the end</li><li>Sort the result</li></ol></div></div>
+</div></section><section class="problem" id="p185">
+<h2>Problem 185: Subsets II (Unique)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All unique subsets with duplicates present.</p><div class="ex">Input: arr=[1,2,2]<br>Output:<pre class="out">[[],[1],[1,2],[1,2,2],[2],[2,2]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all subsets and deduplicate with a set.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort and skip equal values at the same recursion level.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Skipping duplicates at the same depth avoids producing identical subsets.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; subsetsWithDup(int[] arr) {
+    Arrays.sort(arr);
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(arr, 0, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int start, List&lt;Integer&gt; cur, List&lt;List&lt;Integer&gt;&gt; res) {
+    res.add(new ArrayList&lt;&gt;(cur));
+    for (int j = start; j &lt; a.length; j++) {
+        if (j &gt; start &amp;&amp; a[j] == a[j - 1]) continue;
+        cur.add(a[j]);
+        dfs(a, j + 1, cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort the array</li><li>Add the current subset</li><li>For each j &gt;= start skip arr[j] == arr[j-1] when j &gt; start</li><li>Recurse</li></ol></div></div>
+</div></section><section class="problem" id="p186">
+<h2>Problem 186: Combination Sum I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reuse numbers unlimited times.</p><div class="ex">Input: arr=[2,3,6,7], target=7<br>Output:<pre class="out">[[2,2,3],[7]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all multisets up to a bound.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtrack allowing the same index again.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Staying on the same index models unlimited reuse; moving forward avoids permutations.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; combinationSum(int[] arr, int target) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(arr, 0, target, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int s, int rem, List&lt;Integer&gt; cur, List&lt;List&lt;Integer&gt;&gt; res) {
+    if (rem == 0) { res.add(new ArrayList&lt;&gt;(cur)); return; }
+    for (int j = s; j &lt; a.length; j++) {
+        if (a[j] &gt; rem) continue;
+        cur.add(a[j]);
+        dfs(a, j, rem - a[j], cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If remaining == 0 record</li><li>For j from start try a[j] if it fits</li><li>Recurse with start = j</li></ol></div></div>
+</div></section><section class="problem" id="p187">
+<h2>Problem 187: Combination Sum II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Each number used once, unique results.</p><div class="ex">Input: arr=[10,1,2,7,6,1,5], target=8<br>Output:<pre class="out">[[1,1,6],[1,2,5],[1,7],[2,6]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>All subsets filtered by sum and deduplicated.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort, use each index once, skip equal siblings.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Duplicate skipping at the same level prevents repeated combinations.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; combinationSum2(int[] arr, int target) {
+    Arrays.sort(arr);
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(arr, 0, target, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int s, int rem, List&lt;Integer&gt; cur, List&lt;List&lt;Integer&gt;&gt; res) {
+    if (rem == 0) { res.add(new ArrayList&lt;&gt;(cur)); return; }
+    for (int j = s; j &lt; a.length &amp;&amp; a[j] &lt;= rem; j++) {
+        if (j &gt; s &amp;&amp; a[j] == a[j - 1]) continue;
+        cur.add(a[j]);
+        dfs(a, j + 1, rem - a[j], cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort</li><li>Recurse with start = j+1</li><li>Skip when j &gt; start and a[j] == a[j-1]</li><li>Stop when a[j] &gt; remaining</li></ol></div></div>
+</div></section><section class="problem" id="p188">
+<h2>Problem 188: Combination Sum III<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>k numbers from 1..9 summing to n.</p><div class="ex">Input: k=3, n=7<br>Output:<pre class="out">[[1,2,4]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>All subsets of 1..9 filtered by size and sum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtrack with remaining count and sum.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Numbers are increasing so no duplicates occur and pruning is simple.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; combinationSum3(int k, int n) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(1, k, n, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(int s, int k, int rem, List&lt;Integer&gt; cur, List&lt;List&lt;Integer&gt;&gt; res) {
+    if (cur.size() == k) { if (rem == 0) res.add(new ArrayList&lt;&gt;(cur)); return; }
+    for (int i = s; i &lt;= 9 &amp;&amp; i &lt;= rem; i++) {
+        cur.add(i);
+        dfs(i + 1, k, rem - i, cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Pick numbers from start to 9</li><li>Stop when size == k</li><li>Record if sum == n</li></ol></div></div>
+</div></section><section class="problem" id="p189">
+<h2>Problem 189: Letter Combinations of Phone Number<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All letter combos.</p><div class="ex">Input: digits=&quot;23&quot;<br>Output:<pre class="out">[&quot;ad&quot;,&quot;ae&quot;,&quot;af&quot;,&quot;bd&quot;,&quot;be&quot;,&quot;bf&quot;,&quot;cd&quot;,&quot;ce&quot;,&quot;cf&quot;]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Nested loops that depend on the input length.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtracking over digits with a phone map.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each digit multiplies the number of results by its letter count.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;String&gt; letterCombinations(String digits) {
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    if (digits.isEmpty()) return res;
+    String[] map = {&quot;&quot;, &quot;&quot;, &quot;abc&quot;, &quot;def&quot;, &quot;ghi&quot;, &quot;jkl&quot;, &quot;mno&quot;, &quot;pqrs&quot;, &quot;tuv&quot;, &quot;wxyz&quot;};
+    dfs(digits, 0, map, new StringBuilder(), res);
+    return res;
+}
+
+private static void dfs(String d, int i, String[] map, StringBuilder sb, List&lt;String&gt; res) {
+    if (i == d.length()) { res.add(sb.toString()); return; }
+    for (char c : map[d.charAt(i) - &#x27;0&#x27;].toCharArray()) {
+        sb.append(c);
+        dfs(d, i + 1, map, sb, res);
+        sb.deleteCharAt(sb.length() - 1);
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Map digits to letters</li><li>For each digit try every letter</li><li>Record when length equals digits length</li></ol></div></div>
+</div></section><section class="problem" id="p190">
+<h2>Problem 190: Palindrome Partitioning<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All palindrome partitions.</p><div class="ex">Input: s=&quot;aab&quot;<br>Output:<pre class="out">[[&quot;a&quot;,&quot;a&quot;,&quot;b&quot;],[&quot;aa&quot;,&quot;b&quot;]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all ways to cut the string and test each part.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtrack cutting only at palindromic prefixes.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Pruning invalid prefixes avoids exploring bad cuts.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;String&gt;&gt; partition(String s) {
+    List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(s, 0, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(String s, int st, List&lt;String&gt; cur, List&lt;List&lt;String&gt;&gt; res) {
+    if (st == s.length()) { res.add(new ArrayList&lt;&gt;(cur)); return; }
+    for (int j = st; j &lt; s.length(); j++) {
+        if (isPal(s, st, j)) {
+            cur.add(s.substring(st, j + 1));
+            dfs(s, j + 1, cur, res);
+            cur.remove(cur.size() - 1);
+        }
+    }
+}
+
+private static boolean isPal(String s, int l, int r) {
+    while (l &lt; r) if (s.charAt(l++) != s.charAt(r--)) return false;
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each end j from start check palindrome</li><li>Add the piece and recurse from j+1</li><li>Record at the end of the string</li></ol></div></div>
+</div></section><section class="problem" id="p191">
+<h2>Problem 191: Word Search<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Word path in grid.</p><div class="ex">Input: board=[[A,B,C,E],[S,F,C,S],[A,D,E,E]], word=&quot;ABCCED&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate every path in the grid.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS from each cell, marking visited and backtracking.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A path is abandoned as soon as a letter mismatches.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean exist(char[][] board, String word) {
+    for (int i = 0; i &lt; board.length; i++)
+        for (int j = 0; j &lt; board[0].length; j++)
+            if (dfs(board, word, i, j, 0)) return true;
+    return false;
+}
+
+private static boolean dfs(char[][] b, String w, int i, int j, int k) {
+    if (k == w.length()) return true;
+    if (i &lt; 0 || j &lt; 0 || i &gt;= b.length || j &gt;= b[0].length || b[i][j] != w.charAt(k)) return false;
+    char t = b[i][j];
+    b[i][j] = &#x27;#&#x27;;
+    boolean ok = dfs(b, w, i + 1, j, k + 1) || dfs(b, w, i - 1, j, k + 1)
+              || dfs(b, w, i, j + 1, k + 1) || dfs(b, w, i, j - 1, k + 1);
+    b[i][j] = t;
+    return ok;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Try each cell as a start</li><li>Match letters in four directions</li><li>Mark the cell during the path then restore</li></ol></div></div>
+</div></section><section class="problem" id="p192">
+<h2>Problem 192: Permutations I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All permutations.</p><div class="ex">Input: arr=[1,2,3]<br>Output:<pre class="out">[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all n^n sequences and filter.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtrack with a used array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each level picks an unused element, giving n! results.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; permute(int[] arr) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(arr, new boolean[arr.length], new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(int[] a, boolean[] used, List&lt;Integer&gt; cur, List&lt;List&lt;Integer&gt;&gt; res) {
+    if (cur.size() == a.length) { res.add(new ArrayList&lt;&gt;(cur)); return; }
+    for (int i = 0; i &lt; a.length; i++) {
+        if (used[i]) continue;
+        used[i] = true;
+        cur.add(a[i]);
+        dfs(a, used, cur, res);
+        cur.remove(cur.size() - 1);
+        used[i] = false;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If cur has n elements record</li><li>Try every unused index</li><li>Mark used, recurse, unmark</li></ol></div></div>
+</div></section><section class="problem" id="p193">
+<h2>Problem 193: Permutation Sequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>k-th permutation of 1..n.</p><div class="ex">Input: n=3, k=3<br>Output:<pre class="out">&quot;213&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all permutations and take the k-th.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Factorial number system picks digits directly.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each position has (n-1)! permutations per leading digit, so k picks the digit by division.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String getPermutation(int n, int k) {
+    List&lt;Integer&gt; nums = new ArrayList&lt;&gt;();
+    int fact = 1;
+    for (int i = 1; i &lt; n; i++) { fact *= i; nums.add(i); }
+    nums.add(n);
+    k--;
+    StringBuilder sb = new StringBuilder();
+    while (true) {
+        sb.append(nums.remove(k / fact));
+        if (nums.isEmpty()) break;
+        k %= fact;
+        fact /= nums.size();
+    }
+    return sb.toString();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Numbers list 1..n and k--</li><li>block = (n-1)!</li><li>idx = k / block</li><li>Remove digit idx and reduce k</li></ol></div></div>
+</div></section><section class="problem" id="p194">
+<h2>Problem 194: Rat in a Maze<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All paths from (0,0) to (n-1,n-1) as D/L/R/U.</p><div class="ex">Input: maze=[[1,0,0,0],[1,1,0,1],[1,1,0,0],[0,1,1,1]]<br>Output:<pre class="out">[&quot;DDRDRR&quot;,&quot;DRDDRR&quot;]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every path of moves without pruning.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS with a visited matrix in order D, L, R, U.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Visited cells prevent cycles and the fixed direction order yields sorted output.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;String&gt; findPaths(int[][] maze, int n) {
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    if (maze[0][0] == 0) return res;
+    dfs(maze, 0, 0, n, new boolean[n][n], new StringBuilder(), res);
+    return res;
+}
+
+private static void dfs(int[][] m, int i, int j, int n, boolean[][] vis, StringBuilder p, List&lt;String&gt; res) {
+    if (i == n - 1 &amp;&amp; j == n - 1) { res.add(p.toString()); return; }
+    vis[i][j] = true;
+    int[] di = {1, 0, 0, -1}, dj = {0, -1, 1, 0};
+    char[] c = {&#x27;D&#x27;, &#x27;L&#x27;, &#x27;R&#x27;, &#x27;U&#x27;};
+    for (int d = 0; d &lt; 4; d++) {
+        int x = i + di[d], y = j + dj[d];
+        if (x &gt;= 0 &amp;&amp; y &gt;= 0 &amp;&amp; x &lt; n &amp;&amp; y &lt; n &amp;&amp; m[x][y] == 1 &amp;&amp; !vis[x][y]) {
+            p.append(c[d]);
+            dfs(m, x, y, n, vis, p, res);
+            p.deleteCharAt(p.length() - 1);
+        }
+    }
+    vis[i][j] = false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start at (0,0) if open</li><li>Try four moves</li><li>Mark visited then unmark</li><li>Record the path at the destination</li></ol></div></div>
+</div></section><section class="problem" id="p195">
+<h2>Problem 195: Expression Add Operators<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insert + - * to reach target.</p><div class="ex">Input: num=&quot;123&quot;, target=6<br>Output:<pre class="out">[&quot;1*2*3&quot;,&quot;1+2+3&quot;]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every operator combination by brute force evaluation.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtrack tracking the running value and the last operand.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Multiplication needs the last operand so its precedence can be undone.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;String&gt; addOperators(String num, int target) {
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    dfs(num, target, 0, &quot;&quot;, 0, 0, res);
+    return res;
+}
+
+private static void dfs(String s, int t, int i, String expr, long val, long last, List&lt;String&gt; res) {
+    if (i == s.length()) { if (val == t) res.add(expr); return; }
+    for (int j = i; j &lt; s.length(); j++) {
+        if (j &gt; i &amp;&amp; s.charAt(i) == &#x27;0&#x27;) break;
+        long cur = Long.parseLong(s.substring(i, j + 1));
+        String part = s.substring(i, j + 1);
+        if (i == 0) dfs(s, t, j + 1, part, cur, cur, res);
+        else {
+            dfs(s, t, j + 1, expr + &quot;+&quot; + part, val + cur, cur, res);
+            dfs(s, t, j + 1, expr + &quot;-&quot; + part, val - cur, -cur, res);
+            dfs(s, t, j + 1, expr + &quot;*&quot; + part, val - last + last * cur, last * cur, res);
+        }
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Split the number into operands</li><li>For +, - update value normally</li><li>For * replace last operand&#x27;s contribution</li><li>Record when value == target</li></ol></div></div>
+</div></section><section class="problem" id="p196">
+<h2>Problem 196: Kth Permutation of Array<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>k-th lexicographic permutation.</p><div class="ex">Input: arr=[1,2,3], k=4<br>Output:<pre class="out">[2,3,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all permutations in order and take the k-th.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Factorial number system on the array elements.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Same logic as the permutation sequence with sorted array values.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; kthPermutation(int[] arr, int k) {
+    List&lt;Integer&gt; nums = new ArrayList&lt;&gt;();
+    for (int x : arr) nums.add(x);
+    Collections.sort(nums);
+    int n = nums.size();
+    int[] fact = new int[n + 1];
+    fact[0] = 1;
+    for (int i = 1; i &lt;= n; i++) fact[i] = fact[i - 1] * i;
+    k--;
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    for (int i = n; i &gt;= 1; i--) {
+        int idx = k / fact[i - 1];
+        res.add(nums.remove(idx));
+        k %= fact[i - 1];
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort a copy</li><li>k--</li><li>Pick index k / (n-1)!</li><li>Remove it and continue</li></ol></div></div>
+</div></section><section class="problem" id="p197">
+<h2>Problem 197: Power Set using Recursion<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All subsets.</p><div class="ex">Input: arr=[1,2]<br>Output:<pre class="out">[[],[1],[2],[1,2]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Combine subsets by hand.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Pick / not-pick recursion.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each element is either in or out, giving 2^n subsets.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; powerSet(int[] arr) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(arr, 0, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int s, List&lt;Integer&gt; cur, List&lt;List&lt;Integer&gt;&gt; res) {
+    res.add(new ArrayList&lt;&gt;(cur));
+    for (int j = s; j &lt; a.length; j++) {
+        cur.add(a[j]);
+        dfs(a, j + 1, cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add the current subset</li><li>For each j &gt;= start extend and recurse</li><li>Backtrack</li></ol></div></div>
+</div></section><section class="problem" id="p198">
+<h2>Problem 198: N-Queens<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All distinct board placements.</p><div class="ex">Input: n=4<br>Output:<pre class="out">[[&quot;.Q..&quot;,&quot;...Q&quot;,&quot;Q...&quot;,&quot;..Q.&quot;],[&quot;..Q.&quot;,&quot;Q...&quot;,&quot;...Q&quot;,&quot;.Q..&quot;]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Place n queens anywhere and check validity at the end.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Place one queen per row with column and diagonal sets.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Constant-time conflict checks prune invalid boards early.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;String&gt;&gt; solveNQueens(int n) {
+    List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();
+    place(0, n, new int[n], new boolean[n], new boolean[2 * n], new boolean[2 * n], res);
+    return res;
+}
+
+private static void place(int r, int n, int[] pos, boolean[] col, boolean[] d1, boolean[] d2, List&lt;List&lt;String&gt;&gt; res) {
+    if (r == n) {
+        List&lt;String&gt; b = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; n; i++) {
+            char[] row = new char[n];
+            Arrays.fill(row, &#x27;.&#x27;);
+            row[pos[i]] = &#x27;Q&#x27;;
+            b.add(new String(row));
+        }
+        res.add(b);
+        return;
+    }
+    for (int c = 0; c &lt; n; c++) {
+        if (col[c] || d1[r - c + n] || d2[r + c]) continue;
+        pos[r] = c; col[c] = d1[r - c + n] = d2[r + c] = true;
+        place(r + 1, n, pos, col, d1, d2, res);
+        col[c] = d1[r - c + n] = d2[r + c] = false;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Rows processed in order</li><li>Track used columns, diag (r-c), anti-diag (r+c)</li><li>Place and recurse</li><li>Build the board at the last row</li></ol></div></div>
+</div></section><section class="problem" id="p199">
+<h2>Problem 199: Sudoku Solver<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Fill the board in place.</p><div class="ex">Input: 9x9 board<br>Output:<pre class="out">solved board</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every digit in every cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtracking with validity checks per placement.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Constraints prune most invalid choices immediately.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void solveSudoku(char[][] board) {
+    solve(board);
+}
+
+private static boolean solve(char[][] b) {
+    for (int i = 0; i &lt; 9; i++)
+        for (int j = 0; j &lt; 9; j++) {
+            if (b[i][j] != &#x27;.&#x27;) continue;
+            for (char c = &#x27;1&#x27;; c &lt;= &#x27;9&#x27;; c++) {
+                if (ok(b, i, j, c)) {
+                    b[i][j] = c;
+                    if (solve(b)) return true;
+                    b[i][j] = &#x27;.&#x27;;
+                }
+            }
+            return false;
+        }
+    return true;
+}
+
+private static boolean ok(char[][] b, int r, int c, char ch) {
+    for (int k = 0; k &lt; 9; k++) {
+        if (b[r][k] == ch || b[k][c] == ch) return false;
+        if (b[3 * (r / 3) + k / 3][3 * (c / 3) + k % 3] == ch) return false;
+    }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find an empty cell</li><li>Try digits 1-9 if valid</li><li>Recurse; undo on failure</li></ol></div></div>
+</div></section><section class="problem" id="p200">
+<h2>Problem 200: M-Coloring Problem<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Can graph be colored with m colors.</p><div class="ex">Input: n=4, m=3<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all m^n colourings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtrack assigning colours with an adjacency check.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A colour is tried only if no neighbour already has it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean graphColoring(int[][] edges, int n, int m) {
+    List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] e : edges) { adj.get(e[0]).add(e[1]); adj.get(e[1]).add(e[0]); }
+    return color(0, n, m, adj, new int[n]);
+}
+
+private static boolean color(int v, int n, int m, List&lt;List&lt;Integer&gt;&gt; adj, int[] col) {
+    if (v == n) return true;
+    for (int c = 1; c &lt;= m; c++) {
+        boolean ok = true;
+        for (int u : adj.get(v)) if (col[u] == c) { ok = false; break; }
+        if (!ok) continue;
+        col[v] = c;
+        if (color(v + 1, n, m, adj, col)) return true;
+        col[v] = 0;
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build adjacency</li><li>For vertex v try colours 1..m</li><li>Check neighbours</li><li>Recurse to v+1</li></ol></div></div>
+</div></section><section class="problem" id="p201">
+<h2>Problem 201: Word Break (Print All Sentences)<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All sentences from dictionary.</p><div class="ex">Input: s=&quot;catsanddog&quot;, dict=[cat,cats,and,sand,dog]<br>Output:<pre class="out">[&quot;cats and dog&quot;,&quot;cat sand dog&quot;]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every split of the string.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Backtracking with a dictionary set and memoization of failures.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only prefixes that are dictionary words continue the search.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;String&gt; wordBreak(String s, List&lt;String&gt; dict) {
+    Set&lt;String&gt; set = new HashSet&lt;&gt;(dict);
+    List&lt;String&gt; res = new ArrayList&lt;&gt;();
+    dfs(s, 0, set, new ArrayList&lt;&gt;(), res);
+    return res;
+}
+
+private static void dfs(String s, int i, Set&lt;String&gt; d, List&lt;String&gt; cur, List&lt;String&gt; res) {
+    if (i == s.length()) { res.add(String.join(&quot; &quot;, cur)); return; }
+    for (int j = i + 1; j &lt;= s.length(); j++) {
+        String w = s.substring(i, j);
+        if (d.contains(w)) {
+            cur.add(w);
+            dfs(s, j, d, cur, res);
+            cur.remove(cur.size() - 1);
+        }
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Try each prefix in the dictionary</li><li>Recurse on the remainder</li><li>Join words with spaces</li></ol></div></div>
+</div></section></main></body></html>

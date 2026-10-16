@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>08 - Bit Manipulation</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>08 - Bit Manipulation</h1></header><main><nav class="toc"><a href="#p202">202. Minimum Bit Flips to Convert Number</a><a href="#p203">203. Check if i-th Bit is Set</a><a href="#p204">204. Set the i-th Bit</a><a href="#p205">205. Clear the i-th Bit</a><a href="#p206">206. Toggle the i-th Bit</a><a href="#p207">207. Remove Last Set Bit</a><a href="#p208">208. Check Power of Two</a><a href="#p209">209. Count Number of Set Bits</a><a href="#p210">210. Swap Two Numbers Without Temp</a><a href="#p211">211. Divide Two Integers Without Operators</a><a href="#p212">212. Single Number III</a><a href="#p213">213. Single Number II</a><a href="#p214">214. XOR of Numbers from L to R</a><a href="#p215">215. Power Set using Bit Manipulation</a><a href="#p216">216. Count Primes Factors Prime Factorization</a></nav><section class="problem" id="p202">
+<h2>Problem 202: Minimum Bit Flips to Convert Number<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Bit flips to convert start to goal.</p><div class="ex">Input: start=10, goal=7<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare bit by bit with a loop over 32 bits.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>XOR then count set bits.</p></div>
+<div class="card w"><h3>Why it works</h3><p>XOR has a 1 exactly where the numbers differ.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minBitFlips(int start, int goal) {
+    return Integer.bitCount(start ^ goal);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>x = start ^ goal</li><li>Count set bits of x</li><li>Return that count</li></ol></div></div>
+</div></section><section class="problem" id="p203">
+<h2>Problem 203: Check if i-th Bit is Set<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if i-th bit (0-indexed) is set.</p><div class="ex">Input: n=5, i=0<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to a binary string and index it.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Shift right i and check the lowest bit.</p></div>
+<div class="card w"><h3>Why it works</h3><p>(n &gt;&gt; i) &amp; 1 isolates bit i.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isBitSet(int n, int i) {
+    return ((n &gt;&gt; i) &amp; 1) == 1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Shift n right by i</li><li>AND with 1</li></ol></div></div>
+</div></section><section class="problem" id="p204">
+<h2>Problem 204: Set the i-th Bit<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return n with i-th bit set.</p><div class="ex">Input: n=5, i=1<br>Output:<pre class="out">7</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild from a binary string.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>OR with 1 &lt;&lt; i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>OR forces the chosen bit to 1 and keeps others.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int setBit(int n, int i) {
+    return n | (1 &lt;&lt; i);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>mask = 1 &lt;&lt; i</li><li>Return n</li><li>mask</li></ol></div></div>
+</div></section><section class="problem" id="p205">
+<h2>Problem 205: Clear the i-th Bit<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return n with i-th bit cleared.</p><div class="ex">Input: n=5, i=0<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild from a binary string.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>AND with the complement of 1 &lt;&lt; i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The mask has 0 at bit i and 1 elsewhere.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int clearBit(int n, int i) {
+    return n &amp; ~(1 &lt;&lt; i);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>mask = ~(1 &lt;&lt; i)</li><li>Return n &amp; mask</li></ol></div></div>
+</div></section><section class="problem" id="p206">
+<h2>Problem 206: Toggle the i-th Bit<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Flip i-th bit.</p><div class="ex">Input: n=5, i=1<br>Output:<pre class="out">7</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check the bit then set or clear it.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>XOR with 1 &lt;&lt; i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>XOR with 1 flips a bit.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int toggleBit(int n, int i) {
+    return n ^ (1 &lt;&lt; i);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Return n ^ (1 &lt;&lt; i)</li></ol></div></div>
+</div></section><section class="problem" id="p207">
+<h2>Problem 207: Remove Last Set Bit<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Clear rightmost set bit.</p><div class="ex">Input: n=12<br>Output:<pre class="out">8</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Find the position of the lowest 1 and clear it.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>n &amp; (n - 1).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Subtracting 1 flips the lowest set bit and the zeros below it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int removeLastSetBit(int n) {
+    return n &amp; (n - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute n &amp; (n-1)</li></ol></div></div>
+</div></section><section class="problem" id="p208">
+<h2>Problem 208: Check Power of Two<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if n is power of 2.</p><div class="ex">Input: n=16<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Keep dividing by 2 while even.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Check n &gt; 0 and n &amp; (n-1) == 0.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A power of two has exactly one set bit.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isPowerOfTwo(int n) {
+    return n &gt; 0 &amp;&amp; (n &amp; (n - 1)) == 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>n must be positive</li><li>Clearing the only set bit gives 0</li></ol></div></div>
+</div></section><section class="problem" id="p209">
+<h2>Problem 209: Count Number of Set Bits<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Number of 1 bits.</p><div class="ex">Input: n=13<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check each of 32 bits.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Brian Kernighan: clear the lowest set bit until zero.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The loop runs once per set bit.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countSetBits(int n) {
+    int c = 0;
+    while (n != 0) { n &amp;= n - 1; c++; }
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>count = 0</li><li>While n != 0 n &amp;= n-1</li><li>count++</li></ol></div></div>
+</div></section><section class="problem" id="p210">
+<h2>Problem 210: Swap Two Numbers Without Temp<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Swap using XOR.</p><div class="ex">Input: a=3, b=5<br>Output:<pre class="out">[5,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use a temporary variable.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>XOR swap.</p></div>
+<div class="card w"><h3>Why it works</h3><p>a ^ b ^ b = a and a ^ b ^ a = b.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] swapNumbers(int a, int b) {
+    a ^= b;
+    b ^= a;
+    a ^= b;
+    return new int[]{a, b};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>a ^= b</li><li>b ^= a</li><li>a ^= b</li></ol></div></div>
+</div></section><section class="problem" id="p211">
+<h2>Problem 211: Divide Two Integers Without Operators<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>No *, /, %.</p><div class="ex">Input: dividend=22, divisor=3<br>Output:<pre class="out">7</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Subtract the divisor repeatedly.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Subtract the largest shifted divisor each time.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Doubling the divisor via shifts covers the quotient in binary in O(log^2 n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int divide(int dividend, int divisor) {
+    if (dividend == Integer.MIN_VALUE &amp;&amp; divisor == -1) return Integer.MAX_VALUE;
+    boolean neg = (dividend &lt; 0) ^ (divisor &lt; 0);
+    long a = Math.abs((long) dividend), b = Math.abs((long) divisor);
+    long q = 0;
+    for (int i = 31; i &gt;= 0; i--) {
+        if ((b &lt;&lt; i) &lt;= a) { a -= b &lt;&lt; i; q += 1L &lt;&lt; i; }
+    }
+    return (int) (neg ? -q : q);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Handle sign and overflow</li><li>For i from 31 down while (divisor &lt;&lt; i) &lt;= dividend subtract it</li><li>Add 1 &lt;&lt; i to the quotient</li></ol></div></div>
+</div></section><section class="problem" id="p212">
+<h2>Problem 212: Single Number III<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Two numbers appear once, others twice.</p><div class="ex">Input: arr=[1,2,1,3,2,5]<br>Output:<pre class="out">[3,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count each element with a map.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>XOR all, split by a set bit.</p></div>
+<div class="card w"><h3>Why it works</h3><p>XOR gives a^b; a set bit in it separates a and b into two groups.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] singleNumberIII(int[] arr) {
+    int x = 0;
+    for (int v : arr) x ^= v;
+    int bit = x &amp; -x, a = 0, b = 0;
+    for (int v : arr) { if ((v &amp; bit) != 0) a ^= v; else b ^= v; }
+    return new int[]{Math.min(a, b), Math.max(a, b)};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>x = XOR of all</li><li>bit = x &amp; -x</li><li>XOR numbers with and without the bit separately</li></ol></div></div>
+</div></section><section class="problem" id="p213">
+<h2>Problem 213: Single Number II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Others appear three times.</p><div class="ex">Input: arr=[2,2,3,2]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count each element with a map.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Count bit i across all numbers mod 3.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Numbers appearing three times contribute multiples of 3 to each bit.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int singleNumberII(int[] arr) {
+    int res = 0;
+    for (int i = 0; i &lt; 32; i++) {
+        int s = 0;
+        for (int v : arr) s += (v &gt;&gt; i) &amp; 1;
+        if (s % 3 != 0) res |= 1 &lt;&lt; i;
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each bit 0..31 sum that bit over all numbers</li><li>If sum % 3 != 0 set it in the answer</li></ol></div></div>
+</div></section><section class="problem" id="p214">
+<h2>Problem 214: XOR of Numbers from L to R<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>XOR of all numbers in [l,r].</p><div class="ex">Input: l=3, r=5<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>XOR every number from l to r.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Use the prefix XOR trick f(r) ^ f(l-1).</p></div>
+<div class="card w"><h3>Why it works</h3><p>XOR from 1..n follows a pattern repeating every 4.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int xorRange(int l, int r) {
+    return f(r) ^ f(l - 1);
+}
+
+private static int f(int n) {
+    switch (n % 4) {
+        case 0: return n;
+        case 1: return 1;
+        case 2: return n + 1;
+        default: return 0;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>f(n) by n % 4</li><li>Return f(r) ^ f(l-1)</li></ol></div></div>
+</div></section><section class="problem" id="p215">
+<h2>Problem 215: Power Set using Bit Manipulation<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All subsets via bitmasks.</p><div class="ex">Input: arr=[1,2,3]<br>Output:<pre class="out">8 subsets</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion with pick / not-pick.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Iterate masks 0 to 2^n - 1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each bit of the mask decides whether an element is included.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; powerSetBits(int[] arr) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    int n = arr.length;
+    for (int mask = 0; mask &lt; (1 &lt;&lt; n); mask++) {
+        List&lt;Integer&gt; s = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; n; i++) if ((mask &amp; (1 &lt;&lt; i)) != 0) s.add(arr[i]);
+        res.add(s);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For mask in 0..2^n-1</li><li>For each bit set add that element</li><li>Add the subset</li></ol></div></div>
+</div></section><section class="problem" id="p216">
+<h2>Problem 216: Count Primes Factors Prime Factorization<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Prime factors of n.</p><div class="ex">Input: n=12<br>Output:<pre class="out">[2,2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Test every number up to n for primality.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Trial division up to sqrt(n).</p></div>
+<div class="card w"><h3>Why it works</h3><p>After dividing out small factors, any remainder &gt; 1 is prime.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; primeFactors(int n) {
+    List&lt;Integer&gt; r = new ArrayList&lt;&gt;();
+    for (int d = 2; (long) d * d &lt;= n; d++)
+        while (n % d == 0) { r.add(d); n /= d; }
+    if (n &gt; 1) r.add(n);
+    return r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For d from 2 while d*d &lt;= n</li><li>Divide out d</li><li>If n &gt; 1 add it</li></ol></div></div>
+</div></section></main></body></html>

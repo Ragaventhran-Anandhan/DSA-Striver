@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>18 - Others</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>18 - Others</h1></header><main><nav class="toc"><a href="#p464">464. Majority Element (Moore Voting)</a><a href="#p465">465. Kth Smallest in Sorted Matrix</a><a href="#p466">466. Pow(x, n)</a><a href="#p467">467. Excel Sheet Column Number</a><a href="#p468">468. Gray Code</a><a href="#p469">469. Valid Sudoku</a><a href="#p470">470. Spiral Matrix II</a><a href="#p471">471. Product of Array Except Self</a><a href="#p472">472. Container With Most Water</a><a href="#p473">473. Minimum Number of Jumps to Reach End</a><a href="#p474">474. Boyer-Moore Majority Vote Generalized</a><a href="#p475">475. Median in a Row-wise Sorted Matrix</a><a href="#p476">476. Minimum Cost to Reach Destination via Bitmask</a></nav><section class="problem" id="p464">
+<h2>Problem 464: Majority Element (Moore Voting)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Boyer-Moore.</p><div class="ex">Input: arr=[2,2,1,1,1,2,2]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count each element with a map.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Boyer-Moore voting.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The majority element survives cancellation against all other elements.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int majorityMoore(int[] arr) {
+    int cand = 0, count = 0;
+    for (int x : arr) {
+        if (count == 0) cand = x;
+        count += x == cand ? 1 : -1;
+    }
+    return cand;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Candidate and count</li><li>If count == 0 take the current element</li><li>Same increments, different decrements</li></ol></div></div>
+</div></section><section class="problem" id="p465">
+<h2>Problem 465: Kth Smallest in Sorted Matrix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>K-th smallest.</p><div class="ex">Input: matrix=[[1,5,9],[10,11,13],[12,13,15]], k=8<br>Output:<pre class="out">13</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Flatten and sort.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the value using row/column sorted counting.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Counting elements &lt;= mid is O(n) with the staircase walk, so the search is O(n log range).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int kthSmallestMatrix(int[][] matrix, int k) {
+    int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1];
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 0, j = n - 1;
+        for (int i = 0; i &lt; n; i++) {
+            while (j &gt;= 0 &amp;&amp; matrix[i][j] &gt; mid) j--;
+            cnt += j + 1;
+        }
+        if (cnt &lt; k) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = top-left, hi = bottom-right</li><li>Count elements &lt;= mid</li><li>If count &lt; k move lo else hi</li></ol></div></div>
+</div></section><section class="problem" id="p466">
+<h2>Problem 466: Pow(x, n)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>x raised to n.</p><div class="ex">Input: x=2.0, n=10<br>Output:<pre class="out">1024.0</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Multiply x, n times.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Fast exponentiation by squaring.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Halving the exponent each step gives O(log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static double myPow(double x, int n) {
+    long e = n;
+    if (e &lt; 0) { x = 1 / x; e = -e; }
+    double res = 1;
+    while (e &gt; 0) {
+        if ((e &amp; 1) == 1) res *= x;
+        x *= x;
+        e &gt;&gt;= 1;
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Use long to handle Integer.MIN_VALUE</li><li>If n &lt; 0 invert x</li><li>Square x and halve n, multiplying when n is odd</li></ol></div></div>
+</div></section><section class="problem" id="p467">
+<h2>Problem 467: Excel Sheet Column Number<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Column title to number.</p><div class="ex">Input: col=&quot;AB&quot;<br>Output:<pre class="out">28</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate titles until the match.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Treat the title as a base-26 number.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each letter is a digit 1..26.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int titleToNumber(String col) {
+    int res = 0;
+    for (char c : col.toCharArray()) res = res * 26 + (c - &#x27;A&#x27; + 1);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>res = 0</li><li>For each char res = res * 26 + (c - &#x27;A&#x27; + 1)</li></ol></div></div>
+</div></section><section class="problem" id="p468">
+<h2>Problem 468: Gray Code<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>n-bit Gray code.</p><div class="ex">Input: n=2<br>Output:<pre class="out">[0,1,3,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build by backtracking and check one-bit differences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Formula i ^ (i &gt;&gt; 1).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Adjacent integers differ in a single bit after this transform.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; grayCode(int n) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; (1 &lt;&lt; n); i++) res.add(i ^ (i &gt;&gt; 1));
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For i in 0..2^n-1</li><li>Add i ^ (i &gt;&gt; 1)</li></ol></div></div>
+</div></section><section class="problem" id="p469">
+<h2>Problem 469: Valid Sudoku<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Check board validity.</p><div class="ex">Input: 9x9 board<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recheck rows, columns and boxes separately.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>One pass with row, column and box sets.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A repeated digit in any of the three groups invalidates the board.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isValidSudoku(char[][] board) {
+    Set&lt;String&gt; seen = new HashSet&lt;&gt;();
+    for (int i = 0; i &lt; 9; i++)
+        for (int j = 0; j &lt; 9; j++) {
+            char c = board[i][j];
+            if (c == &#x27;.&#x27;) continue;
+            if (!seen.add(c + &quot; in row &quot; + i) || !seen.add(c + &quot; in col &quot; + j) || !seen.add(c + &quot; in box &quot; + i / 3 + &quot;-&quot; + j / 3))
+                return false;
+        }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Skip &#x27;.&#x27;</li><li>Build keys for row, column and box</li><li>If a key is already seen return false</li></ol></div></div>
+</div></section><section class="problem" id="p470">
+<h2>Problem 470: Spiral Matrix II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Generate spiral matrix.</p><div class="ex">Input: n=3<br>Output:<pre class="out">[[1,2,3],[8,9,4],[7,6,5]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Fill with a direction array and visited matrix.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Shrinking boundaries, same as spiral traversal.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each layer is filled once in four passes.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[][] generateMatrix(int n) {
+    int[][] m = new int[n][n];
+    int t = 0, b = n - 1, l = 0, r = n - 1, v = 1;
+    while (t &lt;= b &amp;&amp; l &lt;= r) {
+        for (int j = l; j &lt;= r; j++) m[t][j] = v++;
+        t++;
+        for (int i = t; i &lt;= b; i++) m[i][r] = v++;
+        r--;
+        for (int j = r; j &gt;= l &amp;&amp; t &lt;= b; j--) m[b][j] = v++;
+        b--;
+        for (int i = b; i &gt;= t &amp;&amp; l &lt;= r; i--) m[i][l] = v++;
+        l++;
+    }
+    return m;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>top, bottom, left, right</li><li>Fill right, down, left, up</li><li>Move the boundaries inward</li></ol></div></div>
+</div></section><section class="problem" id="p471">
+<h2>Problem 471: Product of Array Except Self<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Product of others without division.</p><div class="ex">Input: arr=[1,2,3,4]<br>Output:<pre class="out">[24,12,8,6]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each index multiply all others, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Prefix product pass then suffix product pass.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Product except self = product of everything before times everything after.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] productExceptSelf(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    res[0] = 1;
+    for (int i = 1; i &lt; n; i++) res[i] = res[i - 1] * arr[i - 1];
+    int suffix = 1;
+    for (int i = n - 1; i &gt;= 0; i--) {
+        res[i] *= suffix;
+        suffix *= arr[i];
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>res[i] = product of prefix</li><li>Walk from the right with a running suffix product</li><li>Multiply into res</li></ol></div></div>
+</div></section><section class="problem" id="p472">
+<h2>Problem 472: Container With Most Water<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max water area.</p><div class="ex">Input: height=[1,8,6,2,5,4,8,3,7]<br>Output:<pre class="out">49</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every pair of lines.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers moving the shorter line inward.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The width shrinks every step, so only a taller line can improve the area.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxArea(int[] height) {
+    int l = 0, r = height.length - 1, best = 0;
+    while (l &lt; r) {
+        best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
+        if (height[l] &lt; height[r]) l++; else r--;
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>l = 0, r = n-1</li><li>area = min(h[l], h[r]) * (r - l)</li><li>Move the pointer at the shorter line</li></ol></div></div>
+</div></section><section class="problem" id="p473">
+<h2>Problem 473: Minimum Number of Jumps to Reach End<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min jumps.</p><div class="ex">Input: arr=[2,3,1,1,4]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>BFS/DP over all jumps, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Greedy window with the current end and farthest reach.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each time the current range ends we must jump once more to the farthest reachable position.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minJumpsToEnd(int[] arr) {
+    int n = arr.length, jumps = 0, end = 0, far = 0;
+    for (int i = 0; i &lt; n - 1; i++) {
+        far = Math.max(far, i + arr[i]);
+        if (i == end) {
+            if (far &lt;= i) return -1;
+            jumps++;
+            end = far;
+        }
+    }
+    return jumps;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>jumps = 0, end = 0, far = 0</li><li>far = max(far, i + arr[i])</li><li>When i == end jumps++, end = far</li><li>Return -1 if far cannot advance</li></ol></div></div>
+</div></section><section class="problem" id="p474">
+<h2>Problem 474: Boyer-Moore Majority Vote Generalized<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Elements &gt; n/k times.</p><div class="ex">Input: arr=[3,1,2,2,1,2,3,3], k=4<br>Output:<pre class="out">[2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count every element with a map and filter.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Generalized Boyer-Moore with k-1 candidates, then verify.</p></div>
+<div class="card w"><h3>Why it works</h3><p>At most k-1 values can occur more than n/k times.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; majorityKth(int[] arr, int k) {
+    Map&lt;Integer, Integer&gt; cand = new HashMap&lt;&gt;();
+    for (int x : arr) {
+        if (cand.containsKey(x)) cand.merge(x, 1, Integer::sum);
+        else if (cand.size() &lt; k - 1) cand.put(x, 1);
+        else {
+            Iterator&lt;Map.Entry&lt;Integer, Integer&gt;&gt; it = cand.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry&lt;Integer, Integer&gt; e = it.next();
+                if (e.getValue() == 1) it.remove(); else e.setValue(e.getValue() - 1);
+            }
+        }
+    }
+    Map&lt;Integer, Integer&gt; cnt = new HashMap&lt;&gt;();
+    for (int x : arr) if (cand.containsKey(x)) cnt.merge(x, 1, Integer::sum);
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    for (Map.Entry&lt;Integer, Integer&gt; e : cnt.entrySet()) if (e.getValue() &gt; arr.length / k) res.add(e.getKey());
+    Collections.sort(res);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Keep up to k-1 candidate counts</li><li>Decrement all when full and the new value is not a candidate</li><li>Recount candidates and keep those above n/k</li></ol></div></div>
+</div></section><section class="problem" id="p475">
+<h2>Problem 475: Median in a Row-wise Sorted Matrix<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Median.</p><div class="ex">Input: matrix=[[1,3,5],[2,6,9],[3,6,9]]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Flatten, sort and take the middle.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the value with a per-row upper bound.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The median is the smallest value with at least (n*m+1)/2 elements &lt;= it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int medianRowWise(int[][] matrix) {
+    int n = matrix.length, m = matrix[0].length, lo = Integer.MAX_VALUE, hi = Integer.MIN_VALUE;
+    for (int[] r : matrix) { lo = Math.min(lo, r[0]); hi = Math.max(hi, r[m - 1]); }
+    int need = (n * m + 1) / 2;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 0;
+        for (int[] r : matrix) {
+            int l = 0, h = m;
+            while (l &lt; h) { int x = (l + h) / 2; if (r[x] &lt;= mid) l = x + 1; else h = x; }
+            cnt += l;
+        }
+        if (cnt &lt; need) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = min of first column, hi = max of last column</li><li>Count elements &lt;= mid in each row by binary search</li><li>Adjust the range</li></ol></div></div>
+</div></section><section class="problem" id="p476">
+<h2>Problem 476: Minimum Cost to Reach Destination via Bitmask<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Travelling salesman via bitmask DP.</p><div class="ex">Input: dist=[[0,10,15],[10,0,20],[15,20,0]]<br>Output:<pre class="out">45</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all n! city orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Bitmask DP: dp[mask][i] = cheapest way to visit mask ending at i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Subproblems are shared, giving O(n^2 * 2^n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int tspBitmask(int[][] dist) {
+    int n = dist.length, INF = Integer.MAX_VALUE / 2;
+    int[][] dp = new int[1 &lt;&lt; n][n];
+    for (int[] r : dp) Arrays.fill(r, INF);
+    dp[1][0] = 0;
+    for (int mask = 1; mask &lt; (1 &lt;&lt; n); mask++)
+        for (int i = 0; i &lt; n; i++) {
+            if (dp[mask][i] &gt;= INF || (mask &amp; (1 &lt;&lt; i)) == 0) continue;
+            for (int j = 0; j &lt; n; j++) {
+                if ((mask &amp; (1 &lt;&lt; j)) != 0) continue;
+                int nm = mask | (1 &lt;&lt; j);
+                dp[nm][j] = Math.min(dp[nm][j], dp[mask][i] + dist[i][j]);
+            }
+        }
+    int best = INF;
+    for (int i = 1; i &lt; n; i++) best = Math.min(best, dp[(1 &lt;&lt; n) - 1][i] + dist[i][0]);
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[1][0] = 0</li><li>For each mask and last city i try each unvisited j</li><li>dp[mask</li><li>1&lt;&lt;j][j] = min(dp[mask][i] + dist[i][j])</li><li>Close the tour back to city 0</li></ol></div></div>
+</div></section></main></body></html>

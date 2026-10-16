@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>05 - Strings</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>05 - Strings</h1></header><main><nav class="toc"><a href="#p128">128. Remove Outermost Parentheses</a><a href="#p129">129. Reverse Words in a String</a><a href="#p130">130. Largest Odd Number in String</a><a href="#p131">131. Longest Common Prefix</a><a href="#p132">132. Isomorphic Strings</a><a href="#p133">133. Check if One String is Rotation of Another</a><a href="#p134">134. Valid Anagram</a><a href="#p135">135. Maximum Nesting Depth of Parentheses</a><a href="#p136">136. Roman to Integer</a><a href="#p137">137. Count Number of Substrings</a><a href="#p138">138. Sort Characters by Frequency</a><a href="#p139">139. String to Integer (atoi)</a><a href="#p140">140. Longest Palindromic Substring</a><a href="#p141">141. Sum of Beauty of All Substrings</a><a href="#p142">142. Reverse Every Word in a String</a></nav><section class="problem" id="p128">
+<h2>Problem 128: Remove Outermost Parentheses<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Strip outer parens of each primitive.</p><div class="ex">Input: s=&quot;(()())(())&quot;<br>Output:<pre class="out">&quot;()()()&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Decompose into primitives and rebuild each without its outer pair.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track depth; append a char only if it is not an outer parenthesis.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Outer &#x27;(&#x27; is at depth 0 before increment and outer &#x27;)&#x27; at depth 0 after decrement.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String removeOuterParentheses(String s) {
+    StringBuilder sb = new StringBuilder();
+    int depth = 0;
+    for (char c : s.toCharArray()) {
+        if (c == &#x27;(&#x27;) { if (depth++ &gt; 0) sb.append(c); }
+        else { if (--depth &gt; 0) sb.append(c); }
+    }
+    return sb.toString();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>depth = 0</li><li>For &#x27;(&#x27; append if depth &gt; 0 then depth++</li><li>For &#x27;)&#x27; depth-- then append if depth &gt; 0</li></ol></div></div>
+</div></section><section class="problem" id="p129">
+<h2>Problem 129: Reverse Words in a String<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse the order of words.</p><div class="ex">Input: s=&quot;the sky is blue&quot;<br>Output:<pre class="out">&quot;blue is sky the&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Split on spaces and reverse with a list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan from the end and collect words.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Skipping spaces handles leading, trailing and repeated spaces.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String reverseWords(String s) {
+    String[] w = s.trim().split(&quot;\\s+&quot;);
+    StringBuilder sb = new StringBuilder();
+    for (int i = w.length - 1; i &gt;= 0; i--) {
+        sb.append(w[i]);
+        if (i &gt; 0) sb.append(&#x27; &#x27;);
+    }
+    return sb.toString();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Trim and split on whitespace</li><li>Append from the last word to the first</li><li>Join with single spaces</li></ol></div></div>
+</div></section><section class="problem" id="p130">
+<h2>Problem 130: Largest Odd Number in String<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest odd-valued substring.</p><div class="ex">Input: num=&quot;35427&quot;<br>Output:<pre class="out">&quot;35427&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every substring for oddness.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan from the right for the first odd digit.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Oddness depends only on the last digit; the longest prefix ends at the last odd digit.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String largestOddNumber(String num) {
+    for (int i = num.length() - 1; i &gt;= 0; i--)
+        if ((num.charAt(i) - &#x27;0&#x27;) % 2 == 1) return num.substring(0, i + 1);
+    return &quot;&quot;;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Loop i from the end</li><li>Stop at the first odd digit</li><li>Return the prefix up to i</li></ol></div></div>
+</div></section><section class="problem" id="p131">
+<h2>Problem 131: Longest Common Prefix<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest common prefix.</p><div class="ex">Input: strs=[&quot;flower&quot;,&quot;flow&quot;,&quot;flight&quot;]<br>Output:<pre class="out">&quot;fl&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Test every prefix of the first string against all others.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort and compare first and last strings, or shrink a prefix.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Extremes in lexicographic order share the common prefix of everything between them.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String longestCommonPrefix(String[] strs) {
+    String p = strs[0];
+    for (String s : strs) while (!s.startsWith(p)) p = p.substring(0, p.length() - 1);
+    return p;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>prefix = strs[0]</li><li>While a string does not start with prefix, shorten it</li><li>Return prefix</li></ol></div></div>
+</div></section><section class="problem" id="p132">
+<h2>Problem 132: Isomorphic Strings<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Check if one-to-one char mapping exists.</p><div class="ex">Input: s=&quot;egg&quot;, t=&quot;add&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all mappings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Map each character to its last seen index in both strings.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Equal last-seen positions at each step mean the mapping is consistent and one-to-one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isIsomorphic(String s, String t) {
+    if (s.length() != t.length()) return false;
+    int[] a = new int[256], b = new int[256];
+    for (int i = 0; i &lt; s.length(); i++) {
+        if (a[s.charAt(i)] != b[t.charAt(i)]) return false;
+        a[s.charAt(i)] = b[t.charAt(i)] = i + 1;
+    }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Two arrays of size 256</li><li>For each i compare stored positions</li><li>Update both with i+1</li></ol></div></div>
+</div></section><section class="problem" id="p133">
+<h2>Problem 133: Check if One String is Rotation of Another<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if s can become goal by rotations.</p><div class="ex">Input: s=&quot;abcde&quot;, goal=&quot;cdeab&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every rotation.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Check if goal is a substring of s + s.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Every rotation of s appears inside s concatenated with itself.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isRotation(String s, String goal) {
+    return s.length() == goal.length() &amp;&amp; (s + s).contains(goal);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Lengths must match</li><li>Build s+s</li><li>Check contains(goal)</li></ol></div></div>
+</div></section><section class="problem" id="p134">
+<h2>Problem 134: Valid Anagram<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if t is an anagram of s.</p><div class="ex">Input: s=&quot;anagram&quot;, t=&quot;nagaram&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort both strings and compare.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Count letters in one array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Anagrams have identical letter counts.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isAnagram(String s, String t) {
+    if (s.length() != t.length()) return false;
+    int[] c = new int[26];
+    for (int i = 0; i &lt; s.length(); i++) { c[s.charAt(i) - &#x27;a&#x27;]++; c[t.charAt(i) - &#x27;a&#x27;]--; }
+    for (int x : c) if (x != 0) return false;
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Equal lengths required</li><li>Increment for s and decrement for t</li><li>All counts must be zero</li></ol></div></div>
+</div></section><section class="problem" id="p135">
+<h2>Problem 135: Maximum Nesting Depth of Parentheses<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max nesting depth.</p><div class="ex">Input: s=&quot;(1+(2*3)+((8)/4))+1&quot;<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use a stack to track open parentheses.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>A single counter of open brackets.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Stack size equals the current depth, so a counter is enough.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxDepth(String s) {
+    int d = 0, max = 0;
+    for (char c : s.toCharArray()) {
+        if (c == &#x27;(&#x27;) max = Math.max(max, ++d);
+        else if (c == &#x27;)&#x27;) d--;
+    }
+    return max;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>depth = max = 0</li><li>&#x27;(&#x27; increments and updates max</li><li>&#x27;)&#x27; decrements</li></ol></div></div>
+</div></section><section class="problem" id="p136">
+<h2>Problem 136: Roman to Integer<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert roman numeral.</p><div class="ex">Input: s=&quot;MCMXCIV&quot;<br>Output:<pre class="out">1994</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Match fixed patterns with many ifs.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Map symbols to values; subtract when the next is larger.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Subtractive notation is exactly a smaller symbol before a larger one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int romanToInt(String s) {
+    Map&lt;Character, Integer&gt; m = Map.of(&#x27;I&#x27;, 1, &#x27;V&#x27;, 5, &#x27;X&#x27;, 10, &#x27;L&#x27;, 50, &#x27;C&#x27;, 100, &#x27;D&#x27;, 500, &#x27;M&#x27;, 1000);
+    int total = 0;
+    for (int i = 0; i &lt; s.length(); i++) {
+        int v = m.get(s.charAt(i));
+        if (i + 1 &lt; s.length() &amp;&amp; v &lt; m.get(s.charAt(i + 1))) total -= v; else total += v;
+    }
+    return total;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Value map</li><li>Add value</li><li>If next value is larger subtract instead</li></ol></div></div>
+</div></section><section class="problem" id="p137">
+<h2>Problem 137: Count Number of Substrings<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Total non-empty substrings.</p><div class="ex">Input: s=&quot;abc&quot;<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all substrings and count.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Formula n*(n+1)/2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A string of length n has n choose 2 + n start/end pairs.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countSubstrings(String s) {
+    int n = s.length();
+    return n * (n + 1) / 2;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>n = length</li><li>Return n*(n+1)/2</li></ol></div></div>
+</div></section><section class="problem" id="p138">
+<h2>Problem 138: Sort Characters by Frequency<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort by decreasing frequency.</p><div class="ex">Input: s=&quot;tree&quot;<br>Output:<pre class="out">&quot;eert&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count frequencies then selection-sort characters.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Frequency map and sort characters by count descending.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sorting distinct characters is cheaper than sorting the whole string.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String frequencySort(String s) {
+    Map&lt;Character, Integer&gt; m = new HashMap&lt;&gt;();
+    for (char c : s.toCharArray()) m.merge(c, 1, Integer::sum);
+    List&lt;Map.Entry&lt;Character, Integer&gt;&gt; l = new ArrayList&lt;&gt;(m.entrySet());
+    l.sort((a, b) -&gt; b.getValue() - a.getValue());
+    StringBuilder sb = new StringBuilder();
+    for (Map.Entry&lt;Character, Integer&gt; e : l)
+        for (int i = 0; i &lt; e.getValue(); i++) sb.append(e.getKey());
+    return sb.toString();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count with a map</li><li>Sort entries by count descending</li><li>Repeat each char by its count</li></ol></div></div>
+</div></section><section class="problem" id="p139">
+<h2>Problem 139: String to Integer (atoi)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Implement atoi with clamp.</p><div class="ex">Input: s=&quot;  -42&quot;<br>Output:<pre class="out">-42</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use library parsing with try/catch.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Manual parse with sign, digits and overflow clamp.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Clamping before overflow keeps results in int range.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int myAtoi(String s) {
+    int i = 0, n = s.length(), sign = 1;
+    while (i &lt; n &amp;&amp; s.charAt(i) == &#x27; &#x27;) i++;
+    if (i &lt; n &amp;&amp; (s.charAt(i) == &#x27;+&#x27; || s.charAt(i) == &#x27;-&#x27;)) sign = s.charAt(i++) == &#x27;-&#x27; ? -1 : 1;
+    long r = 0;
+    while (i &lt; n &amp;&amp; Character.isDigit(s.charAt(i))) {
+        r = r * 10 + (s.charAt(i++) - &#x27;0&#x27;);
+        if (r * sign &gt; Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        if (r * sign &lt; Integer.MIN_VALUE) return Integer.MIN_VALUE;
+    }
+    return (int) (r * sign);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Skip leading spaces</li><li>Read optional sign</li><li>Accumulate digits</li><li>Clamp to int limits</li></ol></div></div>
+</div></section><section class="problem" id="p140">
+<h2>Problem 140: Longest Palindromic Substring<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest palindromic substring.</p><div class="ex">Input: s=&quot;babad&quot;<br>Output:<pre class="out">&quot;bab&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every substring for palindrome, O(n^3).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Expand around each center.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A palindrome mirrors around its center, giving O(n^2).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String longestPalindrome(String s) {
+    int start = 0, best = 0;
+    for (int c = 0; c &lt; s.length(); c++) {
+        for (int w = 0; w &lt; 2; w++) {
+            int l = c, r = c + w;
+            while (l &gt;= 0 &amp;&amp; r &lt; s.length() &amp;&amp; s.charAt(l) == s.charAt(r)) { l--; r++; }
+            if (r - l - 1 &gt; best) { best = r - l - 1; start = l + 1; }
+        }
+    }
+    return s.substring(start, start + best);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each i try odd and even centers</li><li>Expand while chars match</li><li>Keep the longest</li></ol></div></div>
+</div></section><section class="problem" id="p141">
+<h2>Problem 141: Sum of Beauty of All Substrings<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Beauty = max freq - min freq per substring.</p><div class="ex">Input: s=&quot;aabcb&quot;<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute frequency of every substring from scratch.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>For each start extend the end while updating counts.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Updating counts incrementally avoids recomputation, O(26 n^2).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int beautySum(String s) {
+    int total = 0;
+    for (int i = 0; i &lt; s.length(); i++) {
+        int[] f = new int[26];
+        for (int j = i; j &lt; s.length(); j++) {
+            f[s.charAt(j) - &#x27;a&#x27;]++;
+            int max = 0, min = Integer.MAX_VALUE;
+            for (int x : f) if (x &gt; 0) { max = Math.max(max, x); min = Math.min(min, x); }
+            total += max - min;
+        }
+    }
+    return total;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each i reset counts</li><li>Extend j and update count</li><li>Beauty = max - min among non-zero counts</li></ol></div></div>
+</div></section><section class="problem" id="p142">
+<h2>Problem 142: Reverse Every Word in a String<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse letters in each word.</p><div class="ex">Input: s=&quot;Let&#x27;s take LeetCode&quot;<br>Output:<pre class="out">&quot;s&#x27;teL ekat edoCteeL&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Reverse the whole string and then reorder the words.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Split by space and reverse each word.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Reversing each word independently keeps the word order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String reverseEachWord(String s) {
+    String[] w = s.split(&quot; &quot;);
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i &lt; w.length; i++) {
+        sb.append(new StringBuilder(w[i]).reverse());
+        if (i + 1 &lt; w.length) sb.append(&#x27; &#x27;);
+    }
+    return sb.toString();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Split on spaces</li><li>Reverse every token with StringBuilder</li><li>Join with spaces</li></ol></div></div>
+</div></section></main></body></html>

@@ -1,0 +1,720 @@
+=== 51
+brute: Sort and take the last element.
+opt: One scan keeping the maximum.
+why: Every element is compared once so O(n).
+expl: max = arr[0] | Update max when a larger value appears | Return max
+code:
+public static int findLargest(int[] arr) {
+    int max = arr[0];
+    for (int x : arr) if (x > max) max = x;
+    return max;
+}
+=== 52
+brute: Sort and pick the second distinct from the end.
+opt: Single pass tracking largest and second largest.
+why: Strictly smaller than the largest and bigger than the current second keeps them distinct.
+expl: largest = MIN, second = -1 | If x > largest then second = largest, largest = x | Else if x < largest and x > second then second = x
+code:
+public static int secondLargest(int[] arr) {
+    int large = Integer.MIN_VALUE, second = -1;
+    for (int x : arr) {
+        if (x > large) { second = large == Integer.MIN_VALUE ? -1 : large; large = x; }
+        else if (x < large && x > second) second = x;
+    }
+    return second;
+}
+=== 53
+brute: Sort a copy and compare.
+opt: Check every adjacent pair.
+why: Non-decreasing order is exactly a[i] <= a[i+1] for all i.
+expl: Loop i from 1 | Return false if arr[i] < arr[i-1] | Return true
+code:
+public static boolean isSorted(int[] arr) {
+    for (int i = 1; i < arr.length; i++) if (arr[i] < arr[i - 1]) return false;
+    return true;
+}
+=== 54
+brute: Put elements in a LinkedHashSet and copy back.
+opt: Two pointers: i marks the last unique, j scans.
+why: Sorted order means duplicates are adjacent.
+expl: i = 0 | For each j, if arr[j] != arr[i] then arr[++i] = arr[j] | Return i+1
+code:
+public static int removeDuplicates(int[] arr) {
+    if (arr.length == 0) return 0;
+    int i = 0;
+    for (int j = 1; j < arr.length; j++)
+        if (arr[j] != arr[i]) arr[++i] = arr[j];
+    return i + 1;
+}
+=== 55
+brute: Copy into a temp array shifted by one.
+opt: Save the first element, shift the rest left, put it at the end.
+why: Only one element needs extra storage.
+expl: temp = arr[0] | Shift arr[1..] left | arr[n-1] = temp
+code:
+public static void rotateByOne(int[] arr) {
+    if (arr.length == 0) return;
+    int t = arr[0];
+    for (int i = 1; i < arr.length; i++) arr[i - 1] = arr[i];
+    arr[arr.length - 1] = t;
+}
+=== 56
+brute: Rotate by one, d times, O(n*d).
+opt: Reversal algorithm: reverse first d, reverse the rest, reverse all.
+why: Three reversals compose to a left rotation in O(n) and O(1) space.
+expl: d %= n | Reverse [0, d-1] | Reverse [d, n-1] | Reverse the whole array
+code:
+public static void rotateByD(int[] arr, int d) {
+    int n = arr.length;
+    if (n == 0) return;
+    d %= n;
+    reverse(arr, 0, d - 1);
+    reverse(arr, d, n - 1);
+    reverse(arr, 0, n - 1);
+}
+
+private static void reverse(int[] a, int l, int r) {
+    while (l < r) { int t = a[l]; a[l++] = a[r]; a[r--] = t; }
+}
+=== 57
+brute: Copy non-zeros to a temp list then pad with zeros.
+opt: Two pointers: write non-zero values forward, fill the rest with zeros.
+why: Non-zero order is preserved because we move forward only.
+expl: pos = 0 | Copy each non-zero to arr[pos++] | Fill the remainder with 0
+code:
+public static void moveZeros(int[] arr) {
+    int pos = 0;
+    for (int x : arr) if (x != 0) arr[pos++] = x;
+    while (pos < arr.length) arr[pos++] = 0;
+}
+=== 58
+brute: Linear scan is already the baseline.
+opt: Scan and return the first index that matches.
+why: Unsorted data allows no faster approach than O(n).
+expl: Loop through the array | Return the index when equal | Return -1 at the end
+code:
+public static int linearSearch(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++) if (arr[i] == target) return i;
+    return -1;
+}
+=== 59
+brute: Put both arrays in a TreeSet.
+opt: Merge with two pointers, skipping duplicates.
+why: Both arrays are sorted, so the merged output is sorted with O(n+m).
+expl: Compare a[i] and b[j] | Add the smaller if it differs from the last added | Advance that pointer | Drain the leftovers
+code:
+public static List<Integer> unionSorted(int[] a, int[] b) {
+    List<Integer> r = new ArrayList<>();
+    int i = 0, j = 0;
+    while (i < a.length || j < b.length) {
+        int v;
+        if (j >= b.length || (i < a.length && a[i] <= b[j])) v = a[i++];
+        else v = b[j++];
+        if (r.isEmpty() || r.get(r.size() - 1) != v) r.add(v);
+    }
+    return r;
+}
+=== 60
+brute: For each element of a search in b.
+opt: Two pointers over the sorted arrays.
+why: Equal elements are matched once; the smaller side advances otherwise.
+expl: i = j = 0 | If equal add and advance both | Else advance the pointer with smaller value
+code:
+public static List<Integer> intersection(int[] a, int[] b) {
+    List<Integer> r = new ArrayList<>();
+    int i = 0, j = 0;
+    while (i < a.length && j < b.length) {
+        if (a[i] == b[j]) { r.add(a[i]); i++; j++; }
+        else if (a[i] < b[j]) i++;
+        else j++;
+    }
+    return r;
+}
+=== 61
+brute: For each number 1..n check if it exists, O(n^2).
+opt: Expected sum n(n+1)/2 minus actual sum (or XOR).
+why: The only number absent from the sum is the missing one.
+expl: expected = n*(n+1)/2 | actual = sum of array | Return the difference
+code:
+public static int missingNumber(int[] arr, int n) {
+    long expected = (long) n * (n + 1) / 2, sum = 0;
+    for (int x : arr) sum += x;
+    return (int) (expected - sum);
+}
+=== 62
+brute: Check every subarray for all ones.
+opt: Keep a running count that resets on 0.
+why: A run of ones is broken only by a zero.
+expl: cur = best = 0 | If 1 increment cur else reset | best = max(best, cur)
+code:
+public static int maxConsecutiveOnes(int[] arr) {
+    int cur = 0, best = 0;
+    for (int x : arr) {
+        cur = x == 1 ? cur + 1 : 0;
+        best = Math.max(best, cur);
+    }
+    return best;
+}
+=== 63
+brute: Count each element with nested loops.
+opt: XOR all elements.
+why: a ^ a = 0 and 0 ^ x = x, so pairs cancel and the single remains.
+expl: res = 0 | XOR every element | Return res
+code:
+public static int singleNumber(int[] arr) {
+    int x = 0;
+    for (int v : arr) x ^= v;
+    return x;
+}
+=== 64
+brute: Try all pairs, O(n^2).
+opt: HashMap of value to index; look up target - x.
+why: Each element needs one O(1) lookup for its complement.
+expl: For each i compute need = target - arr[i] | If need is in the map return both indices | Otherwise store arr[i] -> i
+code:
+public static int[] twoSum(int[] arr, int target) {
+    Map<Integer, Integer> m = new HashMap<>();
+    for (int i = 0; i < arr.length; i++) {
+        Integer j = m.get(target - arr[i]);
+        if (j != null) return new int[]{j, i};
+        m.put(arr[i], i);
+    }
+    return new int[]{-1, -1};
+}
+=== 65
+brute: Merge into a temp array then split.
+opt: Swap from the ends then sort both (or gap method).
+why: Comparing a's largest with b's smallest moves each misplaced element across until arrays are partitioned.
+expl: i = n-1, j = 0 | While a[i] > b[j] swap and move inward | Sort both arrays
+code:
+public static void mergeSortedInPlace(int[] a, int[] b) {
+    int i = a.length - 1, j = 0;
+    while (i >= 0 && j < b.length && a[i] > b[j]) {
+        int t = a[i]; a[i] = b[j]; b[j] = t;
+        i--; j++;
+    }
+    Arrays.sort(a);
+    Arrays.sort(b);
+}
+=== 66
+brute: Build the whole triangle up to row r.
+opt: nCr formula with r-1 choose c-1 computed iteratively.
+why: Multiplying and dividing step by step avoids factorials and overflow for small inputs.
+expl: n = r-1, k = c-1 | res = 1 | For i in 0..k-1 res = res*(n-i)/(i+1)
+code:
+public static int pascalElement(int r, int c) {
+    int n = r - 1, k = c - 1;
+    long res = 1;
+    for (int i = 0; i < k; i++) res = res * (n - i) / (i + 1);
+    return (int) res;
+}
+=== 67
+brute: Check all subarrays, O(n^2).
+opt: Sliding window since all values are positive.
+why: Shrinking from the left lowers the sum, expanding raises it, so each element enters and leaves once.
+expl: Expand right and add | While sum > k shrink left | If sum == k update max length
+code:
+public static int longestSubarrayPositive(int[] arr, int k) {
+    int l = 0, best = 0;
+    long sum = 0;
+    for (int r = 0; r < arr.length; r++) {
+        sum += arr[r];
+        while (sum > k && l <= r) sum -= arr[l++];
+        if (sum == k) best = Math.max(best, r - l + 1);
+    }
+    return best;
+}
+=== 68
+brute: Check all subarrays, O(n^2).
+opt: Prefix sum with a HashMap of first occurrence.
+why: Subarray (i, j] sums to k when prefix[j] - prefix[i] = k; the earliest i gives the longest length.
+expl: Keep running sum | If sum == k update length | Look up sum-k in the map | Store sum only if absent
+code:
+public static int longestSubarrayWithSumK(int[] arr, int k) {
+    Map<Long, Integer> first = new HashMap<>();
+    long sum = 0;
+    int best = 0;
+    for (int i = 0; i < arr.length; i++) {
+        sum += arr[i];
+        if (sum == k) best = i + 1;
+        Integer j = first.get(sum - k);
+        if (j != null) best = Math.max(best, i - j);
+        first.putIfAbsent(sum, i);
+    }
+    return best;
+}
+=== 69
+brute: Sort the array.
+opt: Dutch National Flag with low, mid, high.
+why: Zeros go to the front, twos to the back, ones remain in the middle in one pass.
+expl: low = mid = 0, high = n-1 | 0 swaps with low | 2 swaps with high | 1 moves mid
+code:
+public static void sortColors(int[] arr) {
+    int lo = 0, mid = 0, hi = arr.length - 1;
+    while (mid <= hi) {
+        if (arr[mid] == 0) { int t = arr[lo]; arr[lo++] = arr[mid]; arr[mid++] = t; }
+        else if (arr[mid] == 1) mid++;
+        else { int t = arr[hi]; arr[hi--] = arr[mid]; arr[mid] = t; }
+    }
+}
+=== 70
+brute: Count every element with a nested loop.
+opt: Boyer-Moore voting.
+why: The majority element survives cancellation with all other elements.
+expl: cand = none, count = 0 | If count == 0 pick current as candidate | Same increments else decrements | Return the candidate
+code:
+public static int majorityElement(int[] arr) {
+    int cand = 0, count = 0;
+    for (int x : arr) {
+        if (count == 0) cand = x;
+        count += x == cand ? 1 : -1;
+    }
+    return cand;
+}
+=== 71
+brute: Sum every subarray, O(n^2).
+opt: Kadane: extend the current sum or restart at x.
+why: A negative running sum can never help a later subarray.
+expl: cur = best = arr[0] | cur = max(x, cur + x) | best = max(best, cur)
+code:
+public static int maxSubarraySum(int[] arr) {
+    int cur = arr[0], best = arr[0];
+    for (int i = 1; i < arr.length; i++) {
+        cur = Math.max(arr[i], cur + arr[i]);
+        best = Math.max(best, cur);
+    }
+    return best;
+}
+=== 72
+brute: Check every subarray and track the best.
+opt: Kadane with start index tracking.
+why: When the sum resets, the new subarray begins at the current index.
+expl: Track start of the current run | On reset update start | When best improves record start and end | Copy the range
+code:
+public static int[] maxSubarray(int[] arr) {
+    int cur = 0, best = Integer.MIN_VALUE, start = 0, bs = 0, be = 0;
+    for (int i = 0; i < arr.length; i++) {
+        if (cur <= 0) { cur = arr[i]; start = i; } else cur += arr[i];
+        if (cur > best) { best = cur; bs = start; be = i; }
+    }
+    return Arrays.copyOfRange(arr, bs, be + 1);
+}
+=== 73
+brute: Try every buy and sell pair.
+opt: Track the minimum price so far and best difference.
+why: The best sell on day i uses the cheapest earlier buy.
+expl: min = prices[0] | profit = max(profit, price - min) | min = min(min, price)
+code:
+public static int maxProfit(int[] prices) {
+    int min = Integer.MAX_VALUE, best = 0;
+    for (int p : prices) {
+        min = Math.min(min, p);
+        best = Math.max(best, p - min);
+    }
+    return best;
+}
+=== 74
+brute: Separate positives and negatives then merge alternately.
+opt: Same idea with two index pointers writing into a result array.
+why: Positives go to even positions and negatives to odd positions as they appear.
+expl: pos = 0, neg = 1 | Place each element at the matching pointer | Advance pointer by 2
+code:
+public static int[] rearrangeBySign(int[] arr) {
+    int[] res = new int[arr.length];
+    int pos = 0, neg = 1;
+    for (int x : arr) {
+        if (x > 0) { res[pos] = x; pos += 2; }
+        else { res[neg] = x; neg += 2; }
+    }
+    return res;
+}
+=== 75
+brute: Same as the equal-count case with checks.
+opt: Collect positives and negatives separately, interleave, append leftovers.
+why: Order is preserved within each sign group.
+expl: Split into pos and neg lists | Interleave while both have items | Append the remaining items
+code:
+public static int[] rearrangeBySignUnequal(int[] arr) {
+    List<Integer> pos = new ArrayList<>(), neg = new ArrayList<>();
+    for (int x : arr) (x > 0 ? pos : neg).add(x);
+    int[] res = new int[arr.length];
+    int i = 0, p = 0, n = 0;
+    while (p < pos.size() && n < neg.size()) { res[i++] = pos.get(p++); res[i++] = neg.get(n++); }
+    while (p < pos.size()) res[i++] = pos.get(p++);
+    while (n < neg.size()) res[i++] = neg.get(n++);
+    return res;
+}
+=== 76
+brute: Generate all permutations and pick the next.
+opt: Find pivot, swap with next larger on the right, reverse suffix.
+why: The suffix after the pivot is non-increasing, so reversing gives the smallest suffix.
+expl: Find the last i with a[i] < a[i+1] | Find the last j > i with a[j] > a[i] | Swap | Reverse a[i+1..]
+code:
+public static void nextPermutation(int[] arr) {
+    int n = arr.length, i = n - 2;
+    while (i >= 0 && arr[i] >= arr[i + 1]) i--;
+    if (i >= 0) {
+        int j = n - 1;
+        while (arr[j] <= arr[i]) j--;
+        int t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    for (int l = i + 1, r = n - 1; l < r; l++, r--) { int t = arr[l]; arr[l] = arr[r]; arr[r] = t; }
+}
+=== 77
+brute: For each element check everything on its right.
+opt: Scan from the right keeping the maximum so far.
+why: An element is a leader iff it is greater than the max to its right.
+expl: max = MIN | Walk i from n-1 to 0 | If arr[i] > max add and update | Reverse to restore order
+code:
+public static List<Integer> leaders(int[] arr) {
+    List<Integer> r = new ArrayList<>();
+    int max = Integer.MIN_VALUE;
+    for (int i = arr.length - 1; i >= 0; i--) {
+        if (arr[i] > max) { r.add(arr[i]); max = arr[i]; }
+    }
+    Collections.reverse(r);
+    return r;
+}
+=== 78
+brute: Sort and count runs, O(n log n).
+opt: Put values in a HashSet and extend only from sequence starts.
+why: Starting only where x-1 is absent makes each element visited at most twice.
+expl: Insert all into a set | For x with no x-1 start counting upward | Track the longest
+code:
+public static int longestConsecutive(int[] arr) {
+    Set<Integer> s = new HashSet<>();
+    for (int x : arr) s.add(x);
+    int best = 0;
+    for (int x : s) {
+        if (!s.contains(x - 1)) {
+            int y = x;
+            while (s.contains(y + 1)) y++;
+            best = Math.max(best, y - x + 1);
+        }
+    }
+    return best;
+}
+=== 79
+brute: Copy the matrix and mark rows/cols for each zero.
+opt: Use first row and column as markers.
+why: Markers avoid extra arrays, giving O(1) space.
+expl: Record if first row/col has a zero | Mark rows/cols in first row/col | Zero out marked cells | Fix first row/col
+code:
+public static void setZeroes(int[][] matrix) {
+    int m = matrix.length, n = matrix[0].length;
+    boolean r0 = false, c0 = false;
+    for (int j = 0; j < n; j++) if (matrix[0][j] == 0) r0 = true;
+    for (int i = 0; i < m; i++) if (matrix[i][0] == 0) c0 = true;
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            if (matrix[i][j] == 0) { matrix[i][0] = 0; matrix[0][j] = 0; }
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            if (matrix[i][0] == 0 || matrix[0][j] == 0) matrix[i][j] = 0;
+    if (r0) for (int j = 0; j < n; j++) matrix[0][j] = 0;
+    if (c0) for (int i = 0; i < m; i++) matrix[i][0] = 0;
+}
+=== 80
+brute: Use a second matrix: res[j][n-1-i] = a[i][j].
+opt: Transpose then reverse each row.
+why: Transpose swaps axes; reversing rows turns it into a clockwise rotation.
+expl: Swap a[i][j] with a[j][i] for j > i | Reverse each row
+code:
+public static void rotateMatrix(int[][] matrix) {
+    int n = matrix.length;
+    for (int i = 0; i < n; i++)
+        for (int j = i + 1; j < n; j++) {
+            int t = matrix[i][j]; matrix[i][j] = matrix[j][i]; matrix[j][i] = t;
+        }
+    for (int[] row : matrix)
+        for (int l = 0, r = n - 1; l < r; l++, r--) { int t = row[l]; row[l] = row[r]; row[r] = t; }
+}
+=== 81
+brute: Mark visited cells in a boolean matrix.
+opt: Shrink four boundaries after each side.
+why: Each layer is walked once so every cell is visited once.
+expl: top, bottom, left, right | Walk right, down, left, up | Move boundaries inward after each side
+code:
+public static List<Integer> spiralOrder(int[][] matrix) {
+    List<Integer> r = new ArrayList<>();
+    int t = 0, b = matrix.length - 1, l = 0, rt = matrix[0].length - 1;
+    while (t <= b && l <= rt) {
+        for (int j = l; j <= rt; j++) r.add(matrix[t][j]);
+        t++;
+        for (int i = t; i <= b; i++) r.add(matrix[i][rt]);
+        rt--;
+        if (t <= b) { for (int j = rt; j >= l; j--) r.add(matrix[b][j]); b--; }
+        if (l <= rt) { for (int i = b; i >= t; i--) r.add(matrix[i][l]); l++; }
+    }
+    return r;
+}
+=== 82
+brute: Check all subarrays, O(n^2).
+opt: Prefix sum with a frequency map.
+why: Each earlier prefix equal to sum-k forms a valid subarray ending here.
+expl: map[0] = 1 | sum += x | count += map[sum-k] | map[sum]++
+code:
+public static int subarraySum(int[] arr, int k) {
+    Map<Integer, Integer> m = new HashMap<>();
+    m.put(0, 1);
+    int sum = 0, count = 0;
+    for (int x : arr) {
+        sum += x;
+        count += m.getOrDefault(sum - k, 0);
+        m.merge(sum, 1, Integer::sum);
+    }
+    return count;
+}
+=== 83
+brute: Compute every element with nCr using factorials.
+opt: Build each row from the previous row.
+why: Each inner value is the sum of the two values above it.
+expl: Row starts and ends with 1 | Inner value = prev[j-1] + prev[j] | Append rows to the result
+code:
+public static List<List<Integer>> pascalTriangle(int n) {
+    List<List<Integer>> res = new ArrayList<>();
+    for (int i = 0; i < n; i++) {
+        List<Integer> row = new ArrayList<>();
+        for (int j = 0; j <= i; j++)
+            row.add(j == 0 || j == i ? 1 : res.get(i - 1).get(j - 1) + res.get(i - 1).get(j));
+        res.add(row);
+    }
+    return res;
+}
+=== 84
+brute: Three loops with a set for uniqueness, O(n^3).
+opt: Sort then fix one element and use two pointers.
+why: Sorted order lets pointers move based on the sum and skip duplicates easily.
+expl: Sort | For each i skip duplicates | Two pointers l and r on the rest | Move based on sum and skip duplicates
+code:
+public static List<List<Integer>> threeSum(int[] arr) {
+    Arrays.sort(arr);
+    List<List<Integer>> res = new ArrayList<>();
+    for (int i = 0; i < arr.length - 2; i++) {
+        if (i > 0 && arr[i] == arr[i - 1]) continue;
+        int l = i + 1, r = arr.length - 1;
+        while (l < r) {
+            int s = arr[i] + arr[l] + arr[r];
+            if (s == 0) {
+                res.add(Arrays.asList(arr[i], arr[l], arr[r]));
+                l++; r--;
+                while (l < r && arr[l] == arr[l - 1]) l++;
+                while (l < r && arr[r] == arr[r + 1]) r--;
+            } else if (s < 0) l++;
+            else r--;
+        }
+    }
+    return res;
+}
+=== 85
+brute: Four loops, O(n^4).
+opt: Sort, two fixed loops, two pointers.
+why: Reduces to two-sum on the sorted tail, giving O(n^3).
+expl: Sort | Fix i and j skipping duplicates | Two pointers on the rest using long sums | Skip duplicates after a hit
+code:
+public static List<List<Integer>> fourSum(int[] arr, int target) {
+    Arrays.sort(arr);
+    int n = arr.length;
+    List<List<Integer>> res = new ArrayList<>();
+    for (int i = 0; i < n - 3; i++) {
+        if (i > 0 && arr[i] == arr[i - 1]) continue;
+        for (int j = i + 1; j < n - 2; j++) {
+            if (j > i + 1 && arr[j] == arr[j - 1]) continue;
+            int l = j + 1, r = n - 1;
+            while (l < r) {
+                long s = (long) arr[i] + arr[j] + arr[l] + arr[r];
+                if (s == target) {
+                    res.add(Arrays.asList(arr[i], arr[j], arr[l], arr[r]));
+                    l++; r--;
+                    while (l < r && arr[l] == arr[l - 1]) l++;
+                    while (l < r && arr[r] == arr[r + 1]) r--;
+                } else if (s < target) l++;
+                else r--;
+            }
+        }
+    }
+    return res;
+}
+=== 86
+brute: Check all subarrays.
+opt: Prefix sum; repeated prefix means a zero-sum subarray.
+why: Equal prefixes at i and j mean elements between sum to zero.
+expl: Store first index of each prefix | If sum seen before, update length | Treat sum 0 as index -1
+code:
+public static int longestZeroSumSubarray(int[] arr) {
+    Map<Integer, Integer> first = new HashMap<>();
+    first.put(0, -1);
+    int sum = 0, best = 0;
+    for (int i = 0; i < arr.length; i++) {
+        sum += arr[i];
+        if (first.containsKey(sum)) best = Math.max(best, i - first.get(sum));
+        else first.put(sum, i);
+    }
+    return best;
+}
+=== 87
+brute: Compare every pair of intervals.
+opt: Sort by start and merge in one pass.
+why: After sorting, an interval can only overlap the last merged one.
+expl: Sort by start | If start <= last end extend the end | Else start a new interval
+code:
+public static int[][] mergeIntervals(int[][] intervals) {
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+    List<int[]> res = new ArrayList<>();
+    for (int[] in : intervals) {
+        if (res.isEmpty() || res.get(res.size() - 1)[1] < in[0]) res.add(new int[]{in[0], in[1]});
+        else res.get(res.size() - 1)[1] = Math.max(res.get(res.size() - 1)[1], in[1]);
+    }
+    return res.toArray(new int[0][]);
+}
+=== 88
+brute: Build the whole triangle.
+opt: Generate the row from the previous element: next = prev * (n-i) / i.
+why: C(n-1, i) = C(n-1, i-1) * (n-i) / i.
+expl: Start with 1 | For i from 1 to n-1 multiply and divide | Add to the row
+code:
+public static List<Integer> pascalRow(int n) {
+    List<Integer> row = new ArrayList<>();
+    long v = 1;
+    row.add(1);
+    for (int i = 1; i < n; i++) {
+        v = v * (n - i) / i;
+        row.add((int) v);
+    }
+    return row;
+}
+=== 89
+brute: Scan every cell.
+opt: Treat the matrix as one sorted array and binary search.
+why: mid maps to row mid/m and column mid%m since rows chain in order.
+expl: lo = 0, hi = n*m-1 | mid element = matrix[mid/m][mid%m] | Narrow based on comparison
+code:
+public static boolean searchMatrix(int[][] matrix, int target) {
+    int n = matrix.length, m = matrix[0].length, lo = 0, hi = n * m - 1;
+    while (lo <= hi) {
+        int mid = (lo + hi) >>> 1, v = matrix[mid / m][mid % m];
+        if (v == target) return true;
+        if (v < target) lo = mid + 1; else hi = mid - 1;
+    }
+    return false;
+}
+=== 90
+brute: Count each element, O(n^2).
+opt: Extended Boyer-Moore with two candidates.
+why: At most two elements can exceed n/3 occurrences.
+expl: Keep two candidates and counts | Update using voting rules | Verify counts of both candidates
+code:
+public static List<Integer> majorityElementII(int[] arr) {
+    int c1 = 0, c2 = 1, n1 = 0, n2 = 0;
+    for (int x : arr) {
+        if (x == c1) n1++;
+        else if (x == c2) n2++;
+        else if (n1 == 0) { c1 = x; n1 = 1; }
+        else if (n2 == 0) { c2 = x; n2 = 1; }
+        else { n1--; n2--; }
+    }
+    n1 = n2 = 0;
+    for (int x : arr) { if (x == c1) n1++; else if (x == c2) n2++; }
+    List<Integer> r = new ArrayList<>();
+    if (n1 > arr.length / 3) r.add(c1);
+    if (n2 > arr.length / 3) r.add(c2);
+    return r;
+}
+=== 91
+brute: XOR every subarray, O(n^2).
+opt: Prefix XOR with a frequency map.
+why: Subarray XOR equals prefix[j] ^ prefix[i]; need prefix[i] = prefix[j] ^ k.
+expl: map[0] = 1 | xr ^= x | count += map[xr ^ k] | map[xr]++
+code:
+public static int subarraysWithXorK(int[] arr, int k) {
+    Map<Integer, Integer> m = new HashMap<>();
+    m.put(0, 1);
+    int xr = 0, count = 0;
+    for (int x : arr) {
+        xr ^= x;
+        count += m.getOrDefault(xr ^ k, 0);
+        m.merge(xr, 1, Integer::sum);
+    }
+    return count;
+}
+=== 92
+brute: Count every number 1..n.
+opt: Math with sum and sum of squares, or a frequency array.
+why: Frequency array shows the number with 2 occurrences and the one with 0.
+expl: Count occurrences in an array | Value with count 2 is repeating | Value with count 0 is missing
+code:
+public static int[] repeatingAndMissing(int[] arr) {
+    int n = arr.length;
+    int[] cnt = new int[n + 1];
+    for (int x : arr) cnt[x]++;
+    int rep = -1, miss = -1;
+    for (int i = 1; i <= n; i++) {
+        if (cnt[i] == 2) rep = i;
+        else if (cnt[i] == 0) miss = i;
+    }
+    return new int[]{rep, miss};
+}
+=== 93
+brute: Compare every pair, O(n^2).
+opt: Modified merge sort counting while merging.
+why: When a right element goes first, all remaining left elements form inversions with it.
+expl: Split | Count in each half | During merge if right < left add mid-i+1 | Merge
+code:
+public static long countInversions(int[] arr) {
+    return sort(arr.clone(), 0, arr.length - 1);
+}
+
+private static long sort(int[] a, int lo, int hi) {
+    if (lo >= hi) return 0;
+    int mid = (lo + hi) / 2;
+    long c = sort(a, lo, mid) + sort(a, mid + 1, hi);
+    int[] t = new int[hi - lo + 1];
+    int i = lo, j = mid + 1, k = 0;
+    while (i <= mid && j <= hi) {
+        if (a[i] <= a[j]) t[k++] = a[i++];
+        else { c += mid - i + 1; t[k++] = a[j++]; }
+    }
+    while (i <= mid) t[k++] = a[i++];
+    while (j <= hi) t[k++] = a[j++];
+    System.arraycopy(t, 0, a, lo, t.length);
+    return c;
+}
+=== 94
+brute: Check all pairs, O(n^2).
+opt: Merge sort; count pairs before merging with two pointers.
+why: Both halves are sorted so a pointer on the right only moves forward.
+expl: Sort each half | For each left element advance j while a[i] > 2*a[j] | Add j - (mid+1) | Merge normally
+code:
+public static int reversePairs(int[] arr) {
+    return sort(arr.clone(), 0, arr.length - 1);
+}
+
+private static int sort(int[] a, int lo, int hi) {
+    if (lo >= hi) return 0;
+    int mid = (lo + hi) / 2;
+    int c = sort(a, lo, mid) + sort(a, mid + 1, hi);
+    int j = mid + 1;
+    for (int i = lo; i <= mid; i++) {
+        while (j <= hi && (long) a[i] > 2L * a[j]) j++;
+        c += j - (mid + 1);
+    }
+    Arrays.sort(a, lo, hi + 1);
+    return c;
+}
+=== 95
+brute: Multiply every subarray, O(n^2).
+opt: Track both max and min product ending here.
+why: A negative number can turn the minimum into the maximum.
+expl: curMax, curMin, best = arr[0] | On negative swap max and min | Update with x or x*prev | best = max(best, curMax)
+code:
+public static int maxProductSubarray(int[] arr) {
+    int max = arr[0], min = arr[0], best = arr[0];
+    for (int i = 1; i < arr.length; i++) {
+        int x = arr[i];
+        if (x < 0) { int t = max; max = min; min = t; }
+        max = Math.max(x, max * x);
+        min = Math.min(x, min * x);
+        best = Math.max(best, max);
+    }
+    return best;
+}

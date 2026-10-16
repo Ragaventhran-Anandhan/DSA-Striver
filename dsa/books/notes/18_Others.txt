@@ -1,0 +1,230 @@
+=== 464
+brute: Count each element with a map.
+opt: Boyer-Moore voting.
+why: The majority element survives cancellation against all other elements.
+expl: Candidate and count | If count == 0 take the current element | Same increments, different decrements
+code:
+public static int majorityMoore(int[] arr) {
+    int cand = 0, count = 0;
+    for (int x : arr) {
+        if (count == 0) cand = x;
+        count += x == cand ? 1 : -1;
+    }
+    return cand;
+}
+=== 465
+brute: Flatten and sort.
+opt: Binary search on the value using row/column sorted counting.
+why: Counting elements <= mid is O(n) with the staircase walk, so the search is O(n log range).
+expl: lo = top-left, hi = bottom-right | Count elements <= mid | If count < k move lo else hi
+code:
+public static int kthSmallestMatrix(int[][] matrix, int k) {
+    int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1];
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 0, j = n - 1;
+        for (int i = 0; i < n; i++) {
+            while (j >= 0 && matrix[i][j] > mid) j--;
+            cnt += j + 1;
+        }
+        if (cnt < k) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}
+=== 466
+brute: Multiply x, n times.
+opt: Fast exponentiation by squaring.
+why: Halving the exponent each step gives O(log n).
+expl: Use long to handle Integer.MIN_VALUE | If n < 0 invert x | Square x and halve n, multiplying when n is odd
+code:
+public static double myPow(double x, int n) {
+    long e = n;
+    if (e < 0) { x = 1 / x; e = -e; }
+    double res = 1;
+    while (e > 0) {
+        if ((e & 1) == 1) res *= x;
+        x *= x;
+        e >>= 1;
+    }
+    return res;
+}
+=== 467
+brute: Enumerate titles until the match.
+opt: Treat the title as a base-26 number.
+why: Each letter is a digit 1..26.
+expl: res = 0 | For each char res = res * 26 + (c - 'A' + 1)
+code:
+public static int titleToNumber(String col) {
+    int res = 0;
+    for (char c : col.toCharArray()) res = res * 26 + (c - 'A' + 1);
+    return res;
+}
+=== 468
+brute: Build by backtracking and check one-bit differences.
+opt: Formula i ^ (i >> 1).
+why: Adjacent integers differ in a single bit after this transform.
+expl: For i in 0..2^n-1 | Add i ^ (i >> 1)
+code:
+public static List<Integer> grayCode(int n) {
+    List<Integer> res = new ArrayList<>();
+    for (int i = 0; i < (1 << n); i++) res.add(i ^ (i >> 1));
+    return res;
+}
+=== 469
+brute: Recheck rows, columns and boxes separately.
+opt: One pass with row, column and box sets.
+why: A repeated digit in any of the three groups invalidates the board.
+expl: Skip '.' | Build keys for row, column and box | If a key is already seen return false
+code:
+public static boolean isValidSudoku(char[][] board) {
+    Set<String> seen = new HashSet<>();
+    for (int i = 0; i < 9; i++)
+        for (int j = 0; j < 9; j++) {
+            char c = board[i][j];
+            if (c == '.') continue;
+            if (!seen.add(c + " in row " + i) || !seen.add(c + " in col " + j) || !seen.add(c + " in box " + i / 3 + "-" + j / 3))
+                return false;
+        }
+    return true;
+}
+=== 470
+brute: Fill with a direction array and visited matrix.
+opt: Shrinking boundaries, same as spiral traversal.
+why: Each layer is filled once in four passes.
+expl: top, bottom, left, right | Fill right, down, left, up | Move the boundaries inward
+code:
+public static int[][] generateMatrix(int n) {
+    int[][] m = new int[n][n];
+    int t = 0, b = n - 1, l = 0, r = n - 1, v = 1;
+    while (t <= b && l <= r) {
+        for (int j = l; j <= r; j++) m[t][j] = v++;
+        t++;
+        for (int i = t; i <= b; i++) m[i][r] = v++;
+        r--;
+        for (int j = r; j >= l && t <= b; j--) m[b][j] = v++;
+        b--;
+        for (int i = b; i >= t && l <= r; i--) m[i][l] = v++;
+        l++;
+    }
+    return m;
+}
+=== 471
+brute: For each index multiply all others, O(n^2).
+opt: Prefix product pass then suffix product pass.
+why: Product except self = product of everything before times everything after.
+expl: res[i] = product of prefix | Walk from the right with a running suffix product | Multiply into res
+code:
+public static int[] productExceptSelf(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    res[0] = 1;
+    for (int i = 1; i < n; i++) res[i] = res[i - 1] * arr[i - 1];
+    int suffix = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        res[i] *= suffix;
+        suffix *= arr[i];
+    }
+    return res;
+}
+=== 472
+brute: Check every pair of lines.
+opt: Two pointers moving the shorter line inward.
+why: The width shrinks every step, so only a taller line can improve the area.
+expl: l = 0, r = n-1 | area = min(h[l], h[r]) * (r - l) | Move the pointer at the shorter line
+code:
+public static int maxArea(int[] height) {
+    int l = 0, r = height.length - 1, best = 0;
+    while (l < r) {
+        best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
+        if (height[l] < height[r]) l++; else r--;
+    }
+    return best;
+}
+=== 473
+brute: BFS/DP over all jumps, O(n^2).
+opt: Greedy window with the current end and farthest reach.
+why: Each time the current range ends we must jump once more to the farthest reachable position.
+expl: jumps = 0, end = 0, far = 0 | far = max(far, i + arr[i]) | When i == end jumps++, end = far | Return -1 if far cannot advance
+code:
+public static int minJumpsToEnd(int[] arr) {
+    int n = arr.length, jumps = 0, end = 0, far = 0;
+    for (int i = 0; i < n - 1; i++) {
+        far = Math.max(far, i + arr[i]);
+        if (i == end) {
+            if (far <= i) return -1;
+            jumps++;
+            end = far;
+        }
+    }
+    return jumps;
+}
+=== 474
+brute: Count every element with a map and filter.
+opt: Generalized Boyer-Moore with k-1 candidates, then verify.
+why: At most k-1 values can occur more than n/k times.
+expl: Keep up to k-1 candidate counts | Decrement all when full and the new value is not a candidate | Recount candidates and keep those above n/k
+code:
+public static List<Integer> majorityKth(int[] arr, int k) {
+    Map<Integer, Integer> cand = new HashMap<>();
+    for (int x : arr) {
+        if (cand.containsKey(x)) cand.merge(x, 1, Integer::sum);
+        else if (cand.size() < k - 1) cand.put(x, 1);
+        else {
+            Iterator<Map.Entry<Integer, Integer>> it = cand.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Integer, Integer> e = it.next();
+                if (e.getValue() == 1) it.remove(); else e.setValue(e.getValue() - 1);
+            }
+        }
+    }
+    Map<Integer, Integer> cnt = new HashMap<>();
+    for (int x : arr) if (cand.containsKey(x)) cnt.merge(x, 1, Integer::sum);
+    List<Integer> res = new ArrayList<>();
+    for (Map.Entry<Integer, Integer> e : cnt.entrySet()) if (e.getValue() > arr.length / k) res.add(e.getKey());
+    Collections.sort(res);
+    return res;
+}
+=== 475
+brute: Flatten, sort and take the middle.
+opt: Binary search on the value with a per-row upper bound.
+why: The median is the smallest value with at least (n*m+1)/2 elements <= it.
+expl: lo = min of first column, hi = max of last column | Count elements <= mid in each row by binary search | Adjust the range
+code:
+public static int medianRowWise(int[][] matrix) {
+    int n = matrix.length, m = matrix[0].length, lo = Integer.MAX_VALUE, hi = Integer.MIN_VALUE;
+    for (int[] r : matrix) { lo = Math.min(lo, r[0]); hi = Math.max(hi, r[m - 1]); }
+    int need = (n * m + 1) / 2;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 0;
+        for (int[] r : matrix) {
+            int l = 0, h = m;
+            while (l < h) { int x = (l + h) / 2; if (r[x] <= mid) l = x + 1; else h = x; }
+            cnt += l;
+        }
+        if (cnt < need) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}
+=== 476
+brute: Try all n! city orders.
+opt: Bitmask DP: dp[mask][i] = cheapest way to visit mask ending at i.
+why: Subproblems are shared, giving O(n^2 * 2^n).
+expl: dp[1][0] = 0 | For each mask and last city i try each unvisited j | dp[mask | 1<<j][j] = min(dp[mask][i] + dist[i][j]) | Close the tour back to city 0
+code:
+public static int tspBitmask(int[][] dist) {
+    int n = dist.length, INF = Integer.MAX_VALUE / 2;
+    int[][] dp = new int[1 << n][n];
+    for (int[] r : dp) Arrays.fill(r, INF);
+    dp[1][0] = 0;
+    for (int mask = 1; mask < (1 << n); mask++)
+        for (int i = 0; i < n; i++) {
+            if (dp[mask][i] >= INF || (mask & (1 << i)) == 0) continue;
+            for (int j = 0; j < n; j++) {
+                if ((mask & (1 << j)) != 0) continue;
+                int nm = mask | (1 << j);
+                dp[nm][j] = Math.min(dp[nm][j], dp[mask][i] + dist[i][j]);
+            }
+        }
+    int best = INF;
+    for (int i = 1; i < n; i++) best = Math.min(best, dp[(1 << n) - 1][i] + dist[i][0]);
+    return best;
+}

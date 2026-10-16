@@ -1,0 +1,723 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01 - Basics</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>01 - Basics</h1></header><main><nav class="toc"><a href="#p1">1. Pattern 1 - Square of stars</a><a href="#p2">2. Pattern 2 - Right triangle of stars</a><a href="#p3">3. Pattern 3 - Right triangle of numbers</a><a href="#p4">4. Pattern 4 - Row number triangle</a><a href="#p5">5. Pattern 5 - Inverted star triangle</a><a href="#p6">6. Pattern 6 - Inverted number triangle</a><a href="#p7">7. Pattern 7 - Star pyramid</a><a href="#p8">8. Pattern 8 - Inverted star pyramid</a><a href="#p9">9. Pattern 9 - Diamond</a><a href="#p10">10. Pattern 10 - Half diamond</a><a href="#p11">11. Pattern 11 - Binary triangle</a><a href="#p12">12. Pattern 12 - Number crown</a><a href="#p13">13. Pattern 13 - Increasing number triangle</a><a href="#p14">14. Pattern 14 - Alphabet triangle</a><a href="#p15">15. Pattern 15 - Inverted alphabet triangle</a><a href="#p16">16. Pattern 16 - Letter per row</a><a href="#p17">17. Pattern 17 - Alphabet pyramid</a><a href="#p18">18. Pattern 18 - Reverse alphabet triangle</a><a href="#p19">19. Pattern 19 - Hollow butterfly</a><a href="#p20">20. Pattern 20 - Symmetric butterfly</a><a href="#p21">21. Pattern 21 - Hollow square</a><a href="#p22">22. Pattern 22 - Concentric numbers</a><a href="#p23">23. Count Digits</a><a href="#p24">24. Reverse a Number</a><a href="#p25">25. Check Palindrome Number</a><a href="#p26">26. GCD / HCF</a><a href="#p27">27. Armstrong Number</a><a href="#p28">28. Print All Divisors</a><a href="#p29">29. Check Prime</a><a href="#p30">30. Sum of First N Numbers</a><a href="#p31">31. Count Primes up to N (Sieve)</a><a href="#p32">32. LCM of Two Numbers</a><a href="#p33">33. Print Name N Times</a><a href="#p34">34. Print 1 to N</a><a href="#p35">35. Print N to 1</a><a href="#p36">36. Sum of First N Numbers (Recursion)</a><a href="#p37">37. Factorial of N</a><a href="#p38">38. Reverse an Array</a><a href="#p39">39. Check Palindrome String</a><a href="#p40">40. Fibonacci Number</a><a href="#p41">41. Counting Frequencies of Array Elements</a><a href="#p42">42. Count Characters Frequency (a-z)</a><a href="#p43">43. Highest and Lowest Frequency Element</a></nav><section class="problem" id="p1">
+<h2>Problem 1: Pattern 1 - Square of stars<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Print an n x n square of stars.</p><div class="ex">Input: n=3<br>Output:<pre class="out">***
+***
+***</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Print stars with nested loops, row by row.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Same nested loops; n rows, each with n stars, is already optimal for output size.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Output has n*n characters, so O(n^2) is the minimum.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern1(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n; j++) System.out.print(&quot;*&quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Loop i over rows</li><li>Loop j over columns and print *</li><li>Print a newline after each row</li></ol></div></div>
+</div></section><section class="problem" id="p2">
+<h2>Problem 2: Pattern 2 - Right triangle of stars<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Print right-angled triangle of stars.</p><div class="ex">Input: n=3<br>Output:<pre class="out">*
+**
+***</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Hard-code each row for a given n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row i prints i stars, so the inner loop bound is the row index.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Inner loop bound ties the column count directly to the row number.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern2(int n) {
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= i; j++) System.out.print(&quot;*&quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 1 to n</li><li>Inner loop prints i stars</li><li>Newline after each row</li></ol></div></div>
+</div></section><section class="problem" id="p3">
+<h2>Problem 3: Pattern 3 - Right triangle of numbers<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i prints 1..i.</p><div class="ex">Input: n=3<br>Output:<pre class="out">1
+12
+123</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build each row as a string by concatenation.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Print the column index j for j in 1..i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Column index itself is the value to print, so no extra state is needed.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern3(int n) {
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= i; j++) System.out.print(j);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 1 to n</li><li>Inner loop j from 1 to i prints j</li><li>Newline per row</li></ol></div></div>
+</div></section><section class="problem" id="p4">
+<h2>Problem 4: Pattern 4 - Row number triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i prints number i, i times.</p><div class="ex">Input: n=3<br>Output:<pre class="out">1
+22
+333</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute the row string separately then repeat it.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Print the row number i exactly i times.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Value depends only on the row, count depends only on the row.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern4(int n) {
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= i; j++) System.out.print(i);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 1 to n</li><li>Inner loop prints i, i times</li><li>Newline per row</li></ol></div></div>
+</div></section><section class="problem" id="p5">
+<h2>Problem 5: Pattern 5 - Inverted star triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i prints n-i+1 stars.</p><div class="ex">Input: n=3<br>Output:<pre class="out">***
+**
+*</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Print the triangle then reverse the rows in a list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row i prints n-i+1 stars directly.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Counting the star count down from n gives the inverted shape without extra storage.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern5(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n - i; j++) System.out.print(&quot;*&quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 0 to n-1</li><li>Print n-i stars</li><li>Newline per row</li></ol></div></div>
+</div></section><section class="problem" id="p6">
+<h2>Problem 6: Pattern 6 - Inverted number triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i prints 1..n-i+1.</p><div class="ex">Input: n=3<br>Output:<pre class="out">123
+12
+1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build pattern 3 rows then print in reverse order.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row i prints 1..n-i+1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The upper bound shrinks by one per row.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern6(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 1; j &lt;= n - i; j++) System.out.print(j);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 0 to n-1</li><li>Inner loop j from 1 to n-i prints j</li><li>Newline per row</li></ol></div></div>
+</div></section><section class="problem" id="p7">
+<h2>Problem 7: Pattern 7 - Star pyramid<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Centered pyramid of stars.</p><div class="ex">Input: n=3<br>Output:<pre class="out">*
+***
+*****</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Hard-code spaces and stars for each row.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row i has n-i-1 leading spaces then 2i+1 stars.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each row grows by two stars and shifts one space left, keeping the center aligned.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern7(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n - i - 1; j++) System.out.print(&quot; &quot;);
+        for (int j = 0; j &lt; 2 * i + 1; j++) System.out.print(&quot;*&quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 0 to n-1</li><li>Print n-i-1 spaces</li><li>Print 2i+1 stars</li><li>Newline</li></ol></div></div>
+</div></section><section class="problem" id="p8">
+<h2>Problem 8: Pattern 8 - Inverted star pyramid<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Inverted centered pyramid.</p><div class="ex">Input: n=3<br>Output:<pre class="out">*****
+***
+*</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build pyramid then print rows backwards.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row i has i leading spaces then 2(n-i)-1 stars.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Mirror of the pyramid: stars shrink by two, spaces grow by one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern8(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; i; j++) System.out.print(&quot; &quot;);
+        for (int j = 0; j &lt; 2 * (n - i) - 1; j++) System.out.print(&quot;*&quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 0 to n-1</li><li>Print i spaces</li><li>Print 2(n-i)-1 stars</li><li>Newline</li></ol></div></div>
+</div></section><section class="problem" id="p9">
+<h2>Problem 9: Pattern 9 - Diamond<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Pyramid followed by inverted pyramid.</p><div class="ex">Input: n=3<br>Output:<pre class="out">*
+***
+*****
+*****
+***
+*</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Write the two halves by hand.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Call the pyramid logic then the inverted pyramid logic.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Diamond is exactly pyramid followed by inverted pyramid.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern9(int n) {
+    pattern7(n);
+    pattern8(n);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Print pyramid rows</li><li>Print inverted pyramid rows</li><li>Both use space and star counts from patterns 7 and 8</li></ol></div></div>
+</div></section><section class="problem" id="p10">
+<h2>Problem 10: Pattern 10 - Half diamond<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Triangle growing to n then shrinking.</p><div class="ex">Input: n=3<br>Output:<pre class="out">*
+**
+***
+**
+*</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Print each row with a hard-coded count.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row count goes 1..n then n-1..1; compute stars as min(i, 2n-i).</p></div>
+<div class="card w"><h3>Why it works</h3><p>One formula covers both the growing and shrinking half.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern10(int n) {
+    for (int i = 1; i &lt;= 2 * n - 1; i++) {
+        int stars = i &lt;= n ? i : 2 * n - i;
+        for (int j = 0; j &lt; stars; j++) System.out.print(&quot;*&quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Loop i from 1 to 2n-1</li><li>stars = i if i &lt;= n else 2n-i</li><li>Print stars and a newline</li></ol></div></div>
+</div></section><section class="problem" id="p11">
+<h2>Problem 11: Pattern 11 - Binary triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Alternating 1/0 starting with 1 each row.</p><div class="ex">Input: n=3<br>Output:<pre class="out">1
+01
+101</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build a string per row using a toggle flag.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Start value is 1 for even rows (0-indexed) and 0 for odd; flip each column.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Parity of row index decides the first bit, XOR 1 flips it every step.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern11(int n) {
+    int start = 1;
+    for (int i = 0; i &lt; n; i++) {
+        int bit = start;
+        for (int j = 0; j &lt;= i; j++) {
+            System.out.print(bit);
+            bit ^= 1;
+        }
+        start ^= 1;
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>start = 1 for first row, flipped each row</li><li>Inner loop prints current bit</li><li>Flip bit after each print</li></ol></div></div>
+</div></section><section class="problem" id="p12">
+<h2>Problem 12: Pattern 12 - Number crown<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Numbers left, spaces in middle, numbers right.</p><div class="ex">Input: n=3<br>Output:<pre class="out">1    1
+12  21
+123321</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Print left, spaces and right parts via string concatenation.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Per row: print 1..i, 2(n-i) spaces, then i..1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Left and right halves are mirror images separated by shrinking spaces.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern12(int n) {
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= i; j++) System.out.print(j);
+        for (int j = 0; j &lt; 2 * (n - i); j++) System.out.print(&quot; &quot;);
+        for (int j = i; j &gt;= 1; j--) System.out.print(j);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Print 1..i</li><li>Print 2*(n-i) spaces</li><li>Print i..1</li><li>Newline</li></ol></div></div>
+</div></section><section class="problem" id="p13">
+<h2>Problem 13: Pattern 13 - Increasing number triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Continue counting across rows.</p><div class="ex">Input: n=3<br>Output:<pre class="out">1
+2 3
+4 5 6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Precompute all numbers in a list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Keep a running counter across rows.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The counter increments once per printed value, so no index math is needed.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern13(int n) {
+    int c = 1;
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 1; j &lt;= i; j++) System.out.print(c++ + &quot; &quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>counter = 1</li><li>Row i prints i numbers</li><li>Increment counter after each print</li></ol></div></div>
+</div></section><section class="problem" id="p14">
+<h2>Problem 14: Pattern 14 - Alphabet triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i prints A..i-th letter.</p><div class="ex">Input: n=3<br>Output:<pre class="out">A
+AB
+ABC</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use an array of letters and index into it.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Cast (char)(&#x27;A&#x27; + j) in the inner loop.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Characters are consecutive integers so offset from &#x27;A&#x27; gives the letter.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern14(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt;= i; j++) System.out.print((char) (&#x27;A&#x27; + j));
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop rows</li><li>Inner loop j from 0 to i</li><li>Print (char)(&#x27;A&#x27;+j)</li></ol></div></div>
+</div></section><section class="problem" id="p15">
+<h2>Problem 15: Pattern 15 - Inverted alphabet triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i prints n-i+1 letters from A.</p><div class="ex">Input: n=3<br>Output:<pre class="out">ABC
+AB
+A</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Print pattern 14 and reverse rows.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row i prints n-i letters starting at A.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Shrinking bound plus letter offset.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern15(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n - i; j++) System.out.print((char) (&#x27;A&#x27; + j));
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 0 to n-1</li><li>Inner loop j below n-i</li><li>Print (char)(&#x27;A&#x27;+j)</li></ol></div></div>
+</div></section><section class="problem" id="p16">
+<h2>Problem 16: Pattern 16 - Letter per row<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i prints i-th letter i times.</p><div class="ex">Input: n=3<br>Output:<pre class="out">A
+BB
+CCC</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Repeat letter string using String methods.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Print (char)(&#x27;A&#x27;+i) exactly i+1 times.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Letter depends only on the row.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern16(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt;= i; j++) System.out.print((char) (&#x27;A&#x27; + i));
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i</li><li>Inner loop prints the i-th letter i+1 times</li><li>Newline</li></ol></div></div>
+</div></section><section class="problem" id="p17">
+<h2>Problem 17: Pattern 17 - Alphabet pyramid<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Pyramid with letters going up then down.</p><div class="ex">Input: n=3<br>Output:<pre class="out">A
+ABA
+ABCBA</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build each row string and its reverse.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Spaces, then ascending letters, then descending letters excluding the peak.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Row i has a palindrome of 2i+1 letters centered under the peak.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern17(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n - i - 1; j++) System.out.print(&quot; &quot;);
+        for (int j = 0; j &lt;= i; j++) System.out.print((char) (&#x27;A&#x27; + j));
+        for (int j = i - 1; j &gt;= 0; j--) System.out.print((char) (&#x27;A&#x27; + j));
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Print n-i-1 spaces</li><li>Print A.. up to the i-th letter</li><li>Print the letters before the peak backwards</li></ol></div></div>
+</div></section><section class="problem" id="p18">
+<h2>Problem 18: Pattern 18 - Reverse alphabet triangle<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Row i ends at the n-th letter going back.</p><div class="ex">Input: n=3<br>Output:<pre class="out">C
+BC
+ABC</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store letters in a list and slice.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Row i starts at letter n-i-1 and goes up to the n-th letter.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Start index moves back by one each row while the end stays fixed.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern18(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = n - i - 1; j &lt; n; j++) System.out.print((char) (&#x27;A&#x27; + j));
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Outer loop i from 0 to n-1</li><li>Inner loop from n-i-1 to n-1</li><li>Print (char)(&#x27;A&#x27;+j)</li></ol></div></div>
+</div></section><section class="problem" id="p19">
+<h2>Problem 19: Pattern 19 - Hollow butterfly<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Stars with a hollow gap forming a butterfly.</p><div class="ex">Input: n=3<br>Output:<pre class="out">**    **
+**    **</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Hard-code the shapes.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Upper and lower halves with border stars only; spaces fill the gap.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Left wing, gap and right wing are independent, symmetric segments.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern19(int n) {
+    for (int r = 1; r &lt;= 2 * n - 1; r++) {
+        int k = r &lt;= n ? r : 2 * n - r;
+        for (int j = 1; j &lt;= k; j++) System.out.print(j == 1 || j == k ? &quot;*&quot; : &quot; &quot;);
+        for (int j = 0; j &lt; 2 * (n - k); j++) System.out.print(&quot; &quot;);
+        for (int j = 1; j &lt;= k; j++) System.out.print(j == 1 || j == k ? &quot;*&quot; : &quot; &quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each of 2n-1 rows compute k = row size</li><li>Print wing borders only</li><li>Gap is 2*(n-k) spaces</li></ol></div></div>
+</div></section><section class="problem" id="p20">
+<h2>Problem 20: Pattern 20 - Symmetric butterfly<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Butterfly of stars.</p><div class="ex">Input: n=3<br>Output:<pre class="out">*    *
+**  **
+******
+**  **
+*    *</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Hard-code the 2n-1 rows.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Rows 1..n then n-1..1: k stars, 2(n-k) spaces, k stars.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Same formula handles upper and lower half through the symmetric k.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern20(int n) {
+    for (int r = 1; r &lt;= 2 * n - 1; r++) {
+        int k = r &lt;= n ? r : 2 * n - r;
+        for (int j = 0; j &lt; k; j++) System.out.print(&quot;*&quot;);
+        for (int j = 0; j &lt; 2 * (n - k); j++) System.out.print(&quot; &quot;);
+        for (int j = 0; j &lt; k; j++) System.out.print(&quot;*&quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>k = i if i&lt;=n else 2n-i</li><li>Print k stars</li><li>Print 2(n-k) spaces</li><li>Print k stars</li></ol></div></div>
+</div></section><section class="problem" id="p21">
+<h2>Problem 21: Pattern 21 - Hollow square<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Square with only border stars.</p><div class="ex">Input: n=4<br>Output:<pre class="out">****
+*  *
+*  *
+****</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Print the full square and blank out the inside afterwards.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Print * only when on the first/last row or first/last column.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Border cells are exactly those with i or j at 0 or n-1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern21(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n; j++)
+            System.out.print(i == 0 || j == 0 || i == n - 1 || j == n - 1 ? &quot;*&quot; : &quot; &quot;);
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Loop i, j over n x n</li><li>If i or j equals 0 or n-1 print *</li><li>Else print space</li></ol></div></div>
+</div></section><section class="problem" id="p22">
+<h2>Problem 22: Pattern 22 - Concentric numbers<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Concentric squares, outer value n down to 1.</p><div class="ex">Input: n=3<br>Output:<pre class="out">33333
+32223
+32123
+32223
+33333</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build layers one by one in a 2D array.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Value at (i,j) = n - min(i, j, size-1-i, size-1-j) with size = 2n-1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Distance to the nearest edge gives the ring number directly.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void pattern22(int n) {
+    int size = 2 * n - 1;
+    for (int i = 0; i &lt; size; i++) {
+        for (int j = 0; j &lt; size; j++) {
+            int d = Math.min(Math.min(i, j), Math.min(size - 1 - i, size - 1 - j));
+            System.out.print(n - d);
+        }
+        System.out.println();
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>size = 2n-1</li><li>For each cell find the minimum distance to any border</li><li>Print n minus that distance</li></ol></div></div>
+</div></section><section class="problem" id="p23">
+<h2>Problem 23: Count Digits<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count the digits of n.</p><div class="ex">Input: n=7789<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to a string and take length.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Divide by 10 until the number is 0, counting steps.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each division removes exactly one digit.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countDigits(int n) {
+    if (n == 0) return 1;
+    n = Math.abs(n);
+    int c = 0;
+    while (n &gt; 0) { c++; n /= 10; }
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Handle n = 0 as one digit</li><li>While n &gt; 0 divide by 10</li><li>Count iterations</li></ol></div></div>
+</div></section><section class="problem" id="p24">
+<h2>Problem 24: Reverse a Number<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse the digits.</p><div class="ex">Input: n=123<br>Output:<pre class="out">321</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to a string and reverse it.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Extract last digit with % 10 and push it onto the result.</p></div>
+<div class="card w"><h3>Why it works</h3><p>rev = rev*10 + digit rebuilds the digits in reverse order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int reverseNumber(int n) {
+    int rev = 0;
+    while (n != 0) {
+        rev = rev * 10 + n % 10;
+        n /= 10;
+    }
+    return rev;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>rev = 0</li><li>digit = n % 10</li><li>rev = rev*10 + digit, n /= 10</li><li>Repeat until n is 0</li></ol></div></div>
+</div></section><section class="problem" id="p25">
+<h2>Problem 25: Check Palindrome Number<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if number reads same backwards.</p><div class="ex">Input: n=121<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to string and compare with its reverse.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reverse the number mathematically and compare.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A palindrome equals its own reverse.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isPalindrome(int n) {
+    if (n &lt; 0) return false;
+    int rev = 0, t = n;
+    while (t &gt; 0) { rev = rev * 10 + t % 10; t /= 10; }
+    return rev == n;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Negative numbers are not palindromes</li><li>Reverse the digits</li><li>Compare with the original</li></ol></div></div>
+</div></section><section class="problem" id="p26">
+<h2>Problem 26: GCD / HCF<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Greatest common divisor.</p><div class="ex">Input: a=20, b=15<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every number from min(a,b) down to 1.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Euclid: gcd(a, b) = gcd(b, a % b).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Common divisors of a and b are the same as those of b and a mod b.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int gcd(int a, int b) {
+    while (b != 0) {
+        int t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>While b != 0</li><li>Replace (a, b) with (b, a % b)</li><li>Return a</li></ol></div></div>
+</div></section><section class="problem" id="p27">
+<h2>Problem 27: Armstrong Number<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sum of digits raised to digit-count equals n.</p><div class="ex">Input: n=153<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to string and use Math.pow per digit.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Count digits then sum digit^count by integer multiplication.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Armstrong definition is exactly that sum.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isArmstrong(int n) {
+    int k = String.valueOf(n).length(), sum = 0, t = n;
+    while (t &gt; 0) {
+        int d = t % 10, p = 1;
+        for (int i = 0; i &lt; k; i++) p *= d;
+        sum += p;
+        t /= 10;
+    }
+    return sum == n;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count digits k</li><li>Sum each digit raised to k</li><li>Compare with n</li></ol></div></div>
+</div></section><section class="problem" id="p28">
+<h2>Problem 28: Print All Divisors<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return all divisors in ascending order.</p><div class="ex">Input: n=36<br>Output:<pre class="out">[1,2,3,4,6,9,12,18,36]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every i from 1 to n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Check i up to sqrt(n); each i gives divisors i and n/i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Divisors come in pairs around sqrt(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; divisors(int n) {
+    List&lt;Integer&gt; small = new ArrayList&lt;&gt;(), large = new ArrayList&lt;&gt;();
+    for (int i = 1; (long) i * i &lt;= n; i++) {
+        if (n % i == 0) {
+            small.add(i);
+            if (i != n / i) large.add(n / i);
+        }
+    }
+    Collections.reverse(large);
+    small.addAll(large);
+    return small;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Loop i while i*i &lt;= n</li><li>If i divides n add i to the front list</li><li>Add n/i to the back list if different</li><li>Join front and reversed back</li></ol></div></div>
+</div></section><section class="problem" id="p29">
+<h2>Problem 29: Check Prime<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if n is prime.</p><div class="ex">Input: n=11<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Test divisibility by every number from 2 to n-1.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Test only up to sqrt(n).</p></div>
+<div class="card w"><h3>Why it works</h3><p>A composite number has a factor no larger than its square root.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isPrime(int n) {
+    if (n &lt; 2) return false;
+    for (int i = 2; (long) i * i &lt;= n; i++)
+        if (n % i == 0) return false;
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>n &lt; 2 is not prime</li><li>Loop i from 2 while i*i &lt;= n</li><li>Any divisor means not prime</li></ol></div></div>
+</div></section><section class="problem" id="p30">
+<h2>Problem 30: Sum of First N Numbers<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return 1+2+...+n.</p><div class="ex">Input: n=5<br>Output:<pre class="out">15</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Loop adding 1..n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Use the formula n*(n+1)/2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Pairing first and last terms gives n/2 pairs each summing to n+1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int sumToN(int n) {
+    return n * (n + 1) / 2;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute n*(n+1)/2</li><li>Return the result</li></ol></div></div>
+</div></section><section class="problem" id="p31">
+<h2>Problem 31: Count Primes up to N (Sieve)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Number of primes strictly less than n.</p><div class="ex">Input: n=10<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Run isPrime on every number below n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sieve of Eratosthenes.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Marking multiples of each prime removes all composites in O(n log log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countPrimes(int n) {
+    if (n &lt; 3) return 0;
+    boolean[] comp = new boolean[n];
+    int count = 0;
+    for (int i = 2; i &lt; n; i++) {
+        if (!comp[i]) {
+            count++;
+            for (long j = (long) i * i; j &lt; n; j += i) comp[(int) j] = true;
+        }
+    }
+    return count;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Boolean array initialised to prime</li><li>For each prime p, mark p*p, p*p+p, ... composite</li><li>Count unmarked numbers from 2 to n-1</li></ol></div></div>
+</div></section><section class="problem" id="p32">
+<h2>Problem 32: LCM of Two Numbers<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Least common multiple.</p><div class="ex">Input: a=4, b=6<br>Output:<pre class="out">12</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Test multiples of the larger number until divisible by the other.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>lcm = a / gcd * b.</p></div>
+<div class="card w"><h3>Why it works</h3><p>gcd(a,b) * lcm(a,b) = a * b.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int lcm(int a, int b) {
+    int x = a, y = b;
+    while (y != 0) { int t = x % y; x = y; y = t; }
+    return a / x * b;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute gcd with Euclid</li><li>Divide first to avoid overflow</li><li>Multiply by b</li></ol></div></div>
+</div></section><section class="problem" id="p33">
+<h2>Problem 33: Print Name N Times<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Print name n times using recursion.</p><div class="ex">Input: name=Raj, n=3<br>Output:<pre class="out">Raj
+Raj
+Raj</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Loop n times printing the name.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion: print once and recurse with n-1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Base case n == 0 stops the recursion after exactly n prints.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void printNameNTimes(String name, int n) {
+    if (n == 0) return;
+    System.out.println(name);
+    printNameNTimes(name, n - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n == 0 return</li><li>Print the name</li><li>Recurse with n-1</li></ol></div></div>
+</div></section><section class="problem" id="p34">
+<h2>Problem 34: Print 1 to N<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Print 1..n using recursion.</p><div class="ex">Input: n=3<br>Output:<pre class="out">1 2 3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Loop from 1 to n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recurse to n-1 first, print after returning (backtracking).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Printing after the recursive call prints smaller numbers first.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void print1ToN(int n) {
+    if (n == 0) return;
+    print1ToN(n - 1);
+    System.out.println(n);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n == 0 return</li><li>Recurse on n-1</li><li>Print n</li></ol></div></div>
+</div></section><section class="problem" id="p35">
+<h2>Problem 35: Print N to 1<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Print n..1 using recursion.</p><div class="ex">Input: n=3<br>Output:<pre class="out">3 2 1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Loop from n down to 1.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Print n then recurse on n-1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Printing before the call prints larger numbers first.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void printNTo1(int n) {
+    if (n == 0) return;
+    System.out.println(n);
+    printNTo1(n - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n == 0 return</li><li>Print n</li><li>Recurse on n-1</li></ol></div></div>
+</div></section><section class="problem" id="p36">
+<h2>Problem 36: Sum of First N Numbers (Recursion)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Recursive sum 1..n.</p><div class="ex">Input: n=3<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Iterative loop sum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>sum(n) = n + sum(n-1), base sum(0) = 0.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each call reduces the problem by one until the base case.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int sumOfN(int n) {
+    if (n == 0) return 0;
+    return n + sumOfN(n - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n == 0 return 0</li><li>Return n plus the recursive result</li></ol></div></div>
+</div></section><section class="problem" id="p37">
+<h2>Problem 37: Factorial of N<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Recursive factorial.</p><div class="ex">Input: n=5<br>Output:<pre class="out">120</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Multiply in a loop.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>n! = n * (n-1)!, base 0! = 1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Definition of factorial maps directly onto recursion.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static long factorial(int n) {
+    if (n &lt;= 1) return 1;
+    return n * factorial(n - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n &lt;= 1 return 1</li><li>Return n * factorial(n-1)</li></ol></div></div>
+</div></section><section class="problem" id="p38">
+<h2>Problem 38: Reverse an Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse array in place using recursion.</p><div class="ex">Input: arr=[5,4,3,2,1]<br>Output:<pre class="out">[1,2,3,4,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy into a new array in reverse.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursively swap the two ends and move inward.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Swapping mirrored pairs reverses the array in place with O(1) extra space besides stack.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void reverseArray(int[] arr) {
+    reverseHelper(arr, 0, arr.length - 1);
+}
+
+private static void reverseHelper(int[] arr, int l, int r) {
+    if (l &gt;= r) return;
+    int t = arr[l]; arr[l] = arr[r]; arr[r] = t;
+    reverseHelper(arr, l + 1, r - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Pass left and right indices</li><li>If left &gt;= right stop</li><li>Swap and recurse on (left+1, right-1)</li></ol></div></div>
+</div></section><section class="problem" id="p39">
+<h2>Problem 39: Check Palindrome String<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Recursive palindrome check.</p><div class="ex">Input: s=&quot;ABCDCBA&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Reverse the string and compare.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Compare the two ends recursively.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A palindrome must match at mirrored positions.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isPalindromeString(String s) {
+    return check(s, 0, s.length() - 1);
+}
+
+private static boolean check(String s, int i, int j) {
+    if (i &gt;= j) return true;
+    if (s.charAt(i) != s.charAt(j)) return false;
+    return check(s, i + 1, j - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If i &gt;= j return true</li><li>If chars differ return false</li><li>Recurse on (i+1, j-1)</li></ol></div></div>
+</div></section><section class="problem" id="p40">
+<h2>Problem 40: Fibonacci Number<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>n-th fibonacci number (0-indexed, f0=0, f1=1).</p><div class="ex">Input: n=4<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Plain recursion f(n-1) + f(n-2) is O(2^n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Iterate keeping the last two values.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each value needs only its two predecessors, giving O(n) time and O(1) space.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int fibonacci(int n) {
+    if (n &lt;= 1) return n;
+    int a = 0, b = 1;
+    for (int i = 2; i &lt;= n; i++) {
+        int c = a + b;
+        a = b;
+        b = c;
+    }
+    return b;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Handle n &lt;= 1</li><li>Keep prev and curr</li><li>Advance n-1 times</li></ol></div></div>
+</div></section><section class="problem" id="p41">
+<h2>Problem 41: Counting Frequencies of Array Elements<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Frequency of each element.</p><div class="ex">Input: arr=[10,5,10,15,10,5]<br>Output:<pre class="out">{10=3, 5=2, 15=1}</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each element count occurrences by scanning the array, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Use a HashMap to count in one pass.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Hash lookups and updates are O(1) on average.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Map&lt;Integer, Integer&gt; countFrequencies(int[] arr) {
+    Map&lt;Integer, Integer&gt; map = new LinkedHashMap&lt;&gt;();
+    for (int x : arr) map.merge(x, 1, Integer::sum);
+    return map;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Create a map</li><li>For each element increment its count</li><li>Return the map</li></ol></div></div>
+</div></section><section class="problem" id="p42">
+<h2>Problem 42: Count Characters Frequency (a-z)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return int[26] counts.</p><div class="ex">Input: s=&quot;aab&quot;<br>Output:<pre class="out">[2,1,0,...]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count each letter by scanning the string 26 times.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>One pass using an int[26] array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Letter minus &#x27;a&#x27; is a direct array index.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] charFrequency(String s) {
+    int[] f = new int[26];
+    for (char c : s.toCharArray()) f[c - &#x27;a&#x27;]++;
+    return f;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Create int[26]</li><li>For each char increment arr[c-&#x27;a&#x27;]</li><li>Return the array</li></ol></div></div>
+</div></section><section class="problem" id="p43">
+<h2>Problem 43: Highest and Lowest Frequency Element<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return {highestFreqElement, lowestFreqElement}; ties pick smaller.</p><div class="ex">Input: arr=[10,5,10,15,10,5]<br>Output:<pre class="out">[10,15]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count each element by scanning, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Build a frequency map and scan it for max and min with tie-breaking.</p></div>
+<div class="card w"><h3>Why it works</h3><p>One pass for counts and one over distinct keys is O(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] highLowFrequency(int[] arr) {
+    Map&lt;Integer, Integer&gt; m = new HashMap&lt;&gt;();
+    for (int x : arr) m.merge(x, 1, Integer::sum);
+    int hi = -1, lo = -1, hf = 0, lf = Integer.MAX_VALUE;
+    for (Map.Entry&lt;Integer, Integer&gt; e : m.entrySet()) {
+        int k = e.getKey(), f = e.getValue();
+        if (f &gt; hf || (f == hf &amp;&amp; k &lt; hi)) { hf = f; hi = k; }
+        if (f &lt; lf || (f == lf &amp;&amp; k &lt; lo)) { lf = f; lo = k; }
+    }
+    return new int[]{hi, lo};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count frequencies</li><li>Track the best max (ties pick smaller)</li><li>Track the best min (ties pick smaller)</li><li>Return both</li></ol></div></div>
+</div></section></main></body></html>

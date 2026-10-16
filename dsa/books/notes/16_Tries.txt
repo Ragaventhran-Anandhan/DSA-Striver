@@ -1,0 +1,191 @@
+=== 449
+brute: Store words in a list and scan for every query.
+opt: Trie with 26 children per node and an end-of-word flag.
+why: Insert, search and prefix queries cost O(length of the word), independent of the number of words.
+expl: Each node holds children[26] and isEnd | insert walks and creates missing nodes | search checks isEnd at the last node | startsWith only needs the path to exist
+code:
+public static void implementTrie() {
+    class Node { Node[] ch = new Node[26]; boolean end; }
+    class Trie {
+        Node root = new Node();
+        void insert(String w) {
+            Node n = root;
+            for (char c : w.toCharArray()) {
+                if (n.ch[c - 'a'] == null) n.ch[c - 'a'] = new Node();
+                n = n.ch[c - 'a'];
+            }
+            n.end = true;
+        }
+        Node walk(String p) {
+            Node n = root;
+            for (char c : p.toCharArray()) {
+                n = n.ch[c - 'a'];
+                if (n == null) return null;
+            }
+            return n;
+        }
+        boolean search(String w) { Node n = walk(w); return n != null && n.end; }
+        boolean startsWith(String p) { return walk(p) != null; }
+    }
+    Trie t = new Trie();
+    t.insert("apple");
+    System.out.println(t.search("apple"));
+    System.out.println(t.startsWith("app"));
+}
+=== 450
+brute: Count by scanning all stored words.
+opt: Trie nodes storing prefix and end counters.
+why: Counters give each query answer in O(length); erase decrements the counters along the path.
+expl: insert increments prefixCount on every node and endCount at the last | countWordsEqualTo reads endCount | countWordsStartingWith reads prefixCount | erase decrements the same counters
+code:
+public static void implementTrieII() {
+    class Node { Node[] ch = new Node[26]; int end, prefix; }
+    class Trie {
+        Node root = new Node();
+        void insert(String w) {
+            Node n = root;
+            for (char c : w.toCharArray()) {
+                if (n.ch[c - 'a'] == null) n.ch[c - 'a'] = new Node();
+                n = n.ch[c - 'a'];
+                n.prefix++;
+            }
+            n.end++;
+        }
+        int countWordsEqualTo(String w) {
+            Node n = root;
+            for (char c : w.toCharArray()) { n = n.ch[c - 'a']; if (n == null) return 0; }
+            return n.end;
+        }
+        int countWordsStartingWith(String p) {
+            Node n = root;
+            for (char c : p.toCharArray()) { n = n.ch[c - 'a']; if (n == null) return 0; }
+            return n.prefix;
+        }
+        void erase(String w) {
+            if (countWordsEqualTo(w) == 0) return;
+            Node n = root;
+            for (char c : w.toCharArray()) { n = n.ch[c - 'a']; n.prefix--; }
+            n.end--;
+        }
+    }
+    Trie t = new Trie();
+    t.insert("apple");
+    System.out.println(t.countWordsEqualTo("apple"));
+}
+=== 451
+brute: For every word check each prefix with a list search.
+opt: Insert all words into a trie and check that every prefix node is an end.
+why: A word qualifies only if each node on its path is marked as a word end.
+expl: Build the trie | For each word walk it and require end at every step | Keep the longest, ties lexicographically smaller
+code:
+public static String completeString(String[] words) {
+    class Node { Node[] ch = new Node[26]; boolean end; }
+    Node root = new Node();
+    for (String w : words) {
+        Node n = root;
+        for (char c : w.toCharArray()) {
+            if (n.ch[c - 'a'] == null) n.ch[c - 'a'] = new Node();
+            n = n.ch[c - 'a'];
+        }
+        n.end = true;
+    }
+    String best = "";
+    for (String w : words) {
+        Node n = root;
+        boolean ok = true;
+        for (char c : w.toCharArray()) {
+            n = n.ch[c - 'a'];
+            if (!n.end) { ok = false; break; }
+        }
+        if (ok && (w.length() > best.length() || (w.length() == best.length() && w.compareTo(best) < 0))) best = w;
+    }
+    return best;
+}
+=== 452
+brute: Put every substring in a HashSet, O(n^3).
+opt: Insert every suffix in a trie and count created nodes.
+why: Every distinct substring is a prefix of exactly one path, i.e. one trie node.
+expl: For each suffix walk the trie | Count each newly created node | The count equals the distinct substrings
+code:
+public static int countDistinctSubstrings(String s) {
+    class Node { Node[] ch = new Node[26]; }
+    Node root = new Node();
+    int count = 0;
+    for (int i = 0; i < s.length(); i++) {
+        Node n = root;
+        for (int j = i; j < s.length(); j++) {
+            int c = s.charAt(j) - 'a';
+            if (n.ch[c] == null) { n.ch[c] = new Node(); count++; }
+            n = n.ch[c];
+        }
+    }
+    return count;
+}
+=== 453
+brute: Try every pair, O(n^2).
+opt: Binary trie; for each number greedily choose the opposite bit.
+why: A higher bit that differs outweighs all lower bits, so greedy is optimal.
+expl: Insert numbers bit by bit from bit 31 | For each number walk preferring the opposite bit | Track the max XOR
+code:
+public static int findMaximumXOR(int[] arr) {
+    class Node { Node[] ch = new Node[2]; }
+    Node root = new Node();
+    for (int x : arr) {
+        Node n = root;
+        for (int b = 31; b >= 0; b--) {
+            int bit = (x >> b) & 1;
+            if (n.ch[bit] == null) n.ch[bit] = new Node();
+            n = n.ch[bit];
+        }
+    }
+    int best = 0;
+    for (int x : arr) {
+        Node n = root;
+        int cur = 0;
+        for (int b = 31; b >= 0; b--) {
+            int bit = (x >> b) & 1;
+            if (n.ch[1 - bit] != null) { cur |= 1 << b; n = n.ch[1 - bit]; }
+            else n = n.ch[bit];
+        }
+        best = Math.max(best, cur);
+    }
+    return best;
+}
+=== 454
+brute: For each query scan all elements <= limit.
+opt: Offline: sort queries by limit and insert elements into the trie incrementally.
+why: Each query then runs the greedy trie walk on exactly the allowed elements.
+expl: Sort arr and queries by limit | Insert elements <= limit | If trie is empty answer -1 | Else greedy max XOR
+code:
+public static int[] maximizeXor(int[] arr, int[][] queries) {
+    class Node { Node[] ch = new Node[2]; }
+    Node root = new Node();
+    int[] a = arr.clone();
+    Arrays.sort(a);
+    Integer[] order = new Integer[queries.length];
+    for (int i = 0; i < order.length; i++) order[i] = i;
+    Arrays.sort(order, (x, y) -> queries[x][1] - queries[y][1]);
+    int[] res = new int[queries.length];
+    int p = 0;
+    for (int qi : order) {
+        while (p < a.length && a[p] <= queries[qi][1]) {
+            Node n = root;
+            for (int b = 31; b >= 0; b--) {
+                int bit = (a[p] >> b) & 1;
+                if (n.ch[bit] == null) n.ch[bit] = new Node();
+                n = n.ch[bit];
+            }
+            p++;
+        }
+        if (p == 0) { res[qi] = -1; continue; }
+        Node n = root;
+        int x = queries[qi][0], cur = 0;
+        for (int b = 31; b >= 0; b--) {
+            int bit = (x >> b) & 1;
+            if (n.ch[1 - bit] != null) { cur |= 1 << b; n = n.ch[1 - bit]; }
+            else n = n.ch[bit];
+        }
+        res[qi] = cur;
+    }
+    return res;
+}

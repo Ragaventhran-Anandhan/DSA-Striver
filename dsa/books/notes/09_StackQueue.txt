@@ -1,0 +1,603 @@
+=== 217
+brute: Use java.util.Stack.
+opt: Fixed array with a top index.
+why: Push and pop touch only the top index, so each is O(1).
+expl: top = -1 | push: arr[++top] = x | pop: return arr[top--] | top: arr[top]
+code:
+public static void implementStackArray() {
+    class ArrStack {
+        int[] a = new int[100]; int top = -1;
+        void push(int x) { a[++top] = x; }
+        int pop() { return a[top--]; }
+        int top() { return a[top]; }
+        boolean isEmpty() { return top == -1; }
+    }
+    ArrStack s = new ArrStack();
+    s.push(1); s.push(2);
+    System.out.println(s.top());
+}
+=== 218
+brute: Use java.util.Queue.
+opt: Circular array with front, rear and size.
+why: Modulo wrap-around reuses freed slots.
+expl: enqueue: a[rear] = x, rear = (rear+1)%cap | dequeue: front = (front+1)%cap | front: a[front]
+code:
+public static void implementQueueArray() {
+    class ArrQueue {
+        int[] a = new int[100]; int front = 0, rear = 0, size = 0;
+        void enqueue(int x) { a[rear] = x; rear = (rear + 1) % a.length; size++; }
+        int dequeue() { int v = a[front]; front = (front + 1) % a.length; size--; return v; }
+        int front() { return a[front]; }
+    }
+    ArrQueue q = new ArrQueue();
+    q.enqueue(1); q.enqueue(2);
+    System.out.println(q.front());
+}
+=== 219
+brute: Use two queues and move all elements each push.
+opt: Single queue; after push rotate the queue so the new item is at the front.
+why: Rotating size-1 elements puts the newest element in front, making pop O(1).
+expl: Add x | Rotate n-1 items from front to back | pop removes from the front
+code:
+public static void implementStackUsingQueues() {
+    class QStack {
+        Queue<Integer> q = new LinkedList<>();
+        void push(int x) {
+            q.add(x);
+            for (int i = 0; i < q.size() - 1; i++) q.add(q.poll());
+        }
+        int pop() { return q.poll(); }
+    }
+    QStack s = new QStack();
+    s.push(1); s.push(2);
+    System.out.println(s.pop());
+}
+=== 220
+brute: Move all elements between stacks on every operation.
+opt: Input and output stacks; transfer only when the output is empty.
+why: Each element moves at most twice, so operations are amortized O(1).
+expl: push to the input stack | pop: if output empty move all from input | pop from output
+code:
+public static void implementQueueUsingStacks() {
+    class SQueue {
+        Deque<Integer> in = new ArrayDeque<>(), out = new ArrayDeque<>();
+        void push(int x) { in.push(x); }
+        int pop() {
+            if (out.isEmpty()) while (!in.isEmpty()) out.push(in.pop());
+            return out.pop();
+        }
+    }
+    SQueue q = new SQueue();
+    q.push(1); q.push(2);
+    System.out.println(q.pop());
+}
+=== 221
+brute: Use an array stack.
+opt: Linked list where the head is the top.
+why: Insert and delete at the head are O(1).
+expl: push: new node points to head, head = node | pop: head = head.next
+code:
+public static void implementStackLL() {
+    class N { int v; N next; N(int v) { this.v = v; } }
+    class LLStack {
+        N head;
+        void push(int x) { N n = new N(x); n.next = head; head = n; }
+        int pop() { int v = head.v; head = head.next; return v; }
+    }
+    LLStack s = new LLStack();
+    s.push(1); s.push(2);
+    System.out.println(s.pop());
+}
+=== 222
+brute: Use an array queue.
+opt: Linked list with head and tail pointers.
+why: Enqueue at tail and dequeue at head are both O(1).
+expl: enqueue: link tail.next | dequeue: advance head | Reset tail if empty
+code:
+public static void implementQueueLL() {
+    class N { int v; N next; N(int v) { this.v = v; } }
+    class LLQueue {
+        N head, tail;
+        void enqueue(int x) {
+            N n = new N(x);
+            if (tail == null) head = tail = n; else { tail.next = n; tail = n; }
+        }
+        int dequeue() {
+            int v = head.v;
+            head = head.next;
+            if (head == null) tail = null;
+            return v;
+        }
+    }
+    LLQueue q = new LLQueue();
+    q.enqueue(1); q.enqueue(2);
+    System.out.println(q.dequeue());
+}
+=== 223
+brute: Repeatedly remove "()", "[]", "{}" until none remain.
+opt: Stack of opening brackets.
+why: The latest unmatched opening bracket must match the next closing one.
+expl: Push openings | On closing pop and compare | Stack must be empty at the end
+code:
+public static boolean isValid(String s) {
+    Deque<Character> st = new ArrayDeque<>();
+    for (char c : s.toCharArray()) {
+        if (c == '(' || c == '[' || c == '{') st.push(c);
+        else {
+            if (st.isEmpty()) return false;
+            char o = st.pop();
+            if ((c == ')' && o != '(') || (c == ']' && o != '[') || (c == '}' && o != '{')) return false;
+        }
+    }
+    return st.isEmpty();
+}
+=== 224
+brute: Scan the stack for the minimum on getMin, O(n).
+opt: Store (value, min so far) pairs.
+why: Each entry remembers the minimum at that depth.
+expl: push: min = min(x, current min) | pop removes the pair | getMin reads the top pair
+code:
+public static void minStack() {
+    class MinStack {
+        Deque<int[]> st = new ArrayDeque<>();
+        void push(int x) { st.push(new int[]{x, st.isEmpty() ? x : Math.min(x, st.peek()[1])}); }
+        void pop() { st.pop(); }
+        int top() { return st.peek()[0]; }
+        int getMin() { return st.peek()[1]; }
+    }
+    MinStack m = new MinStack();
+    m.push(-2); m.push(0); m.push(-3);
+    System.out.println(m.getMin());
+}
+=== 225
+brute: Fully parenthesize then convert.
+opt: Shunting yard with an operator stack and precedence.
+why: Higher precedence operators are emitted before lower ones.
+expl: Operands go to output | Pop operators with >= precedence before pushing | '(' and ')' control grouping
+code:
+public static String infixToPostfix(String s) {
+    StringBuilder out = new StringBuilder();
+    Deque<Character> st = new ArrayDeque<>();
+    for (char c : s.toCharArray()) {
+        if (Character.isLetterOrDigit(c)) out.append(c);
+        else if (c == '(') st.push(c);
+        else if (c == ')') {
+            while (!st.isEmpty() && st.peek() != '(') out.append(st.pop());
+            st.pop();
+        } else {
+            while (!st.isEmpty() && st.peek() != '(' && prec(st.peek()) >= prec(c) && c != '^') out.append(st.pop());
+            st.push(c);
+        }
+    }
+    while (!st.isEmpty()) out.append(st.pop());
+    return out.toString();
+}
+
+private static int prec(char c) {
+    if (c == '^') return 3;
+    if (c == '*' || c == '/') return 2;
+    if (c == '+' || c == '-') return 1;
+    return 0;
+}
+=== 226
+brute: Rebuild the expression tree and print.
+opt: Scan from the right with a stack.
+why: In prefix the operator precedes its two operands, so from the right operands are on the stack.
+expl: For operand push | For operator pop a then b | Push "(a op b)"
+code:
+public static String prefixToInfix(String s) {
+    Deque<String> st = new ArrayDeque<>();
+    for (int i = s.length() - 1; i >= 0; i--) {
+        char c = s.charAt(i);
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String a = st.pop(), b = st.pop();
+            st.push("(" + a + c + b + ")");
+        }
+    }
+    return st.pop();
+}
+=== 227
+brute: Convert to infix then postfix.
+opt: Scan from the right; combine a b op.
+why: The same stack approach yields postfix directly.
+expl: Operand push | Operator pop a, b | Push a + b + op
+code:
+public static String prefixToPostfix(String s) {
+    Deque<String> st = new ArrayDeque<>();
+    for (int i = s.length() - 1; i >= 0; i--) {
+        char c = s.charAt(i);
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String a = st.pop(), b = st.pop();
+            st.push(a + b + c);
+        }
+    }
+    return st.pop();
+}
+=== 228
+brute: Convert to infix then prefix.
+opt: Scan from the left; combine op a b.
+why: In postfix the operands come first, so the stack holds them in order.
+expl: Operand push | Operator pop b then a | Push op + a + b
+code:
+public static String postfixToPrefix(String s) {
+    Deque<String> st = new ArrayDeque<>();
+    for (char c : s.toCharArray()) {
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String b = st.pop(), a = st.pop();
+            st.push(c + a + b);
+        }
+    }
+    return st.pop();
+}
+=== 229
+brute: Build the expression tree.
+opt: Scan from the left using a stack of sub-expressions.
+why: Each operator applies to the top two stack items.
+expl: Operand push | Operator pop b then a | Push "(a op b)"
+code:
+public static String postfixToInfix(String s) {
+    Deque<String> st = new ArrayDeque<>();
+    for (char c : s.toCharArray()) {
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String b = st.pop(), a = st.pop();
+            st.push("(" + a + c + b + ")");
+        }
+    }
+    return st.pop();
+}
+=== 230
+brute: Parse into a tree and print prefix.
+opt: Reverse, swap brackets, convert to postfix, reverse again.
+why: Reversing turns prefix into postfix; operator associativity needs the strict-precedence rule.
+expl: Reverse the infix string and swap ( with ) | Convert to postfix (pop only higher precedence) | Reverse the result
+code:
+public static String infixToPrefix(String s) {
+    StringBuilder r = new StringBuilder();
+    for (int i = s.length() - 1; i >= 0; i--) {
+        char c = s.charAt(i);
+        r.append(c == '(' ? ')' : c == ')' ? '(' : c);
+    }
+    StringBuilder out = new StringBuilder();
+    Deque<Character> st = new ArrayDeque<>();
+    for (char c : r.toString().toCharArray()) {
+        if (Character.isLetterOrDigit(c)) out.append(c);
+        else if (c == '(') st.push(c);
+        else if (c == ')') {
+            while (!st.isEmpty() && st.peek() != '(') out.append(st.pop());
+            st.pop();
+        } else {
+            while (!st.isEmpty() && st.peek() != '(' && prec(st.peek()) > prec(c)) out.append(st.pop());
+            st.push(c);
+        }
+    }
+    while (!st.isEmpty()) out.append(st.pop());
+    return out.reverse().toString();
+}
+
+private static int prec(char c) {
+    if (c == '^') return 3;
+    if (c == '*' || c == '/') return 2;
+    if (c == '+' || c == '-') return 1;
+    return 0;
+}
+=== 231
+brute: For each element scan to the right.
+opt: Monotonic decreasing stack from the right.
+why: Elements popped for being smaller can never be the answer for items to the left.
+expl: Traverse from the right | Pop while stack top <= current | Answer is the top or -1 | Push current
+code:
+public static int[] nextGreaterElement(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = n - 1; i >= 0; i--) {
+        while (!st.isEmpty() && st.peek() <= arr[i]) st.pop();
+        res[i] = st.isEmpty() ? -1 : st.peek();
+        st.push(arr[i]);
+    }
+    return res;
+}
+=== 232
+brute: For each element scan the circular array.
+opt: Monotonic stack over 2n elements.
+why: Looping twice simulates the wrap-around.
+expl: Iterate i from 2n-1 to 0 | Use i % n as the index | Only record answers for i < n
+code:
+public static int[] nextGreaterCircular(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 2 * n - 1; i >= 0; i--) {
+        while (!st.isEmpty() && st.peek() <= arr[i % n]) st.pop();
+        if (i < n) res[i] = st.isEmpty() ? -1 : st.peek();
+        st.push(arr[i % n]);
+    }
+    return res;
+}
+=== 233
+brute: For each element scan right.
+opt: Monotonic increasing stack from the right.
+why: Larger-or-equal elements on top cannot be answers for earlier items.
+expl: Traverse from the right | Pop while top >= current | Answer top or -1 | Push current
+code:
+public static int[] nextSmallerElement(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = n - 1; i >= 0; i--) {
+        while (!st.isEmpty() && st.peek() >= arr[i]) st.pop();
+        res[i] = st.isEmpty() ? -1 : st.peek();
+        st.push(arr[i]);
+    }
+    return res;
+}
+=== 234
+brute: For each query count elements to the right directly.
+opt: Same count per query; scanning the suffix is O(n) per query.
+why: Queries are few, so a direct count is simple and accurate (BIT/merge sort if many).
+expl: For each query index i | Count j > i with arr[j] > arr[i] | Store the count
+code:
+public static int[] countGreaterRight(int[] arr, int[] queries) {
+    int[] res = new int[queries.length];
+    for (int q = 0; q < queries.length; q++) {
+        int i = queries[q], c = 0;
+        for (int j = i + 1; j < arr.length; j++) if (arr[j] > arr[i]) c++;
+        res[q] = c;
+    }
+    return res;
+}
+=== 235
+brute: For each index water = min(maxLeft, maxRight) - height.
+opt: Two pointers tracking left and right maximums.
+why: The smaller side's max determines the water level at that side.
+expl: l, r, leftMax, rightMax | Move the smaller side | Add max - height | Continue until pointers meet
+code:
+public static int trap(int[] height) {
+    int l = 0, r = height.length - 1, lm = 0, rm = 0, water = 0;
+    while (l < r) {
+        if (height[l] < height[r]) {
+            lm = Math.max(lm, height[l]);
+            water += lm - height[l++];
+        } else {
+            rm = Math.max(rm, height[r]);
+            water += rm - height[r--];
+        }
+    }
+    return water;
+}
+=== 236
+brute: Enumerate all subarrays and take their minimum.
+opt: Monotonic stack: contribution of each element as minimum.
+why: arr[i] is the minimum of (i - left) * (right - i) subarrays.
+expl: Find previous less index | Find next less-or-equal index | Add arr[i] * left * right | Take mod 1e9+7
+code:
+public static int sumSubarrayMins(int[] arr) {
+    int n = arr.length, MOD = 1_000_000_007;
+    int[] left = new int[n], right = new int[n];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 0; i < n; i++) {
+        while (!st.isEmpty() && arr[st.peek()] > arr[i]) st.pop();
+        left[i] = st.isEmpty() ? i + 1 : i - st.peek();
+        st.push(i);
+    }
+    st.clear();
+    for (int i = n - 1; i >= 0; i--) {
+        while (!st.isEmpty() && arr[st.peek()] >= arr[i]) st.pop();
+        right[i] = st.isEmpty() ? n - i : st.peek() - i;
+        st.push(i);
+    }
+    long sum = 0;
+    for (int i = 0; i < n; i++) sum = (sum + (long) arr[i] * left[i] % MOD * right[i]) % MOD;
+    return (int) sum;
+}
+=== 237
+brute: Repeat passes until no collisions remain.
+opt: Stack: collide only when top is positive and the current is negative.
+why: Same-direction or diverging asteroids never meet.
+expl: For each asteroid | While collision possible compare sizes | Pop smaller / both on tie | Push if it survives
+code:
+public static int[] asteroidCollision(int[] asteroids) {
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int a : asteroids) {
+        boolean alive = true;
+        while (alive && a < 0 && !st.isEmpty() && st.peek() > 0) {
+            int top = st.peek();
+            if (top < -a) st.pop();
+            else { if (top == -a) st.pop(); alive = false; }
+        }
+        if (alive) st.push(a);
+    }
+    int[] res = new int[st.size()];
+    for (int i = res.length - 1; i >= 0; i--) res[i] = st.pop();
+    return res;
+}
+=== 238
+brute: For each day count backwards.
+opt: Monotonic stack of indices of previous greater prices.
+why: Span = i - index of previous strictly greater price.
+expl: Pop while price[top] <= price[i] | span = i - top (or i+1 if empty) | Push i
+code:
+public static int[] stockSpan(int[] prices) {
+    int[] res = new int[prices.length];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 0; i < prices.length; i++) {
+        while (!st.isEmpty() && prices[st.peek()] <= prices[i]) st.pop();
+        res[i] = st.isEmpty() ? i + 1 : i - st.peek();
+        st.push(i);
+    }
+    return res;
+}
+=== 239
+brute: Check every person for the celebrity conditions, O(n^2).
+opt: Two pointers eliminating one candidate per query.
+why: If a knows b, a is not a celebrity; otherwise b is not.
+expl: a = 0, b = n-1 | If knows[a][b] then a++ else b-- | Verify the remaining candidate
+code:
+public static int findCelebrity(int[][] knows) {
+    int n = knows.length, a = 0, b = n - 1;
+    while (a < b) { if (knows[a][b] == 1) a++; else b--; }
+    for (int i = 0; i < n; i++) {
+        if (i == a) continue;
+        if (knows[a][i] == 1 || knows[i][a] == 0) return -1;
+    }
+    return a;
+}
+=== 240
+brute: Compute max and min of every subarray, O(n^2).
+opt: Sum of subarray maxes minus sum of subarray mins with monotonic stacks.
+why: Range = max - min, and sums split linearly.
+expl: Compute sum of maxes by contribution | Compute sum of mins by contribution | Return the difference
+code:
+public static long subArrayRanges(int[] arr) {
+    return sumMax(arr) - sumMin(arr);
+}
+
+private static long sumMax(int[] a) {
+    int n = a.length;
+    long s = 0;
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 0; i <= n; i++) {
+        while (!st.isEmpty() && (i == n || a[st.peek()] < a[i])) {
+            int m = st.pop();
+            int l = st.isEmpty() ? -1 : st.peek();
+            s += (long) a[m] * (m - l) * (i - m);
+        }
+        st.push(i);
+    }
+    return s;
+}
+
+private static long sumMin(int[] a) {
+    int n = a.length;
+    long s = 0;
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 0; i <= n; i++) {
+        while (!st.isEmpty() && (i == n || a[st.peek()] > a[i])) {
+            int m = st.pop();
+            int l = st.isEmpty() ? -1 : st.peek();
+            s += (long) a[m] * (m - l) * (i - m);
+        }
+        st.push(i);
+    }
+    return s;
+}
+=== 241
+brute: Try all ways to remove k digits.
+opt: Monotonic increasing stack.
+why: Removing a larger digit before a smaller one yields a smaller number.
+expl: For each digit pop while top > digit and k > 0 | Push the digit | Trim leftover k from the end | Strip leading zeros
+code:
+public static String removeKdigits(String num, int k) {
+    StringBuilder sb = new StringBuilder();
+    for (char c : num.toCharArray()) {
+        while (k > 0 && sb.length() > 0 && sb.charAt(sb.length() - 1) > c) { sb.deleteCharAt(sb.length() - 1); k--; }
+        sb.append(c);
+    }
+    sb.setLength(Math.max(0, sb.length() - k));
+    int i = 0;
+    while (i < sb.length() && sb.charAt(i) == '0') i++;
+    String r = sb.substring(i);
+    return r.isEmpty() ? "0" : r;
+}
+=== 242
+brute: For every pair of bars compute min height * width.
+opt: Monotonic stack of increasing heights.
+why: When a bar is popped, the rectangle spans between neighbours that are smaller.
+expl: Iterate with a sentinel 0 at the end | Pop while top > current | width = i - prev - 1 | Track max area
+code:
+public static int largestRectangleArea(int[] heights) {
+    Deque<Integer> st = new ArrayDeque<>();
+    int best = 0, n = heights.length;
+    for (int i = 0; i <= n; i++) {
+        int h = i == n ? 0 : heights[i];
+        while (!st.isEmpty() && heights[st.peek()] > h) {
+            int height = heights[st.pop()];
+            int w = st.isEmpty() ? i : i - st.peek() - 1;
+            best = Math.max(best, height * w);
+        }
+        st.push(i);
+    }
+    return best;
+}
+=== 243
+brute: Check every rectangle in the matrix.
+opt: Build histogram heights per row and reuse largest rectangle.
+why: Each row is the base of a histogram of consecutive ones.
+expl: heights[j] += 1 if '1' else reset | Run histogram solution per row | Keep the max
+code:
+public static int maximalRectangle(char[][] matrix) {
+    if (matrix.length == 0) return 0;
+    int[] h = new int[matrix[0].length];
+    int best = 0;
+    for (char[] row : matrix) {
+        for (int j = 0; j < h.length; j++) h[j] = row[j] == '1' ? h[j] + 1 : 0;
+        best = Math.max(best, largestRectangleArea(h));
+    }
+    return best;
+}
+=== 244
+brute: Use a list and move the accessed item to the end, O(n).
+opt: HashMap plus doubly linked list; LinkedHashMap does this internally.
+why: Both lookup and recency update are O(1).
+expl: get: move to most recent | put: insert or update and mark recent | If over capacity evict the least recent
+code:
+public static void lruCache() {
+    class LRU extends LinkedHashMap<Integer, Integer> {
+        int cap;
+        LRU(int cap) { super(cap, 0.75f, true); this.cap = cap; }
+        protected boolean removeEldestEntry(Map.Entry<Integer, Integer> e) { return size() > cap; }
+        int getOrNeg(int k) { return getOrDefault(k, -1); }
+    }
+    LRU c = new LRU(2);
+    c.put(1, 1); c.put(2, 2);
+    System.out.println(c.getOrNeg(1));
+    c.put(3, 3);
+    System.out.println(c.getOrNeg(2));
+}
+=== 245
+brute: Scan all keys for the lowest frequency.
+opt: Maps for values, frequencies, and a LinkedHashSet per frequency with a min-frequency tracker.
+why: Eviction takes the oldest key of the min-frequency bucket in O(1).
+expl: get: bump the key frequency | put: insert, evict from the min-frequency bucket if full | Update minFreq
+code:
+public static void lfuCache() {
+    class LFU {
+        int cap, min = 0;
+        Map<Integer, Integer> val = new HashMap<>(), freq = new HashMap<>();
+        Map<Integer, LinkedHashSet<Integer>> buckets = new HashMap<>();
+        LFU(int cap) { this.cap = cap; }
+        void touch(int k) {
+            int f = freq.get(k);
+            buckets.get(f).remove(k);
+            if (f == min && buckets.get(f).isEmpty()) min++;
+            freq.put(k, f + 1);
+            buckets.computeIfAbsent(f + 1, x -> new LinkedHashSet<>()).add(k);
+        }
+        int get(int k) {
+            if (!val.containsKey(k)) return -1;
+            touch(k);
+            return val.get(k);
+        }
+        void put(int k, int v) {
+            if (cap == 0) return;
+            if (val.containsKey(k)) { val.put(k, v); touch(k); return; }
+            if (val.size() == cap) {
+                int old = buckets.get(min).iterator().next();
+                buckets.get(min).remove(old);
+                val.remove(old); freq.remove(old);
+            }
+            val.put(k, v); freq.put(k, 1);
+            buckets.computeIfAbsent(1, x -> new LinkedHashSet<>()).add(k);
+            min = 1;
+        }
+    }
+    LFU c = new LFU(2);
+    c.put(1, 1); c.put(2, 2);
+    System.out.println(c.get(1));
+    c.put(3, 3);
+    System.out.println(c.get(2));
+}

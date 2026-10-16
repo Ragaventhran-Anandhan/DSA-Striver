@@ -1,0 +1,681 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>06 - Linked List</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>06 - Linked List</h1></header><main><nav class="toc"><a href="#p143">143. Introduction: Construct LL from Array</a><a href="#p144">144. Length of Linked List</a><a href="#p145">145. Search in Linked List</a><a href="#p146">146. Delete Head of Linked List</a><a href="#p147">147. Delete Tail of Linked List</a><a href="#p148">148. Delete K-th Node</a><a href="#p149">149. Delete Node with Value X</a><a href="#p150">150. Insert at Head</a><a href="#p151">151. Insert at Tail</a><a href="#p152">152. Insert at K-th Position</a><a href="#p153">153. Construct DLL from Array</a><a href="#p154">154. Insert Node Before Head (DLL)</a><a href="#p155">155. Delete Head of DLL</a><a href="#p156">156. Delete Tail of DLL</a><a href="#p157">157. Delete K-th Node of DLL</a><a href="#p158">158. Reverse a DLL</a><a href="#p159">159. Middle of Linked List</a><a href="#p160">160. Reverse Linked List (Iterative)</a><a href="#p161">161. Reverse Linked List (Recursive)</a><a href="#p162">162. Detect a Loop</a><a href="#p163">163. Check if Linked List is Palindrome</a><a href="#p164">164. Sort a List of 0s, 1s and 2s</a><a href="#p165">165. Add 1 to a Number Represented by LL</a><a href="#p166">166. Delete All Occurrences of Key in DLL</a><a href="#p167">167. Find Pairs with Given Sum in Sorted DLL</a><a href="#p168">168. Remove Duplicates from Sorted DLL</a><a href="#p169">169. Find Starting Point of Loop</a><a href="#p170">170. Length of Loop</a><a href="#p171">171. Segregate Odd and Even Indexed Nodes</a><a href="#p172">172. Remove N-th Node from End</a><a href="#p173">173. Delete Middle Node</a><a href="#p174">174. Sort Linked List</a><a href="#p175">175. Intersection of Two Linked Lists</a><a href="#p176">176. Add Two Numbers</a><a href="#p177">177. Rotate List</a><a href="#p178">178. Reverse Nodes in K-Group</a><a href="#p179">179. Flatten a Linked List</a><a href="#p180">180. Copy List with Random Pointer</a></nav><section class="problem" id="p143">
+<h2>Problem 143: Introduction: Construct LL from Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Build linked list.</p><div class="ex">Input: arr=[1,2,3]<br>Output:<pre class="out">1-&gt;2-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Create nodes and wire pointers one by one by hand.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Keep a tail pointer and append each value.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Appending at the tail is O(1) so the whole build is O(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node constructLL(int[] arr) {
+    Node dummy = new Node(0), t = dummy;
+    for (int x : arr) { t.next = new Node(x); t = t.next; }
+    return dummy.next;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Dummy head</li><li>For each value create a node and attach at tail</li><li>Return dummy.next</li></ol></div></div>
+</div></section><section class="problem" id="p144">
+<h2>Problem 144: Length of Linked List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count nodes.</p><div class="ex">Input: head=1-&gt;2-&gt;3<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy to an array and take its length.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk the list counting nodes.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Every node is visited exactly once.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int length(Node head) {
+    int c = 0;
+    for (Node t = head; t != null; t = t.next) c++;
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>count = 0</li><li>Move head until null</li><li>Increment each step</li></ol></div></div>
+</div></section><section class="problem" id="p145">
+<h2>Problem 145: Search in Linked List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Check if x exists.</p><div class="ex">Input: head=1-&gt;2-&gt;3, x=2<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Same linear scan; there is no faster way on a singly linked list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Traverse comparing each value.</p></div>
+<div class="card w"><h3>Why it works</h3><p>No random access, so O(n) is the best possible.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean searchLL(Node head, int x) {
+    for (Node t = head; t != null; t = t.next) if (t.val == x) return true;
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Walk nodes</li><li>Return true on match</li><li>Return false at the end</li></ol></div></div>
+</div></section><section class="problem" id="p146">
+<h2>Problem 146: Delete Head of Linked List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove first node.</p><div class="ex">Input: head=1-&gt;2-&gt;3<br>Output:<pre class="out">2-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild the list without the first node.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Return head.next.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Dropping the first node just moves the head.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node deleteHead(Node head) {
+    return head == null ? null : head.next;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If list is empty return null</li><li>Return head.next</li></ol></div></div>
+</div></section><section class="problem" id="p147">
+<h2>Problem 147: Delete Tail of Linked List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove last node.</p><div class="ex">Input: head=1-&gt;2-&gt;3<br>Output:<pre class="out">1-&gt;2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy all but the last node into a new list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Stop at the second-last node and cut the link.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only the pointer of the second-last node changes.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node deleteTail(Node head) {
+    if (head == null || head.next == null) return null;
+    Node t = head;
+    while (t.next.next != null) t = t.next;
+    t.next = null;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Empty or single node returns null</li><li>Walk until t.next.next is null</li><li>Set t.next = null</li></ol></div></div>
+</div></section><section class="problem" id="p148">
+<h2>Problem 148: Delete K-th Node<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove node at 1-indexed position k.</p><div class="ex">Input: head=1-&gt;2-&gt;3, k=2<br>Output:<pre class="out">1-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild the list skipping index k.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk to the (k-1)-th node and bypass the next one.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Unlinking needs only the previous node.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node deleteKth(Node head, int k) {
+    if (head == null) return null;
+    if (k == 1) return head.next;
+    Node t = head;
+    for (int i = 1; i &lt; k - 1 &amp;&amp; t.next != null; i++) t = t.next;
+    if (t.next != null) t.next = t.next.next;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If k == 1 return head.next</li><li>Move to position k-1</li><li>prev.next = prev.next.next</li></ol></div></div>
+</div></section><section class="problem" id="p149">
+<h2>Problem 149: Delete Node with Value X<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove first node holding x.</p><div class="ex">Input: head=1-&gt;2-&gt;3, x=2<br>Output:<pre class="out">1-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild without the value.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track the previous node and unlink the first match.</p></div>
+<div class="card w"><h3>Why it works</h3><p>One pass is enough since only the first occurrence is removed.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node deleteValue(Node head, int x) {
+    if (head == null) return null;
+    if (head.val == x) return head.next;
+    Node p = head;
+    while (p.next != null &amp;&amp; p.next.val != x) p = p.next;
+    if (p.next != null) p.next = p.next.next;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If head holds x return head.next</li><li>Walk with prev and curr</li><li>Unlink on match</li></ol></div></div>
+</div></section><section class="problem" id="p150">
+<h2>Problem 150: Insert at Head<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insert new node at head.</p><div class="ex">Input: head=2-&gt;3, val=1<br>Output:<pre class="out">1-&gt;2-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy list into a new one with val first.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Create a node pointing to the old head.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Prepending is O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node insertHead(Node head, int val) {
+    Node n = new Node(val);
+    n.next = head;
+    return n;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>node = new Node(val)</li><li>node.next = head</li><li>Return node</li></ol></div></div>
+</div></section><section class="problem" id="p151">
+<h2>Problem 151: Insert at Tail<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insert at end.</p><div class="ex">Input: head=1-&gt;2, val=3<br>Output:<pre class="out">1-&gt;2-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild with the new value at the end.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk to the last node and link the new one.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only the tail pointer changes.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node insertTail(Node head, int val) {
+    Node n = new Node(val);
+    if (head == null) return n;
+    Node t = head;
+    while (t.next != null) t = t.next;
+    t.next = n;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If empty return new node</li><li>Walk to the end</li><li>tail.next = new node</li></ol></div></div>
+</div></section><section class="problem" id="p152">
+<h2>Problem 152: Insert at K-th Position<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insert so new node is at position k.</p><div class="ex">Input: head=1-&gt;3, k=2, val=2<br>Output:<pre class="out">1-&gt;2-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild with the node inserted.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk to node k-1 and splice in.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Splicing needs only the previous node.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node insertKth(Node head, int k, int val) {
+    Node n = new Node(val);
+    if (k == 1) { n.next = head; return n; }
+    Node t = head;
+    for (int i = 1; i &lt; k - 1 &amp;&amp; t != null; i++) t = t.next;
+    if (t == null) return head;
+    n.next = t.next;
+    t.next = n;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>k == 1 inserts at head</li><li>Move to node k-1</li><li>n.next = prev.next, prev.next = n</li></ol></div></div>
+</div></section><section class="problem" id="p153">
+<h2>Problem 153: Construct DLL from Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Build doubly linked list.</p><div class="ex">Input: arr=[1,2,3]<br>Output:<pre class="out">1&lt;-&gt;2&lt;-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Create nodes and link by hand.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Keep a tail and set both next and prev.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Doubly linked requires updating two pointers per insertion.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode constructDLL(int[] arr) {
+    if (arr.length == 0) return null;
+    DNode head = new DNode(arr[0]), t = head;
+    for (int i = 1; i &lt; arr.length; i++) {
+        DNode n = new DNode(arr[i]);
+        t.next = n; n.prev = t; t = n;
+    }
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start with the first node</li><li>For each value link tail.next and node.prev</li><li>Advance tail</li></ol></div></div>
+</div></section><section class="problem" id="p154">
+<h2>Problem 154: Insert Node Before Head (DLL)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insert at head.</p><div class="ex">Input: head=2&lt;-&gt;3, val=1<br>Output:<pre class="out">1&lt;-&gt;2&lt;-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild the list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Link the new node in front of head.</p></div>
+<div class="card w"><h3>Why it works</h3><p>O(1) pointer updates.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode insertBeforeHead(DNode head, int val) {
+    DNode n = new DNode(val);
+    n.next = head;
+    if (head != null) head.prev = n;
+    return n;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>n.next = head</li><li>If head != null head.prev = n</li><li>Return n</li></ol></div></div>
+</div></section><section class="problem" id="p155">
+<h2>Problem 155: Delete Head of DLL<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove first node.</p><div class="ex">Input: head=1&lt;-&gt;2&lt;-&gt;3<br>Output:<pre class="out">2&lt;-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild without the head.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Move head forward and clear its prev.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only the new head&#x27;s prev changes.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode deleteHeadDLL(DNode head) {
+    if (head == null || head.next == null) return null;
+    head = head.next;
+    head.prev = null;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Empty or single returns null</li><li>head = head.next</li><li>head.prev = null</li></ol></div></div>
+</div></section><section class="problem" id="p156">
+<h2>Problem 156: Delete Tail of DLL<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove last node.</p><div class="ex">Input: head=1&lt;-&gt;2&lt;-&gt;3<br>Output:<pre class="out">1&lt;-&gt;2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild without the tail.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk to the last node and cut it using prev.</p></div>
+<div class="card w"><h3>Why it works</h3><p>prev gives direct access to the second-last node.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode deleteTailDLL(DNode head) {
+    if (head == null || head.next == null) return null;
+    DNode t = head;
+    while (t.next != null) t = t.next;
+    t.prev.next = null;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Single or empty returns null</li><li>Walk to the tail</li><li>tail.prev.next = null</li></ol></div></div>
+</div></section><section class="problem" id="p157">
+<h2>Problem 157: Delete K-th Node of DLL<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove k-th node.</p><div class="ex">Input: head=1&lt;-&gt;2&lt;-&gt;3, k=2<br>Output:<pre class="out">1&lt;-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild skipping the k-th node.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk to the k-th node then relink neighbours.</p></div>
+<div class="card w"><h3>Why it works</h3><p>prev and next links make the unlink O(1) after locating the node.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode deleteKthDLL(DNode head, int k) {
+    DNode t = head;
+    for (int i = 1; i &lt; k &amp;&amp; t != null; i++) t = t.next;
+    if (t == null) return head;
+    if (t.prev != null) t.prev.next = t.next; else head = t.next;
+    if (t.next != null) t.next.prev = t.prev;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find the k-th node</li><li>Fix prev.next and next.prev</li><li>Handle head/tail cases</li></ol></div></div>
+</div></section><section class="problem" id="p158">
+<h2>Problem 158: Reverse a DLL<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse the list.</p><div class="ex">Input: head=1&lt;-&gt;2&lt;-&gt;3<br>Output:<pre class="out">3&lt;-&gt;2&lt;-&gt;1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy values to an array and rewrite reversed.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Swap prev and next in every node.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Reversing direction of links reverses the list in place.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode reverseDLL(DNode head) {
+    DNode cur = head, last = null;
+    while (cur != null) {
+        last = cur.prev;
+        cur.prev = cur.next;
+        cur.next = last;
+        cur = cur.prev;
+    }
+    return last == null ? head : last.prev;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Walk through the list</li><li>Swap prev and next for each node</li><li>New head is the last visited node</li></ol></div></div>
+</div></section><section class="problem" id="p159">
+<h2>Problem 159: Middle of Linked List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return middle node (second if even).</p><div class="ex">Input: head=1-&gt;2-&gt;3-&gt;4-&gt;5<br>Output:<pre class="out">3-&gt;4-&gt;5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count nodes then walk to n/2.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Slow and fast pointers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Fast moves twice as quickly, so slow is in the middle when fast ends.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node middleNode(Node head) {
+    Node slow = head, fast = head;
+    while (fast != null &amp;&amp; fast.next != null) { slow = slow.next; fast = fast.next.next; }
+    return slow;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>slow = fast = head</li><li>slow moves one, fast moves two</li><li>Return slow</li></ol></div></div>
+</div></section><section class="problem" id="p160">
+<h2>Problem 160: Reverse Linked List (Iterative)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse list.</p><div class="ex">Input: head=1-&gt;2-&gt;3<br>Output:<pre class="out">3-&gt;2-&gt;1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy to an array and rebuild.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reverse pointers while walking.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each node&#x27;s next is redirected to its previous node.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node reverseIterative(Node head) {
+    Node prev = null;
+    while (head != null) {
+        Node nx = head.next;
+        head.next = prev;
+        prev = head;
+        head = nx;
+    }
+    return prev;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>prev = null</li><li>Save next</li><li>cur.next = prev</li><li>Advance</li></ol></div></div>
+</div></section><section class="problem" id="p161">
+<h2>Problem 161: Reverse Linked List (Recursive)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse list using recursion.</p><div class="ex">Input: head=1-&gt;2-&gt;3<br>Output:<pre class="out">3-&gt;2-&gt;1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use a stack.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reverse the rest recursively then attach the head at the end.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The recursion returns the new head while head.next.next = head fixes the link.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node reverseRecursive(Node head) {
+    if (head == null || head.next == null) return head;
+    Node nh = reverseRecursive(head.next);
+    head.next.next = head;
+    head.next = null;
+    return nh;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Base: null or single</li><li>newHead = reverse(head.next)</li><li>head.next.next = head</li><li>head.next = null</li></ol></div></div>
+</div></section><section class="problem" id="p162">
+<h2>Problem 162: Detect a Loop<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if there is a cycle.</p><div class="ex">Input: head=3-&gt;2-&gt;0-&gt;-4-&gt;(back to 2)<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store visited nodes in a HashSet.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Floyd tortoise and hare.</p></div>
+<div class="card w"><h3>Why it works</h3><p>In a cycle the fast pointer eventually laps the slow one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean hasCycle(Node head) {
+    Node slow = head, fast = head;
+    while (fast != null &amp;&amp; fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>slow, fast</li><li>Move 1 and 2 steps</li><li>If they meet there is a cycle</li></ol></div></div>
+</div></section><section class="problem" id="p163">
+<h2>Problem 163: Check if Linked List is Palindrome<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Check palindrome.</p><div class="ex">Input: head=1-&gt;2-&gt;2-&gt;1<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy values to an array and check it.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Find the middle, reverse the second half, compare.</p></div>
+<div class="card w"><h3>Why it works</h3><p>O(1) extra space comparing halves.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isPalindromeLL(Node head) {
+    Node slow = head, fast = head;
+    while (fast != null &amp;&amp; fast.next != null) { slow = slow.next; fast = fast.next.next; }
+    Node prev = null;
+    while (slow != null) { Node nx = slow.next; slow.next = prev; prev = slow; slow = nx; }
+    for (Node a = head, b = prev; b != null; a = a.next, b = b.next) if (a.val != b.val) return false;
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find the middle</li><li>Reverse the second half</li><li>Compare both halves</li><li>Return the result</li></ol></div></div>
+</div></section><section class="problem" id="p164">
+<h2>Problem 164: Sort a List of 0s, 1s and 2s<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort list of 0/1/2.</p><div class="ex">Input: head=1-&gt;0-&gt;2-&gt;1<br>Output:<pre class="out">0-&gt;1-&gt;1-&gt;2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort the values with any sort.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Three dummy lists for 0, 1, 2 then join.</p></div>
+<div class="card w"><h3>Why it works</h3><p>One pass and no value changes, only relinking.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node sortZeroOneTwo(Node head) {
+    Node z = new Node(0), o = new Node(0), t = new Node(0);
+    Node zt = z, ot = o, tt = t;
+    for (Node c = head; c != null; c = c.next) {
+        if (c.val == 0) { zt.next = c; zt = c; }
+        else if (c.val == 1) { ot.next = c; ot = c; }
+        else { tt.next = c; tt = c; }
+    }
+    zt.next = o.next != null ? o.next : t.next;
+    ot.next = t.next;
+    tt.next = null;
+    return z.next;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Three heads and tails</li><li>Append each node to its list</li><li>Join zero-&gt;one-&gt;two</li></ol></div></div>
+</div></section><section class="problem" id="p165">
+<h2>Problem 165: Add 1 to a Number Represented by LL<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Digits in list, add one.</p><div class="ex">Input: head=1-&gt;2-&gt;9<br>Output:<pre class="out">1-&gt;3-&gt;0</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to a number and add one (overflows).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursive carry from the tail.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Carry propagates from the last digit backwards.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node addOne(Node head) {
+    int carry = helper(head);
+    if (carry == 1) { Node n = new Node(1); n.next = head; return n; }
+    return head;
+}
+
+private static int helper(Node n) {
+    if (n == null) return 1;
+    int sum = n.val + helper(n.next);
+    n.val = sum % 10;
+    return sum / 10;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Recurse to the end</li><li>Add 1 and compute carry on the way back</li><li>If carry remains prepend a node</li></ol></div></div>
+</div></section><section class="problem" id="p166">
+<h2>Problem 166: Delete All Occurrences of Key in DLL<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove every node with key.</p><div class="ex">Input: head=1&lt;-&gt;2&lt;-&gt;1&lt;-&gt;3, key=1<br>Output:<pre class="out">2&lt;-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild without the key.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk once and unlink every node holding key.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Doubly links let each deletion be O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode deleteAllOccurrences(DNode head, int key) {
+    DNode t = head;
+    while (t != null) {
+        DNode nx = t.next;
+        if (t.val == key) {
+            if (t.prev != null) t.prev.next = t.next; else head = t.next;
+            if (t.next != null) t.next.prev = t.prev;
+        }
+        t = nx;
+    }
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Walk nodes</li><li>If val == key unlink</li><li>If it was the head move head</li></ol></div></div>
+</div></section><section class="problem" id="p167">
+<h2>Problem 167: Find Pairs with Given Sum in Sorted DLL<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All pairs summing to target.</p><div class="ex">Input: head=1&lt;-&gt;2&lt;-&gt;4&lt;-&gt;5&lt;-&gt;6&lt;-&gt;8&lt;-&gt;9, target=7<br>Output:<pre class="out">[[1,6],[2,5]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every pair, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers from head and tail of the sorted list.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sorted order lets the pointers move by comparing the sum.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;int[]&gt; findPairsDLL(DNode head, int target) {
+    List&lt;int[]&gt; res = new ArrayList&lt;&gt;();
+    if (head == null) return res;
+    DNode l = head, r = head;
+    while (r.next != null) r = r.next;
+    while (l != r &amp;&amp; r.next != l) {
+        int s = l.val + r.val;
+        if (s == target) { res.add(new int[]{l.val, r.val}); l = l.next; r = r.prev; }
+        else if (s &lt; target) l = l.next;
+        else r = r.prev;
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find tail</li><li>While l != r and r.next != l compute sum</li><li>Record pairs and move both</li><li>Else move one pointer</li></ol></div></div>
+</div></section><section class="problem" id="p168">
+<h2>Problem 168: Remove Duplicates from Sorted DLL<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Remove duplicate nodes.</p><div class="ex">Input: head=1&lt;-&gt;1&lt;-&gt;2&lt;-&gt;3&lt;-&gt;3<br>Output:<pre class="out">1&lt;-&gt;2&lt;-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use a set and rebuild.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Skip nodes equal to the next one.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sorted means duplicates are adjacent.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static DNode removeDuplicatesDLL(DNode head) {
+    DNode t = head;
+    while (t != null &amp;&amp; t.next != null) {
+        if (t.val == t.next.val) {
+            DNode d = t.next;
+            t.next = d.next;
+            if (d.next != null) d.next.prev = t;
+        } else t = t.next;
+    }
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Walk nodes</li><li>While next has the same value unlink it</li><li>Move forward</li></ol></div></div>
+</div></section><section class="problem" id="p169">
+<h2>Problem 169: Find Starting Point of Loop<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return node where cycle begins.</p><div class="ex">Input: head=3-&gt;2-&gt;0-&gt;-4-&gt;(back to 2)<br>Output:<pre class="out">node 2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store visited nodes in a set; the first repeat is the start.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Floyd, then restart one pointer at head.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Distance from head to cycle start equals distance from meeting point to cycle start.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node detectCycle(Node head) {
+    Node slow = head, fast = head;
+    while (fast != null &amp;&amp; fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) {
+            slow = head;
+            while (slow != fast) { slow = slow.next; fast = fast.next; }
+            return slow;
+        }
+    }
+    return null;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find the meeting point</li><li>slow = head</li><li>Move both one step until they meet</li><li>That node is the start</li></ol></div></div>
+</div></section><section class="problem" id="p170">
+<h2>Problem 170: Length of Loop<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length of the cycle, 0 if none.</p><div class="ex">Input: head=3-&gt;2-&gt;0-&gt;-4-&gt;(back to 2)<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store indexes in a map to compute the gap.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>After the meeting point count steps to return.</p></div>
+<div class="card w"><h3>Why it works</h3><p>One lap around the cycle equals its length.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int loopLength(Node head) {
+    Node slow = head, fast = head;
+    while (fast != null &amp;&amp; fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) {
+            int c = 1;
+            for (Node t = slow.next; t != slow; t = t.next) c++;
+            return c;
+        }
+    }
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Floyd to find the meeting node</li><li>Walk until back to it</li><li>Count steps</li></ol></div></div>
+</div></section><section class="problem" id="p171">
+<h2>Problem 171: Segregate Odd and Even Indexed Nodes<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Group odd-indexed nodes then even.</p><div class="ex">Input: head=1-&gt;2-&gt;3-&gt;4-&gt;5<br>Output:<pre class="out">1-&gt;3-&gt;5-&gt;2-&gt;4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy to arrays by index parity and rebuild.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers for odd and even chains.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Relinking in place keeps O(1) space.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node oddEvenList(Node head) {
+    if (head == null || head.next == null) return head;
+    Node odd = head, even = head.next, evenHead = even;
+    while (even != null &amp;&amp; even.next != null) {
+        odd.next = even.next;
+        odd = odd.next;
+        even.next = odd.next;
+        even = even.next;
+    }
+    odd.next = evenHead;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>odd = head, even = head.next</li><li>Link odd.next = even.next, advance</li><li>Join odd tail to even head</li></ol></div></div>
+</div></section><section class="problem" id="p172">
+<h2>Problem 172: Remove N-th Node from End<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Delete n-th node from end.</p><div class="ex">Input: head=1-&gt;2-&gt;3-&gt;4-&gt;5, n=2<br>Output:<pre class="out">1-&gt;2-&gt;3-&gt;5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count length then delete the (len-n)-th node.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers separated by n nodes.</p></div>
+<div class="card w"><h3>Why it works</h3><p>When fast reaches the end slow is just before the target.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node removeNthFromEnd(Node head, int n) {
+    Node dummy = new Node(0);
+    dummy.next = head;
+    Node fast = dummy, slow = dummy;
+    for (int i = 0; i &lt;= n; i++) fast = fast.next;
+    while (fast != null) { fast = fast.next; slow = slow.next; }
+    slow.next = slow.next.next;
+    return dummy.next;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Dummy head</li><li>Move fast n+1 steps</li><li>Move both until fast is null</li><li>slow.next = slow.next.next</li></ol></div></div>
+</div></section><section class="problem" id="p173">
+<h2>Problem 173: Delete Middle Node<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Delete the middle node.</p><div class="ex">Input: head=1-&gt;2-&gt;3-&gt;4-&gt;5<br>Output:<pre class="out">1-&gt;2-&gt;4-&gt;5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count nodes and delete the middle.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Slow and fast with slow stopping before the middle.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Starting fast two steps ahead puts slow just before the middle.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node deleteMiddle(Node head) {
+    if (head == null || head.next == null) return null;
+    Node slow = head, fast = head.next.next;
+    while (fast != null &amp;&amp; fast.next != null) { slow = slow.next; fast = fast.next.next; }
+    slow.next = slow.next.next;
+    return head;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Single node returns null</li><li>slow = head, fast = head.next.next</li><li>Move until fast ends</li><li>slow.next = slow.next.next</li></ol></div></div>
+</div></section><section class="problem" id="p174">
+<h2>Problem 174: Sort Linked List<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort using merge sort.</p><div class="ex">Input: head=4-&gt;2-&gt;1-&gt;3<br>Output:<pre class="out">1-&gt;2-&gt;3-&gt;4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy values to an array, sort, rebuild.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Merge sort on the list using middle split and merge.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Merge sort needs no random access and is O(n log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node sortList(Node head) {
+    if (head == null || head.next == null) return head;
+    Node slow = head, fast = head.next;
+    while (fast != null &amp;&amp; fast.next != null) { slow = slow.next; fast = fast.next.next; }
+    Node right = slow.next;
+    slow.next = null;
+    Node a = sortList(head), b = sortList(right);
+    Node d = new Node(0), t = d;
+    while (a != null &amp;&amp; b != null) {
+        if (a.val &lt;= b.val) { t.next = a; a = a.next; } else { t.next = b; b = b.next; }
+        t = t.next;
+    }
+    t.next = a != null ? a : b;
+    return d.next;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find the middle</li><li>Sort each half</li><li>Merge two sorted lists</li></ol></div></div>
+</div></section><section class="problem" id="p175">
+<h2>Problem 175: Intersection of Two Linked Lists<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return intersecting node.</p><div class="ex">Input: a=4-&gt;1-&gt;8-&gt;4-&gt;5, b=5-&gt;6-&gt;1-&gt;8-&gt;4-&gt;5<br>Output:<pre class="out">node 8</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store all nodes of one list in a set.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers that switch lists at the end.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Both pointers travel lenA + lenB nodes, so they meet at the intersection.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node getIntersectionNode(Node a, Node b) {
+    Node p = a, q = b;
+    while (p != q) {
+        p = p == null ? b : p.next;
+        q = q == null ? a : q.next;
+    }
+    return p;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>p = a, q = b</li><li>Move both; at null jump to the other head</li><li>Stop when p == q</li></ol></div></div>
+</div></section><section class="problem" id="p176">
+<h2>Problem 176: Add Two Numbers<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Digits stored in reverse order.</p><div class="ex">Input: a=2-&gt;4-&gt;3, b=5-&gt;6-&gt;4<br>Output:<pre class="out">7-&gt;0-&gt;8</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to numbers and add (overflow risk).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Digit-by-digit addition with carry.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Digits are in reverse order so the least significant digit comes first.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node addTwoNumbers(Node a, Node b) {
+    Node d = new Node(0), t = d;
+    int carry = 0;
+    while (a != null || b != null || carry != 0) {
+        int s = carry + (a != null ? a.val : 0) + (b != null ? b.val : 0);
+        t.next = new Node(s % 10);
+        t = t.next;
+        carry = s / 10;
+        if (a != null) a = a.next;
+        if (b != null) b = b.next;
+    }
+    return d.next;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Dummy head and carry</li><li>Sum digits plus carry</li><li>Create a node for sum%10</li><li>Continue until lists and carry end</li></ol></div></div>
+</div></section><section class="problem" id="p177">
+<h2>Problem 177: Rotate List<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rotate right by k places.</p><div class="ex">Input: head=1-&gt;2-&gt;3-&gt;4-&gt;5, k=2<br>Output:<pre class="out">4-&gt;5-&gt;1-&gt;2-&gt;3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rotate by one, k times.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Make the list circular and cut at length-k.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The new tail is at position len-k%len.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node rotateRight(Node head, int k) {
+    if (head == null || head.next == null || k == 0) return head;
+    int len = 1;
+    Node tail = head;
+    while (tail.next != null) { tail = tail.next; len++; }
+    k %= len;
+    if (k == 0) return head;
+    tail.next = head;
+    Node t = head;
+    for (int i = 1; i &lt; len - k; i++) t = t.next;
+    Node nh = t.next;
+    t.next = null;
+    return nh;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find length and tail</li><li>tail.next = head</li><li>Move len-k%len steps</li><li>Cut the cycle</li></ol></div></div>
+</div></section><section class="problem" id="p178">
+<h2>Problem 178: Reverse Nodes in K-Group<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Reverse every k nodes.</p><div class="ex">Input: head=1-&gt;2-&gt;3-&gt;4-&gt;5, k=2<br>Output:<pre class="out">2-&gt;1-&gt;4-&gt;3-&gt;5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy values to an array and reverse segments.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reverse each k nodes in place, linking groups.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A group is reversed only if k nodes exist.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node reverseKGroup(Node head, int k) {
+    Node t = head;
+    for (int i = 0; i &lt; k; i++) {
+        if (t == null) return head;
+        t = t.next;
+    }
+    Node prev = null, cur = head;
+    for (int i = 0; i &lt; k; i++) { Node nx = cur.next; cur.next = prev; prev = cur; cur = nx; }
+    head.next = reverseKGroup(cur, k);
+    return prev;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Check k nodes remain</li><li>Reverse the group</li><li>Connect with the result of the rest</li></ol></div></div>
+</div></section><section class="problem" id="p179">
+<h2>Problem 179: Flatten a Linked List<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Each node has next and bottom (sorted); flatten via bottom.</p><div class="ex">Input: 5-&gt;10-&gt;19-&gt;28 with bottoms<br>Output:<pre class="out">sorted bottom chain</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Collect every value, sort, rebuild with bottom pointers.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Merge bottom lists pairwise recursively.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each column is sorted, so merging two sorted lists repeatedly keeps order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node flatten(Node head) {
+    if (head == null || head.next == null) return head;
+    head.next = flatten(head.next);
+    return mergeBottom(head, head.next);
+}
+
+private static Node mergeBottom(Node a, Node b) {
+    Node d = new Node(0), t = d;
+    while (a != null &amp;&amp; b != null) {
+        if (a.val &lt;= b.val) { t.bottom = a; a = a.bottom; } else { t.bottom = b; b = b.bottom; }
+        t = t.bottom;
+    }
+    t.bottom = a != null ? a : b;
+    d.bottom.next = null;
+    return d.bottom;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Flatten the rest first</li><li>Merge head with the flattened rest through bottom</li><li>Return merged head</li></ol></div></div>
+</div></section><section class="problem" id="p180">
+<h2>Problem 180: Copy List with Random Pointer<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Deep copy list with random pointers.</p><div class="ex">Input: head=[[7,null],[13,0],[11,4]]<br>Output:<pre class="out">deep copy</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>HashMap from old to new nodes (O(n) extra space).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Interleave copies, set randoms, split.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Copy sits right after the original, so copy.random = original.random.next.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node copyRandomList(Node head) {
+    if (head == null) return null;
+    for (Node t = head; t != null; t = t.next.next) {
+        Node c = new Node(t.val);
+        c.next = t.next;
+        t.next = c;
+    }
+    for (Node t = head; t != null; t = t.next.next)
+        if (t.random != null) t.next.random = t.random.next;
+    Node nh = head.next;
+    for (Node t = head; t != null; t = t.next) {
+        Node c = t.next;
+        t.next = c.next;
+        if (c.next != null) c.next = c.next.next;
+    }
+    return nh;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Insert a copy after each node</li><li>Set copy random pointers</li><li>Separate the two lists</li></ol></div></div>
+</div></section></main></body></html>

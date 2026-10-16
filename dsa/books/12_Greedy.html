@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>12 - Greedy</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>12 - Greedy</h1></header><main><nav class="toc"><a href="#p277">277. Assign Cookies</a><a href="#p278">278. Fractional Knapsack</a><a href="#p279">279. Greedy Algorithm to Find Minimum Number of Coins</a><a href="#p280">280. Lemonade Change</a><a href="#p281">281. Valid Parenthesis String</a><a href="#p282">282. N Meetings in One Room</a><a href="#p283">283. Jump Game I</a><a href="#p284">284. Jump Game II</a><a href="#p285">285. Minimum Platforms</a><a href="#p286">286. Job Sequencing Problem</a><a href="#p287">287. Candy</a><a href="#p288">288. Shortest Job First</a><a href="#p289">289. Page Faults in LRU</a><a href="#p290">290. Insert Interval</a><a href="#p291">291. Non-overlapping Intervals</a><a href="#p292">292. Maximum Meetings in One Room (Indices)</a></nav><section class="problem" id="p277">
+<h2>Problem 277: Assign Cookies<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max content children.</p><div class="ex">Input: greed=[1,2,3], cookies=[1,1]<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all child-cookie assignments.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort both and match greedily.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Giving the smallest sufficient cookie to the least greedy child wastes nothing.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findContentChildren(int[] greed, int[] cookies) {
+    Arrays.sort(greed);
+    Arrays.sort(cookies);
+    int i = 0;
+    for (int c : cookies) if (i &lt; greed.length &amp;&amp; c &gt;= greed[i]) i++;
+    return i;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort greed and cookies</li><li>Two pointers</li><li>If cookie &gt;= greed assign and move child</li><li>Always move cookie</li></ol></div></div>
+</div></section><section class="problem" id="p278">
+<h2>Problem 278: Fractional Knapsack<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max value, items divisible.</p><div class="ex">Input: val=[60,100,120], wt=[10,20,30], cap=50<br>Output:<pre class="out">240.0</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all combinations of fractions.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by value/weight descending and take greedily.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The best ratio item always gives the most value per unit.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static double fractionalKnapsack(int[] val, int[] wt, int cap) {
+    int n = val.length;
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i &lt; n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -&gt; Double.compare((double) val[b] / wt[b], (double) val[a] / wt[a]));
+    double total = 0;
+    for (int i : idx) {
+        if (cap &gt;= wt[i]) { total += val[i]; cap -= wt[i]; }
+        else { total += (double) val[i] * cap / wt[i]; break; }
+    }
+    return total;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort items by ratio</li><li>Take whole items while capacity remains</li><li>Take a fraction of the last item</li></ol></div></div>
+</div></section><section class="problem" id="p279">
+<h2>Problem 279: Greedy Algorithm to Find Minimum Number of Coins<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Using denominations 1,2,5,10,20,50,100,500,1000.</p><div class="ex">Input: amount=49<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>DP over all coin counts.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Greedy with the largest denomination first.</p></div>
+<div class="card w"><h3>Why it works</h3><p>For this canonical coin system greedy is optimal.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minCoins(int amount) {
+    int[] d = {1000, 500, 100, 50, 20, 10, 5, 2, 1};
+    int c = 0;
+    for (int x : d) { c += amount / x; amount %= x; }
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Denominations in descending order</li><li>Use as many of each as possible</li><li>Count coins</li></ol></div></div>
+</div></section><section class="problem" id="p280">
+<h2>Problem 280: Lemonade Change<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Give correct change.</p><div class="ex">Input: bills=[5,5,5,10,20]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all ways to give change.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track the counts of 5s and 10s greedily.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Giving the largest bill possible keeps the small bills for later.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean lemonadeChange(int[] bills) {
+    int five = 0, ten = 0;
+    for (int b : bills) {
+        if (b == 5) five++;
+        else if (b == 10) { if (five == 0) return false; five--; ten++; }
+        else {
+            if (ten &gt; 0 &amp;&amp; five &gt; 0) { ten--; five--; }
+            else if (five &gt;= 3) five -= 3;
+            else return false;
+        }
+    }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>5: five++</li><li>10: need a 5</li><li>20: prefer 10+5 else 5+5+5</li></ol></div></div>
+</div></section><section class="problem" id="p281">
+<h2>Problem 281: Valid Parenthesis String<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>&#x27;*&#x27; can be (, ) or empty.</p><div class="ex">Input: s=&quot;(*)&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every assignment for &#x27;*&#x27;.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track a range [lo, hi] of possible open counts.</p></div>
+<div class="card w"><h3>Why it works</h3><p>&#x27;*&#x27; widens the range; the string is valid if 0 stays in the range at the end.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean checkValidString(String s) {
+    int lo = 0, hi = 0;
+    for (char c : s.toCharArray()) {
+        if (c == &#x27;(&#x27;) { lo++; hi++; }
+        else if (c == &#x27;)&#x27;) { lo--; hi--; }
+        else { lo--; hi++; }
+        if (hi &lt; 0) return false;
+        lo = Math.max(lo, 0);
+    }
+    return lo == 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>&#x27;(&#x27; increments both</li><li>&#x27;)&#x27; decrements both</li><li>&#x27;*&#x27; lo-- and hi++</li><li>If hi &lt; 0 return false</li><li>lo is kept &gt;= 0</li></ol></div></div>
+</div></section><section class="problem" id="p282">
+<h2>Problem 282: N Meetings in One Room<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max meetings in one room.</p><div class="ex">Input: start=[1,3,0,5,8,5], end=[2,4,6,7,9,9]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all subsets of meetings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by end time and pick non-overlapping meetings.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Finishing earliest leaves the most time for the rest.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxMeetings(int[] start, int[] end) {
+    int n = start.length;
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i &lt; n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -&gt; end[a] - end[b]);
+    int count = 0, last = -1;
+    for (int i : idx) if (start[i] &gt; last) { count++; last = end[i]; }
+    return count;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort meetings by end</li><li>Pick if start &gt; last end</li><li>Update last end</li></ol></div></div>
+</div></section><section class="problem" id="p283">
+<h2>Problem 283: Jump Game I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Can you reach last index.</p><div class="ex">Input: arr=[2,3,1,1,4]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all jump sequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track the farthest reachable index.</p></div>
+<div class="card w"><h3>Why it works</h3><p>If you reach index i, every index below the farthest is reachable.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean canJump(int[] arr) {
+    int reach = 0;
+    for (int i = 0; i &lt; arr.length; i++) {
+        if (i &gt; reach) return false;
+        reach = Math.max(reach, i + arr[i]);
+    }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>reach = 0</li><li>If i &gt; reach return false</li><li>reach = max(reach, i + arr[i])</li></ol></div></div>
+</div></section><section class="problem" id="p284">
+<h2>Problem 284: Jump Game II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min jumps to reach end.</p><div class="ex">Input: arr=[2,3,1,1,4]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>BFS or DP over all jumps.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Greedy with the current range end and farthest reach.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each time the current range is exhausted we need one more jump to the farthest point.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int jump(int[] arr) {
+    int jumps = 0, end = 0, far = 0;
+    for (int i = 0; i &lt; arr.length - 1; i++) {
+        far = Math.max(far, i + arr[i]);
+        if (i == end) { jumps++; end = far; }
+    }
+    return jumps;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>jumps = 0, end = 0, far = 0</li><li>Update far</li><li>When i == end jumps++ and end = far</li></ol></div></div>
+</div></section><section class="problem" id="p285">
+<h2>Problem 285: Minimum Platforms<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min platforms needed.</p><div class="ex">Input: arr=[900,940,950,1100,1500,1800], dep=[910,1200,1120,1130,1900,2000]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check the overlap count at each time.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort arrivals and departures, two pointers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A platform is needed when the next arrival precedes the earliest departure.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findPlatform(int[] arr, int[] dep) {
+    Arrays.sort(arr);
+    Arrays.sort(dep);
+    int i = 0, j = 0, cur = 0, best = 0;
+    while (i &lt; arr.length) {
+        if (arr[i] &lt;= dep[j]) { cur++; i++; }
+        else { cur--; j++; }
+        best = Math.max(best, cur);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort both</li><li>Move through arrivals</li><li>If arr &lt;= dep[j] platforms++ else j++</li><li>Track the max</li></ol></div></div>
+</div></section><section class="problem" id="p286">
+<h2>Problem 286: Job Sequencing Problem<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return {jobs, maxProfit}.</p><div class="ex">Input: deadline=[4,1,1,1], profit=[20,10,40,30]<br>Output:<pre class="out">[2,60]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all job subsets and orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by profit descending and place each job in the latest free slot.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Placing a high-profit job as late as possible leaves earlier slots for others.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] jobSequencing(int[] deadline, int[] profit) {
+    int n = deadline.length, maxD = 0;
+    for (int d : deadline) maxD = Math.max(maxD, d);
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i &lt; n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -&gt; profit[b] - profit[a]);
+    boolean[] slot = new boolean[maxD + 1];
+    int jobs = 0, total = 0;
+    for (int i : idx) {
+        for (int d = deadline[i]; d &gt;= 1; d--) {
+            if (!slot[d]) { slot[d] = true; jobs++; total += profit[i]; break; }
+        }
+    }
+    return new int[]{jobs, total};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort by profit</li><li>Find the last free slot &lt;= deadline</li><li>Place the job and add its profit</li></ol></div></div>
+</div></section><section class="problem" id="p287">
+<h2>Problem 287: Candy<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min candies to children.</p><div class="ex">Input: ratings=[1,0,2]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try distributions until all rules hold.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two passes: left to right and right to left.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each neighbour constraint is satisfied by one of the passes, and max combines them.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int candy(int[] ratings) {
+    int n = ratings.length;
+    int[] c = new int[n];
+    Arrays.fill(c, 1);
+    for (int i = 1; i &lt; n; i++) if (ratings[i] &gt; ratings[i - 1]) c[i] = c[i - 1] + 1;
+    for (int i = n - 2; i &gt;= 0; i--) if (ratings[i] &gt; ratings[i + 1]) c[i] = Math.max(c[i], c[i + 1] + 1);
+    int sum = 0;
+    for (int x : c) sum += x;
+    return sum;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Everyone starts with 1</li><li>Left pass: more rating than left gets left+1</li><li>Right pass: more than right gets max(self, right+1)</li><li>Sum</li></ol></div></div>
+</div></section><section class="problem" id="p288">
+<h2>Problem 288: Shortest Job First<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Average waiting time.</p><div class="ex">Input: burst=[4,3,7,1,2]<br>Output:<pre class="out">4.0</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all process orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by burst time and accumulate waiting time.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Running the shortest jobs first minimizes total waiting.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static double sjfAvgWaitTime(int[] burst) {
+    int[] b = burst.clone();
+    Arrays.sort(b);
+    long wait = 0, t = 0;
+    for (int x : b) { wait += t; t += x; }
+    return (double) wait / b.length;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort bursts</li><li>wait of job i = sum of earlier bursts</li><li>Average = total wait / n</li></ol></div></div>
+</div></section><section class="problem" id="p289">
+<h2>Problem 289: Page Faults in LRU<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count page faults.</p><div class="ex">Input: pages=[7,0,1,2,0,3,0,4], capacity=3<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Track recency with a list and linear search.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>LinkedHashSet in access order.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first element is always the least recently used.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int pageFaultsLRU(int[] pages, int capacity) {
+    LinkedHashSet&lt;Integer&gt; set = new LinkedHashSet&lt;&gt;();
+    int faults = 0;
+    for (int p : pages) {
+        if (set.remove(p)) { set.add(p); continue; }
+        faults++;
+        if (set.size() == capacity) set.remove(set.iterator().next());
+        set.add(p);
+    }
+    return faults;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If page is present remove and re-add it</li><li>Else count a fault, evict the oldest if full</li><li>Add the page</li></ol></div></div>
+</div></section><section class="problem" id="p290">
+<h2>Problem 290: Insert Interval<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insert and merge.</p><div class="ex">Input: intervals=[[1,3],[6,9]], newInterval=[2,5]<br>Output:<pre class="out">[[1,5],[6,9]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Add the interval and re-sort and merge.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Three-phase linear pass.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Intervals before, overlapping and after the new one are handled separately.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[][] insertInterval(int[][] intervals, int[] newInterval) {
+    List&lt;int[]&gt; res = new ArrayList&lt;&gt;();
+    int i = 0, n = intervals.length;
+    while (i &lt; n &amp;&amp; intervals[i][1] &lt; newInterval[0]) res.add(intervals[i++]);
+    while (i &lt; n &amp;&amp; intervals[i][0] &lt;= newInterval[1]) {
+        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+        newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+        i++;
+    }
+    res.add(newInterval);
+    while (i &lt; n) res.add(intervals[i++]);
+    return res.toArray(new int[0][]);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add intervals ending before newInterval</li><li>Merge overlapping intervals into newInterval</li><li>Add newInterval and the rest</li></ol></div></div>
+</div></section><section class="problem" id="p291">
+<h2>Problem 291: Non-overlapping Intervals<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min removals.</p><div class="ex">Input: intervals=[[1,2],[2,3],[3,4],[1,3]]<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all subsets to remove.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by end and keep the interval that finishes earliest.</p></div>
+<div class="card w"><h3>Why it works</h3><p>This is the same greedy as maximum non-overlapping intervals; removals = total - kept.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int eraseOverlapIntervals(int[][] intervals) {
+    Arrays.sort(intervals, (a, b) -&gt; a[1] - b[1]);
+    int removed = 0, end = Integer.MIN_VALUE;
+    for (int[] in : intervals) {
+        if (in[0] &gt;= end) end = in[1]; else removed++;
+    }
+    return removed;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort by end</li><li>Keep an interval if start &gt;= last end</li><li>Count removed otherwise</li></ol></div></div>
+</div></section><section class="problem" id="p292">
+<h2>Problem 292: Maximum Meetings in One Room (Indices)<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Indices of meetings.</p><div class="ex">Input: start=[1,3,0,5,8,5], end=[2,4,6,7,9,9]<br>Output:<pre class="out">[1,2,4,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all subsets of meetings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by end time (ties by index) and pick greedily.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Same greedy choice as the count version while recording the indices.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; maxMeetingsIndices(int[] start, int[] end) {
+    int n = start.length;
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i &lt; n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -&gt; end[a] != end[b] ? end[a] - end[b] : a - b);
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int last = -1;
+    for (int i : idx) if (start[i] &gt; last) { res.add(i + 1); last = end[i]; }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort indices by end</li><li>Pick if start &gt; last end</li><li>Return 1-based indices</li></ol></div></div>
+</div></section></main></body></html>

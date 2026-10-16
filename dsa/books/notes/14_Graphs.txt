@@ -1,0 +1,1171 @@
+=== 343
+brute: Use an n x n adjacency matrix (O(n^2) memory).
+opt: List of lists, adding both directions for an undirected edge.
+why: Memory is O(V + E) and neighbours are listed directly.
+expl: Create n empty lists | For each edge add u to v and v to u | Return the lists
+code:
+public static List<List<Integer>> adjacencyList(int n, int[][] edges) {
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+    for (int[] e : edges) { adj.get(e[0]).add(e[1]); adj.get(e[1]).add(e[0]); }
+    return adj;
+}
+=== 344
+brute: Use recursion with a global list.
+opt: Queue-based BFS with a visited array.
+why: BFS visits vertices in order of distance from the source.
+expl: Queue the source and mark visited | Poll a vertex and record it | Enqueue unvisited neighbours
+code:
+public static List<Integer> bfsOfGraph(int v, List<List<Integer>> adj) {
+    List<Integer> res = new ArrayList<>();
+    boolean[] vis = new boolean[v];
+    Queue<Integer> q = new LinkedList<>();
+    q.add(0);
+    vis[0] = true;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        res.add(u);
+        for (int w : adj.get(u)) if (!vis[w]) { vis[w] = true; q.add(w); }
+    }
+    return res;
+}
+=== 345
+brute: Iterative stack.
+opt: Recursive DFS with a visited array.
+why: DFS goes as deep as possible before backtracking.
+expl: Mark the vertex and record it | Recurse into unvisited neighbours
+code:
+public static List<Integer> dfsOfGraph(int v, List<List<Integer>> adj) {
+    List<Integer> res = new ArrayList<>();
+    dfs(0, adj, new boolean[v], res);
+    return res;
+}
+
+private static void dfs(int u, List<List<Integer>> adj, boolean[] vis, List<Integer> res) {
+    vis[u] = true;
+    res.add(u);
+    for (int w : adj.get(u)) if (!vis[w]) dfs(w, adj, vis, res);
+}
+=== 346
+brute: Compute reachability for every pair.
+opt: DFS from each unvisited city and count the starts.
+why: Each DFS covers exactly one connected component.
+expl: For each unvisited city start a DFS | Visit every connected city | Count the starts
+code:
+public static int findCircleNum(int[][] isConnected) {
+    int n = isConnected.length, count = 0;
+    boolean[] vis = new boolean[n];
+    for (int i = 0; i < n; i++) if (!vis[i]) { count++; dfs(i, isConnected, vis); }
+    return count;
+}
+
+private static void dfs(int u, int[][] g, boolean[] vis) {
+    vis[u] = true;
+    for (int v = 0; v < g.length; v++) if (g[u][v] == 1 && !vis[v]) dfs(v, g, vis);
+}
+=== 347
+brute: Compare every land cell with every other.
+opt: DFS/BFS sinking each island once.
+why: Marking visited land prevents counting an island twice.
+expl: Scan the grid | At an unvisited '1' count++ and flood it | Mark cells as '0'
+code:
+public static int numIslands(char[][] grid) {
+    int count = 0;
+    for (int i = 0; i < grid.length; i++)
+        for (int j = 0; j < grid[0].length; j++)
+            if (grid[i][j] == '1') { count++; sink(grid, i, j); }
+    return count;
+}
+
+private static void sink(char[][] g, int i, int j) {
+    if (i < 0 || j < 0 || i >= g.length || j >= g[0].length || g[i][j] != '1') return;
+    g[i][j] = '0';
+    sink(g, i + 1, j); sink(g, i - 1, j); sink(g, i, j + 1); sink(g, i, j - 1);
+}
+=== 348
+brute: Repaint every matching pixel in the image.
+opt: DFS only from the start pixel through 4-connected cells of the same colour.
+why: Only the connected region should change.
+expl: If the colour is already the target return | DFS recolouring neighbours with the original colour
+code:
+public static int[][] floodFill(int[][] image, int sr, int sc, int color) {
+    int old = image[sr][sc];
+    if (old != color) fill(image, sr, sc, old, color);
+    return image;
+}
+
+private static void fill(int[][] a, int i, int j, int old, int c) {
+    if (i < 0 || j < 0 || i >= a.length || j >= a[0].length || a[i][j] != old) return;
+    a[i][j] = c;
+    fill(a, i + 1, j, old, c); fill(a, i - 1, j, old, c); fill(a, i, j + 1, old, c); fill(a, i, j - 1, old, c);
+}
+=== 349
+brute: Simulate each minute with a full-grid scan.
+opt: Multi-source BFS from all rotten oranges.
+why: BFS levels equal minutes.
+expl: Queue all rotten and count fresh | Spread level by level | Return minutes or -1 if fresh remain
+code:
+public static int orangesRotting(int[][] grid) {
+    int m = grid.length, n = grid[0].length, fresh = 0, minutes = 0;
+    Queue<int[]> q = new LinkedList<>();
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++) {
+            if (grid[i][j] == 2) q.add(new int[]{i, j});
+            else if (grid[i][j] == 1) fresh++;
+        }
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!q.isEmpty() && fresh > 0) {
+        for (int s = q.size(); s > 0; s--) {
+            int[] c = q.poll();
+            for (int d = 0; d < 4; d++) {
+                int x = c[0] + dx[d], y = c[1] + dy[d];
+                if (x >= 0 && y >= 0 && x < m && y < n && grid[x][y] == 1) { grid[x][y] = 2; fresh--; q.add(new int[]{x, y}); }
+            }
+        }
+        minutes++;
+    }
+    return fresh == 0 ? minutes : -1;
+}
+=== 350
+brute: BFS from each cell.
+opt: Multi-source BFS from all 1s.
+why: Each cell receives the distance of the first wave that reaches it.
+expl: Distances start at -1; enqueue 1s with 0 | BFS to neighbours | Set dist = parent + 1
+code:
+public static int[][] updateMatrix(int[][] mat) {
+    int m = mat.length, n = mat[0].length;
+    int[][] dist = new int[m][n];
+    Queue<int[]> q = new LinkedList<>();
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++) {
+            if (mat[i][j] == 1) q.add(new int[]{i, j}); else dist[i][j] = -1;
+        }
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!q.isEmpty()) {
+        int[] c = q.poll();
+        for (int d = 0; d < 4; d++) {
+            int x = c[0] + dx[d], y = c[1] + dy[d];
+            if (x >= 0 && y >= 0 && x < m && y < n && dist[x][y] == -1) { dist[x][y] = dist[c[0]][c[1]] + 1; q.add(new int[]{x, y}); }
+        }
+    }
+    return dist;
+}
+=== 351
+brute: Check each O region for a path to the border.
+opt: Mark O's connected to the border, then flip the rest.
+why: Only border-connected regions survive.
+expl: DFS from border 'O's marking them safe | Flip remaining 'O' to 'X' | Restore safe cells to 'O'
+code:
+public static void solveSurrounded(char[][] board) {
+    int m = board.length, n = board[0].length;
+    for (int i = 0; i < m; i++) { mark(board, i, 0); mark(board, i, n - 1); }
+    for (int j = 0; j < n; j++) { mark(board, 0, j); mark(board, m - 1, j); }
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++) {
+            if (board[i][j] == 'O') board[i][j] = 'X';
+            else if (board[i][j] == '#') board[i][j] = 'O';
+        }
+}
+
+private static void mark(char[][] b, int i, int j) {
+    if (i < 0 || j < 0 || i >= b.length || j >= b[0].length || b[i][j] != 'O') return;
+    b[i][j] = '#';
+    mark(b, i + 1, j); mark(b, i - 1, j); mark(b, i, j + 1); mark(b, i, j - 1);
+}
+=== 352
+brute: BFS from every land cell.
+opt: Remove land reachable from the border and count what is left.
+why: Land not connected to the border cannot walk off the grid.
+expl: DFS from border land cells | Count remaining land cells
+code:
+public static int numEnclaves(int[][] grid) {
+    int m = grid.length, n = grid[0].length, count = 0;
+    for (int i = 0; i < m; i++) { sink(grid, i, 0); sink(grid, i, n - 1); }
+    for (int j = 0; j < n; j++) { sink(grid, 0, j); sink(grid, m - 1, j); }
+    for (int[] r : grid) for (int x : r) count += x;
+    return count;
+}
+
+private static void sink(int[][] g, int i, int j) {
+    if (i < 0 || j < 0 || i >= g.length || j >= g[0].length || g[i][j] != 1) return;
+    g[i][j] = 0;
+    sink(g, i + 1, j); sink(g, i - 1, j); sink(g, i, j + 1); sink(g, i, j - 1);
+}
+=== 353
+brute: Try all transformation sequences.
+opt: BFS over words differing by one letter.
+why: BFS finds the shortest sequence.
+expl: Put words in a set | Queue (word, steps) | Try all 26 letters per position | Return steps at the end word
+code:
+public static int ladderLength(String begin, String end, List<String> wordList) {
+    Set<String> dict = new HashSet<>(wordList);
+    if (!dict.contains(end)) return 0;
+    Queue<String> q = new LinkedList<>();
+    q.add(begin);
+    int steps = 1;
+    while (!q.isEmpty()) {
+        for (int s = q.size(); s > 0; s--) {
+            String w = q.poll();
+            if (w.equals(end)) return steps;
+            char[] c = w.toCharArray();
+            for (int i = 0; i < c.length; i++) {
+                char old = c[i];
+                for (char x = 'a'; x <= 'z'; x++) {
+                    c[i] = x;
+                    String nw = new String(c);
+                    if (dict.remove(nw)) q.add(nw);
+                }
+                c[i] = old;
+            }
+        }
+        steps++;
+    }
+    return 0;
+}
+=== 354
+brute: Compare every pair of islands cell by cell.
+opt: Encode each island by coordinates relative to its first cell.
+why: Equal shapes give equal coordinate strings.
+expl: DFS an island recording (i - i0, j - j0) | Store the encoding in a set | Return the set size
+code:
+public static int countDistinctIslands(int[][] grid) {
+    Set<String> shapes = new HashSet<>();
+    for (int i = 0; i < grid.length; i++)
+        for (int j = 0; j < grid[0].length; j++)
+            if (grid[i][j] == 1) {
+                StringBuilder sb = new StringBuilder();
+                dfs(grid, i, j, i, j, sb);
+                shapes.add(sb.toString());
+            }
+    return shapes.size();
+}
+
+private static void dfs(int[][] g, int i, int j, int i0, int j0, StringBuilder sb) {
+    if (i < 0 || j < 0 || i >= g.length || j >= g[0].length || g[i][j] != 1) return;
+    g[i][j] = 0;
+    sb.append(i - i0).append(',').append(j - j0).append(';');
+    dfs(g, i + 1, j, i0, j0, sb); dfs(g, i - 1, j, i0, j0, sb);
+    dfs(g, i, j + 1, i0, j0, sb); dfs(g, i, j - 1, i0, j0, sb);
+}
+=== 355
+brute: Try all 2-colourings.
+opt: BFS colouring each component.
+why: A graph is bipartite iff no edge joins same-coloured nodes.
+expl: Colour array initialised to -1 | BFS giving neighbours the opposite colour | A same colour edge means false
+code:
+public static boolean isBipartite(int[][] graph) {
+    int n = graph.length;
+    int[] col = new int[n];
+    Arrays.fill(col, -1);
+    for (int s = 0; s < n; s++) {
+        if (col[s] != -1) continue;
+        Queue<Integer> q = new LinkedList<>();
+        q.add(s);
+        col[s] = 0;
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int v : graph[u]) {
+                if (col[v] == -1) { col[v] = 1 - col[u]; q.add(v); }
+                else if (col[v] == col[u]) return false;
+            }
+        }
+    }
+    return true;
+}
+=== 356
+brute: Check all subsets of edges.
+opt: BFS carrying the parent; a visited neighbour that is not the parent means a cycle.
+why: In an undirected graph the only legal revisit is the parent.
+expl: Queue (node, parent) | For each neighbour: unvisited -> enqueue | Visited and not parent -> cycle
+code:
+public static boolean hasCycleBFS(int v, List<List<Integer>> adj) {
+    boolean[] vis = new boolean[v];
+    for (int s = 0; s < v; s++) {
+        if (vis[s]) continue;
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{s, -1});
+        vis[s] = true;
+        while (!q.isEmpty()) {
+            int[] c = q.poll();
+            for (int w : adj.get(c[0])) {
+                if (!vis[w]) { vis[w] = true; q.add(new int[]{w, c[0]}); }
+                else if (w != c[1]) return true;
+            }
+        }
+    }
+    return false;
+}
+=== 357
+brute: Check all subsets of edges.
+opt: DFS carrying the parent.
+why: Reaching a visited non-parent node closes a cycle.
+expl: dfs(u, parent) | Visit unvisited neighbours recursively | A visited non-parent neighbour means a cycle
+code:
+public static boolean hasCycleDFS(int v, List<List<Integer>> adj) {
+    boolean[] vis = new boolean[v];
+    for (int s = 0; s < v; s++) if (!vis[s] && dfs(s, -1, adj, vis)) return true;
+    return false;
+}
+
+private static boolean dfs(int u, int p, List<List<Integer>> adj, boolean[] vis) {
+    vis[u] = true;
+    for (int w : adj.get(u)) {
+        if (!vis[w]) { if (dfs(w, u, adj, vis)) return true; }
+        else if (w != p) return true;
+    }
+    return false;
+}
+=== 358
+brute: Try all node orders.
+opt: DFS with a recursion-stack (path) array.
+why: A back edge to a node on the current path forms a directed cycle.
+expl: vis and path arrays | Mark path on entry | Neighbour on the path means cycle | Unmark path on exit
+code:
+public static boolean hasCycleDirected(int v, List<List<Integer>> adj) {
+    boolean[] vis = new boolean[v], path = new boolean[v];
+    for (int s = 0; s < v; s++) if (!vis[s] && dfs(s, adj, vis, path)) return true;
+    return false;
+}
+
+private static boolean dfs(int u, List<List<Integer>> adj, boolean[] vis, boolean[] path) {
+    vis[u] = path[u] = true;
+    for (int w : adj.get(u)) {
+        if (!vis[w]) { if (dfs(w, adj, vis, path)) return true; }
+        else if (path[w]) return true;
+    }
+    path[u] = false;
+    return false;
+}
+=== 359
+brute: Check every node's paths for cycles separately.
+opt: DFS marking nodes in cycles as unsafe.
+why: A node is safe iff it is not on or leading into a cycle.
+expl: State per node: 0 unvisited, 1 visiting, 2 safe | A node revisited while visiting is unsafe | Collect the safe nodes in order
+code:
+public static List<Integer> eventualSafeNodes(int[][] graph) {
+    int n = graph.length;
+    int[] state = new int[n];
+    List<Integer> res = new ArrayList<>();
+    for (int i = 0; i < n; i++) if (safe(i, graph, state)) res.add(i);
+    return res;
+}
+
+private static boolean safe(int u, int[][] g, int[] st) {
+    if (st[u] > 0) return st[u] == 2;
+    st[u] = 1;
+    for (int v : g[u]) if (!safe(v, g, st)) return false;
+    st[u] = 2;
+    return true;
+}
+=== 360
+brute: Try all permutations for a valid order.
+opt: DFS pushing a node to a stack after its neighbours.
+why: A node finishes only after everything it points to, so reversing finish order is topological.
+expl: DFS each unvisited node | After exploring push the node | Pop the stack for the order
+code:
+public static int[] topoSortDFS(int v, List<List<Integer>> adj) {
+    boolean[] vis = new boolean[v];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 0; i < v; i++) if (!vis[i]) dfs(i, adj, vis, st);
+    int[] res = new int[v];
+    for (int i = 0; i < v; i++) res[i] = st.pop();
+    return res;
+}
+
+private static void dfs(int u, List<List<Integer>> adj, boolean[] vis, Deque<Integer> st) {
+    vis[u] = true;
+    for (int w : adj.get(u)) if (!vis[w]) dfs(w, adj, vis, st);
+    st.push(u);
+}
+=== 361
+brute: Repeatedly scan for nodes without incoming edges.
+opt: Kahn's algorithm with indegrees and a queue.
+why: A node with indegree 0 has no unmet dependencies.
+expl: Compute indegrees | Queue indegree-0 nodes | Pop, output, decrement neighbours | Queue newly free nodes
+code:
+public static int[] topoSortKahn(int v, List<List<Integer>> adj) {
+    int[] indeg = new int[v];
+    for (List<Integer> l : adj) for (int w : l) indeg[w]++;
+    Queue<Integer> q = new LinkedList<>();
+    for (int i = 0; i < v; i++) if (indeg[i] == 0) q.add(i);
+    int[] res = new int[v];
+    int k = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        res[k++] = u;
+        for (int w : adj.get(u)) if (--indeg[w] == 0) q.add(w);
+    }
+    return res;
+}
+=== 362
+brute: Try all course orders.
+opt: Topological sort; if all courses are processed there is no cycle.
+why: A cycle in prerequisites makes finishing impossible.
+expl: Build edges b -> a for [a, b] | Run Kahn | Count processed nodes == numCourses
+code:
+public static boolean canFinish(int numCourses, int[][] prerequisites) {
+    List<List<Integer>> adj = new ArrayList<>();
+    int[] indeg = new int[numCourses];
+    for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
+    for (int[] p : prerequisites) { adj.get(p[1]).add(p[0]); indeg[p[0]]++; }
+    Queue<Integer> q = new LinkedList<>();
+    for (int i = 0; i < numCourses; i++) if (indeg[i] == 0) q.add(i);
+    int done = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        done++;
+        for (int w : adj.get(u)) if (--indeg[w] == 0) q.add(w);
+    }
+    return done == numCourses;
+}
+=== 363
+brute: Try all permutations.
+opt: Kahn's order; return empty if a cycle exists.
+why: The Kahn queue yields a valid order exactly when the graph is a DAG.
+expl: Build the graph | Run Kahn collecting the order | If fewer than n courses return an empty array
+code:
+public static int[] findOrder(int numCourses, int[][] prerequisites) {
+    List<List<Integer>> adj = new ArrayList<>();
+    int[] indeg = new int[numCourses];
+    for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
+    for (int[] p : prerequisites) { adj.get(p[1]).add(p[0]); indeg[p[0]]++; }
+    Queue<Integer> q = new LinkedList<>();
+    for (int i = 0; i < numCourses; i++) if (indeg[i] == 0) q.add(i);
+    int[] res = new int[numCourses];
+    int k = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        res[k++] = u;
+        for (int w : adj.get(u)) if (--indeg[w] == 0) q.add(w);
+    }
+    return k == numCourses ? res : new int[0];
+}
+=== 364
+brute: Run DFS and track the minimum depth.
+opt: BFS from the source.
+why: With unit weights BFS levels are shortest distances.
+expl: dist = -1 for all, dist[src] = 0 | BFS updating unvisited neighbours | Return dist
+code:
+public static int[] shortestPathUnit(int n, int[][] edges, int src) {
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+    for (int[] e : edges) { adj.get(e[0]).add(e[1]); adj.get(e[1]).add(e[0]); }
+    int[] dist = new int[n];
+    Arrays.fill(dist, -1);
+    dist[src] = 0;
+    Queue<Integer> q = new LinkedList<>();
+    q.add(src);
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        for (int w : adj.get(u)) if (dist[w] == -1) { dist[w] = dist[u] + 1; q.add(w); }
+    }
+    return dist;
+}
+=== 365
+brute: Dijkstra with a heap.
+opt: Relax edges in topological order.
+why: In a DAG all predecessors of a node are processed before the node, so one pass suffices.
+expl: Topological order via DFS | dist[0] = 0 | For each node in order relax outgoing edges | Unreachable stays -1
+code:
+public static int[] shortestPathDAG(int n, int[][] edges) {
+    List<List<int[]>> adj = new ArrayList<>();
+    for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+    for (int[] e : edges) adj.get(e[0]).add(new int[]{e[1], e[2]});
+    boolean[] vis = new boolean[n];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 0; i < n; i++) if (!vis[i]) topo(i, adj, vis, st);
+    int INF = Integer.MAX_VALUE;
+    int[] dist = new int[n];
+    Arrays.fill(dist, INF);
+    dist[0] = 0;
+    while (!st.isEmpty()) {
+        int u = st.pop();
+        if (dist[u] == INF) continue;
+        for (int[] e : adj.get(u)) dist[e[0]] = Math.min(dist[e[0]], dist[u] + e[1]);
+    }
+    for (int i = 0; i < n; i++) if (dist[i] == INF) dist[i] = -1;
+    return dist;
+}
+
+private static void topo(int u, List<List<int[]>> adj, boolean[] vis, Deque<Integer> st) {
+    vis[u] = true;
+    for (int[] e : adj.get(u)) if (!vis[e[0]]) topo(e[0], adj, vis, st);
+    st.push(u);
+}
+=== 366
+brute: DFS over all transformations.
+opt: BFS where each edge is a one-letter change.
+why: BFS gives the shortest number of transformations.
+expl: Dictionary set | Queue the start word | Generate neighbours by replacing each letter | First time reaching end is the answer
+code:
+public static int wordLadderBFS(String begin, String end, List<String> words) {
+    Set<String> dict = new HashSet<>(words);
+    Queue<String> q = new LinkedList<>();
+    q.add(begin);
+    int steps = 1;
+    while (!q.isEmpty()) {
+        for (int s = q.size(); s > 0; s--) {
+            String w = q.poll();
+            if (w.equals(end)) return steps;
+            char[] c = w.toCharArray();
+            for (int i = 0; i < c.length; i++) {
+                char old = c[i];
+                for (char x = 'a'; x <= 'z'; x++) {
+                    c[i] = x;
+                    String nw = new String(c);
+                    if (dict.remove(nw)) q.add(nw);
+                }
+                c[i] = old;
+            }
+        }
+        steps++;
+    }
+    return 0;
+}
+=== 367
+brute: Bellman-Ford, O(VE).
+opt: Min heap of (dist, node).
+why: The smallest tentative distance is final when popped, since weights are non-negative.
+expl: dist = INF, dist[src] = 0 | Pop the closest node | Relax its edges and push improvements
+code:
+public static int[] dijkstra(int v, List<List<int[]>> adj, int src) {
+    int[] dist = new int[v];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[src] = 0;
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+    pq.add(new int[]{0, src});
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (c[0] > dist[c[1]]) continue;
+        for (int[] e : adj.get(c[1])) {
+            if (c[0] + e[1] < dist[e[0]]) { dist[e[0]] = c[0] + e[1]; pq.add(new int[]{dist[e[0]], e[0]}); }
+        }
+    }
+    return dist;
+}
+=== 368
+brute: Run Dijkstra then search all paths.
+opt: Dijkstra with a parent array.
+why: Following parents back from n reconstructs the shortest path.
+expl: Run Dijkstra from 1 recording parent | If n is unreachable return [-1] | Walk back from n and reverse
+code:
+public static List<Integer> dijkstraPath(int n, int[][] edges) {
+    List<List<int[]>> adj = new ArrayList<>();
+    for (int i = 0; i <= n; i++) adj.add(new ArrayList<>());
+    for (int[] e : edges) { adj.get(e[0]).add(new int[]{e[1], e[2]}); adj.get(e[1]).add(new int[]{e[0], e[2]}); }
+    int[] dist = new int[n + 1], par = new int[n + 1];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[1] = 0;
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+    pq.add(new int[]{0, 1});
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (c[0] > dist[c[1]]) continue;
+        for (int[] e : adj.get(c[1])) {
+            if (c[0] + e[1] < dist[e[0]]) { dist[e[0]] = c[0] + e[1]; par[e[0]] = c[1]; pq.add(new int[]{dist[e[0]], e[0]}); }
+        }
+    }
+    List<Integer> path = new ArrayList<>();
+    if (dist[n] == Integer.MAX_VALUE) { path.add(-1); return path; }
+    for (int x = n; x != 0; x = par[x]) path.add(x);
+    Collections.reverse(path);
+    return path;
+}
+=== 369
+brute: DFS exploring all paths.
+opt: BFS on the grid through cells equal to 1.
+why: Each move costs one, so BFS gives the shortest path.
+expl: Distance matrix | BFS in 4 directions | Return the distance at dest or -1
+code:
+public static int shortestPathBinaryMatrix(int[][] grid, int[] src, int[] dest) {
+    int m = grid.length, n = grid[0].length;
+    if (grid[src[0]][src[1]] == 0) return -1;
+    int[][] dist = new int[m][n];
+    for (int[] r : dist) Arrays.fill(r, -1);
+    Queue<int[]> q = new LinkedList<>();
+    q.add(src);
+    dist[src[0]][src[1]] = 0;
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!q.isEmpty()) {
+        int[] c = q.poll();
+        if (c[0] == dest[0] && c[1] == dest[1]) return dist[c[0]][c[1]];
+        for (int d = 0; d < 4; d++) {
+            int x = c[0] + dx[d], y = c[1] + dy[d];
+            if (x >= 0 && y >= 0 && x < m && y < n && grid[x][y] == 1 && dist[x][y] == -1) {
+                dist[x][y] = dist[c[0]][c[1]] + 1;
+                q.add(new int[]{x, y});
+            }
+        }
+    }
+    return -1;
+}
+=== 370
+brute: Try all paths and compute their effort.
+opt: Dijkstra where the path cost is the maximum step difference.
+why: Minimizing the max over a path is monotone, so Dijkstra's greedy choice is valid.
+expl: effort[0][0] = 0 | Pop the smallest effort cell | New effort = max(current, |h difference|) | Update neighbours when smaller
+code:
+public static int minimumEffortPath(int[][] heights) {
+    int m = heights.length, n = heights[0].length;
+    int[][] eff = new int[m][n];
+    for (int[] r : eff) Arrays.fill(r, Integer.MAX_VALUE);
+    eff[0][0] = 0;
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+    pq.add(new int[]{0, 0, 0});
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (c[1] == m - 1 && c[2] == n - 1) return c[0];
+        if (c[0] > eff[c[1]][c[2]]) continue;
+        for (int d = 0; d < 4; d++) {
+            int x = c[1] + dx[d], y = c[2] + dy[d];
+            if (x < 0 || y < 0 || x >= m || y >= n) continue;
+            int e = Math.max(c[0], Math.abs(heights[x][y] - heights[c[1]][c[2]]));
+            if (e < eff[x][y]) { eff[x][y] = e; pq.add(new int[]{e, x, y}); }
+        }
+    }
+    return 0;
+}
+=== 371
+brute: DFS over all paths with at most k+1 edges.
+opt: BFS/Bellman-Ford limited to k+1 rounds.
+why: Each round allows one more edge, so k+1 rounds bound the stops.
+expl: dist[src] = 0 | For k+1 rounds relax edges using the previous round's distances | Return dist[dst] or -1
+code:
+public static int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+    int INF = Integer.MAX_VALUE;
+    int[] dist = new int[n];
+    Arrays.fill(dist, INF);
+    dist[src] = 0;
+    for (int i = 0; i <= k; i++) {
+        int[] nd = dist.clone();
+        for (int[] f : flights)
+            if (dist[f[0]] != INF && dist[f[0]] + f[2] < nd[f[1]]) nd[f[1]] = dist[f[0]] + f[2];
+        dist = nd;
+    }
+    return dist[dst] == INF ? -1 : dist[dst];
+}
+=== 372
+brute: DFS over all multiplication sequences.
+opt: BFS over values mod 100000.
+why: Only 100000 states exist, so BFS finds the fewest steps in bounded time.
+expl: If start == end return 0 | Queue (value, steps) | Multiply by each arr[i] mod 100000 | Return steps on reaching end
+code:
+public static int minimumMultiplications(int[] arr, int start, int end) {
+    if (start == end) return 0;
+    int MOD = 100000;
+    int[] dist = new int[MOD];
+    Arrays.fill(dist, -1);
+    Queue<Integer> q = new LinkedList<>();
+    q.add(start);
+    dist[start] = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        for (int a : arr) {
+            int v = (int) ((long) u * a % MOD);
+            if (dist[v] == -1) {
+                dist[v] = dist[u] + 1;
+                if (v == end) return dist[v];
+                q.add(v);
+            }
+        }
+    }
+    return -1;
+}
+=== 373
+brute: Enumerate all paths and keep the shortest ones.
+opt: Dijkstra with a ways[] array.
+why: Equal-distance arrivals add ways; shorter arrivals replace them.
+expl: dist, ways initialised | When a shorter distance is found ways = ways of parent | When equal add ways | Answer is ways[n-1]
+code:
+public static int countPaths(int n, int[][] roads) {
+    final int MOD = 1_000_000_007;
+    List<List<long[]>> adj = new ArrayList<>();
+    for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+    for (int[] r : roads) { adj.get(r[0]).add(new long[]{r[1], r[2]}); adj.get(r[1]).add(new long[]{r[0], r[2]}); }
+    long[] dist = new long[n];
+    int[] ways = new int[n];
+    Arrays.fill(dist, Long.MAX_VALUE);
+    dist[0] = 0; ways[0] = 1;
+    PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[0], b[0]));
+    pq.add(new long[]{0, 0});
+    while (!pq.isEmpty()) {
+        long[] c = pq.poll();
+        int u = (int) c[1];
+        if (c[0] > dist[u]) continue;
+        for (long[] e : adj.get(u)) {
+            int v = (int) e[0];
+            long nd = c[0] + e[1];
+            if (nd < dist[v]) { dist[v] = nd; ways[v] = ways[u]; pq.add(new long[]{nd, v}); }
+            else if (nd == dist[v]) ways[v] = (ways[v] + ways[u]) % MOD;
+        }
+    }
+    return ways[n - 1];
+}
+=== 374
+brute: Dijkstra fails with negative edges.
+opt: Relax all edges V-1 times; one more pass detects a negative cycle.
+why: A shortest path has at most V-1 edges.
+expl: dist = INF, dist[src] = 0 | Relax all edges V-1 times | If another relaxation succeeds return [-1]
+code:
+public static int[] bellmanFord(int v, int[][] edges, int src) {
+    int INF = 100_000_000;
+    int[] dist = new int[v];
+    Arrays.fill(dist, INF);
+    dist[src] = 0;
+    for (int i = 0; i < v - 1; i++)
+        for (int[] e : edges)
+            if (dist[e[0]] != INF && dist[e[0]] + e[2] < dist[e[1]]) dist[e[1]] = dist[e[0]] + e[2];
+    for (int[] e : edges)
+        if (dist[e[0]] != INF && dist[e[0]] + e[2] < dist[e[1]]) return new int[]{-1};
+    return dist;
+}
+=== 375
+brute: Run Dijkstra from every node.
+opt: DP over intermediate vertices k.
+why: dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]) considers paths via every vertex.
+expl: Replace -1 with INF | For k, i, j relax through k | Replace INF with -1
+code:
+public static void floydWarshall(int[][] matrix) {
+    int n = matrix.length, INF = 1_000_000_000;
+    for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) if (matrix[i][j] == -1) matrix[i][j] = INF;
+    for (int k = 0; k < n; k++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                if (matrix[i][k] + matrix[k][j] < matrix[i][j]) matrix[i][j] = matrix[i][k] + matrix[k][j];
+    for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) if (matrix[i][j] >= INF) matrix[i][j] = -1;
+}
+=== 376
+brute: Dijkstra from every city.
+opt: Floyd-Warshall then count reachable cities.
+why: All-pairs distances give the number of cities within the threshold directly.
+expl: Build the distance matrix | Floyd-Warshall | Count cities with dist <= threshold | Pick the smallest count, ties to the largest index
+code:
+public static int findTheCity(int n, int[][] edges, int distanceThreshold) {
+    int INF = 1_000_000;
+    int[][] d = new int[n][n];
+    for (int[] r : d) Arrays.fill(r, INF);
+    for (int i = 0; i < n; i++) d[i][i] = 0;
+    for (int[] e : edges) { d[e[0]][e[1]] = e[2]; d[e[1]][e[0]] = e[2]; }
+    for (int k = 0; k < n; k++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) d[i][j] = Math.min(d[i][j], d[i][k] + d[k][j]);
+    int best = -1, min = Integer.MAX_VALUE;
+    for (int i = 0; i < n; i++) {
+        int c = 0;
+        for (int j = 0; j < n; j++) if (i != j && d[i][j] <= distanceThreshold) c++;
+        if (c <= min) { min = c; best = i; }
+    }
+    return best;
+}
+=== 377
+brute: Enumerate all spanning trees.
+opt: Prim: grow the tree by the cheapest crossing edge using a min heap.
+why: The cut property guarantees the cheapest edge leaving the tree is in some MST.
+expl: Start at 0 | Pop the cheapest edge to an unvisited node | Add its weight and push its edges
+code:
+public static int spanningTreePrim(int v, int[][] edges) {
+    List<List<int[]>> adj = new ArrayList<>();
+    for (int i = 0; i < v; i++) adj.add(new ArrayList<>());
+    for (int[] e : edges) { adj.get(e[0]).add(new int[]{e[1], e[2]}); adj.get(e[1]).add(new int[]{e[0], e[2]}); }
+    boolean[] in = new boolean[v];
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+    pq.add(new int[]{0, 0});
+    int sum = 0;
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (in[c[0]]) continue;
+        in[c[0]] = true;
+        sum += c[1];
+        for (int[] e : adj.get(c[0])) if (!in[e[0]]) pq.add(e);
+    }
+    return sum;
+}
+=== 378
+brute: Run a DFS to check connectivity for each query.
+opt: Disjoint set with path compression and union by rank/size.
+why: Both optimizations make operations nearly O(1) amortized (inverse Ackermann).
+expl: parent[i] = i | find with path compression | union attaches the smaller/lower rank tree under the other
+code:
+public static void disjointSet() {
+    class DSU {
+        int[] parent, rank, size;
+        DSU(int n) {
+            parent = new int[n + 1]; rank = new int[n + 1]; size = new int[n + 1];
+            for (int i = 0; i <= n; i++) { parent[i] = i; size[i] = 1; }
+        }
+        int find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }
+        void unionByRank(int a, int b) {
+            int pa = find(a), pb = find(b);
+            if (pa == pb) return;
+            if (rank[pa] < rank[pb]) parent[pa] = pb;
+            else if (rank[pa] > rank[pb]) parent[pb] = pa;
+            else { parent[pb] = pa; rank[pa]++; }
+        }
+        void unionBySize(int a, int b) {
+            int pa = find(a), pb = find(b);
+            if (pa == pb) return;
+            if (size[pa] < size[pb]) { parent[pa] = pb; size[pb] += size[pa]; }
+            else { parent[pb] = pa; size[pa] += size[pb]; }
+        }
+    }
+    DSU d = new DSU(7);
+    d.unionByRank(1, 2);
+    d.unionByRank(2, 3);
+    System.out.println(d.find(3) == d.find(1));
+}
+=== 379
+brute: Enumerate all spanning trees.
+opt: Sort edges and add them if they join different components.
+why: The cheapest edge that does not form a cycle is always safe for an MST.
+expl: Sort edges by weight | DSU find on both ends | If different components union and add the weight
+code:
+public static int spanningTreeKruskal(int v, int[][] edges) {
+    int[] p = new int[v];
+    for (int i = 0; i < v; i++) p[i] = i;
+    int[][] es = edges.clone();
+    Arrays.sort(es, (a, b) -> a[2] - b[2]);
+    int sum = 0;
+    for (int[] e : es) {
+        int a = find(p, e[0]), b = find(p, e[1]);
+        if (a != b) { p[a] = b; sum += e[2]; }
+    }
+    return sum;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}
+=== 380
+brute: DFS from every city.
+opt: Union connected cities and count roots.
+why: Each union merges two provinces into one.
+expl: Union i and j when connected | Count nodes that are their own parent
+code:
+public static int findCircleNumDSU(int[][] isConnected) {
+    int n = isConnected.length;
+    int[] p = new int[n];
+    for (int i = 0; i < n; i++) p[i] = i;
+    for (int i = 0; i < n; i++)
+        for (int j = i + 1; j < n; j++)
+            if (isConnected[i][j] == 1) p[find(p, i)] = find(p, j);
+    int c = 0;
+    for (int i = 0; i < n; i++) if (find(p, i) == i) c++;
+    return c;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}
+=== 381
+brute: Try all ways to move cables.
+opt: DSU: components - 1 moves needed if enough cables exist.
+why: Connecting c components needs c-1 cables; extra cables come from redundant edges.
+expl: If edges < n-1 return -1 | Union all edges | Count components and return components - 1
+code:
+public static int makeConnected(int n, int[][] connections) {
+    if (connections.length < n - 1) return -1;
+    int[] p = new int[n];
+    for (int i = 0; i < n; i++) p[i] = i;
+    int comps = n;
+    for (int[] c : connections) {
+        int a = find(p, c[0]), b = find(p, c[1]);
+        if (a != b) { p[a] = b; comps--; }
+    }
+    return comps - 1;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}
+=== 382
+brute: DFS enumerating all transformation paths.
+opt: BFS for distances, then DFS back from the end following distance-1 steps.
+why: Only edges that go one level deeper lie on shortest paths.
+expl: BFS levels from begin | Backtrack from end using words one level closer | Reverse each path
+code:
+public static List<List<String>> findLadders(String begin, String end, List<String> wordList) {
+    Set<String> dict = new HashSet<>(wordList);
+    List<List<String>> res = new ArrayList<>();
+    if (!dict.contains(end)) return res;
+    Map<String, Integer> dist = new HashMap<>();
+    Queue<String> q = new LinkedList<>();
+    q.add(begin);
+    dist.put(begin, 0);
+    while (!q.isEmpty()) {
+        String w = q.poll();
+        char[] c = w.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            char old = c[i];
+            for (char x = 'a'; x <= 'z'; x++) {
+                c[i] = x;
+                String nw = new String(c);
+                if (dict.contains(nw) && !dist.containsKey(nw)) { dist.put(nw, dist.get(w) + 1); q.add(nw); }
+            }
+            c[i] = old;
+        }
+    }
+    if (!dist.containsKey(end)) return res;
+    LinkedList<String> path = new LinkedList<>();
+    path.add(end);
+    back(end, begin, dist, path, res);
+    return res;
+}
+
+private static void back(String w, String begin, Map<String, Integer> dist, LinkedList<String> path, List<List<String>> res) {
+    if (w.equals(begin)) { List<String> r = new ArrayList<>(path); Collections.reverse(r); res.add(r); return; }
+    char[] c = w.toCharArray();
+    for (int i = 0; i < c.length; i++) {
+        char old = c[i];
+        for (char x = 'a'; x <= 'z'; x++) {
+            c[i] = x;
+            String nw = new String(c);
+            if (dist.containsKey(nw) && dist.get(nw) == dist.get(w) - 1) {
+                path.add(nw);
+                back(nw, begin, dist, path, res);
+                path.removeLast();
+            }
+        }
+        c[i] = old;
+    }
+}
+=== 383
+brute: Try all letter permutations.
+opt: Build a graph from adjacent words and topologically sort.
+why: The first differing letters of adjacent words give ordering constraints.
+expl: Collect letters | Add edge for the first mismatch between adjacent words | Detect an invalid prefix case | Kahn's order of letters
+code:
+public static String alienOrder(String[] words) {
+    Map<Character, Set<Character>> g = new LinkedHashMap<>();
+    Map<Character, Integer> indeg = new LinkedHashMap<>();
+    for (String w : words) for (char c : w.toCharArray()) { g.putIfAbsent(c, new HashSet<>()); indeg.putIfAbsent(c, 0); }
+    for (int i = 0; i + 1 < words.length; i++) {
+        String a = words[i], b = words[i + 1];
+        if (a.length() > b.length() && a.startsWith(b)) return "";
+        for (int j = 0; j < Math.min(a.length(), b.length()); j++) {
+            if (a.charAt(j) != b.charAt(j)) {
+                if (g.get(a.charAt(j)).add(b.charAt(j))) indeg.merge(b.charAt(j), 1, Integer::sum);
+                break;
+            }
+        }
+    }
+    Queue<Character> q = new LinkedList<>();
+    for (char c : indeg.keySet()) if (indeg.get(c) == 0) q.add(c);
+    StringBuilder sb = new StringBuilder();
+    while (!q.isEmpty()) {
+        char c = q.poll();
+        sb.append(c);
+        for (char n : g.get(c)) if (indeg.merge(n, -1, Integer::sum) == 0) q.add(n);
+    }
+    return sb.length() == g.size() ? sb.toString() : "";
+}
+=== 384
+brute: Compare every pair of accounts for shared emails.
+opt: DSU on accounts joined through shared emails.
+why: Accounts sharing an email belong to the same person.
+expl: Map each email to the first account index that has it | Union accounts sharing an email | Group emails by root and sort them
+code:
+public static List<List<String>> accountsMerge(List<List<String>> accounts) {
+    int n = accounts.size();
+    int[] p = new int[n];
+    for (int i = 0; i < n; i++) p[i] = i;
+    Map<String, Integer> owner = new HashMap<>();
+    for (int i = 0; i < n; i++)
+        for (int j = 1; j < accounts.get(i).size(); j++) {
+            String e = accounts.get(i).get(j);
+            if (owner.containsKey(e)) p[find(p, i)] = find(p, owner.get(e)); else owner.put(e, i);
+        }
+    Map<Integer, TreeSet<String>> groups = new HashMap<>();
+    for (Map.Entry<String, Integer> en : owner.entrySet())
+        groups.computeIfAbsent(find(p, en.getValue()), k -> new TreeSet<>()).add(en.getKey());
+    List<List<String>> res = new ArrayList<>();
+    for (Map.Entry<Integer, TreeSet<String>> g : groups.entrySet()) {
+        List<String> l = new ArrayList<>();
+        l.add(accounts.get(g.getKey()).get(0));
+        l.addAll(g.getValue());
+        res.add(l);
+    }
+    return res;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}
+=== 385
+brute: Recount islands with DFS after each addition.
+opt: DSU that merges the new cell with adjacent land.
+why: Each addition changes the count by 1 minus the number of distinct merges.
+expl: Skip duplicates | count++ for new land | Union with each land neighbour and decrement when roots differ | Record the count
+code:
+public static List<Integer> numOfIslandsII(int m, int n, int[][] positions) {
+    int[] p = new int[m * n];
+    Arrays.fill(p, -1);
+    List<Integer> res = new ArrayList<>();
+    int count = 0;
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    for (int[] pos : positions) {
+        int id = pos[0] * n + pos[1];
+        if (p[id] == -1) {
+            p[id] = id;
+            count++;
+            for (int d = 0; d < 4; d++) {
+                int x = pos[0] + dx[d], y = pos[1] + dy[d];
+                if (x < 0 || y < 0 || x >= m || y >= n || p[x * n + y] == -1) continue;
+                int a = find(p, id), b = find(p, x * n + y);
+                if (a != b) { p[a] = b; count--; }
+            }
+        }
+        res.add(count);
+    }
+    return res;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}
+=== 386
+brute: Flip each 0 and run DFS, O(n^4).
+opt: Label islands and store sizes, then evaluate each 0 using distinct neighbouring labels.
+why: A flipped cell joins distinct neighbouring islands plus itself.
+expl: DFS labels each island with its size | For each 0 sum sizes of distinct neighbour labels + 1 | Return the max (or the whole grid if no zeros)
+code:
+public static int largestIsland(int[][] grid) {
+    int n = grid.length, label = 2, best = 0;
+    Map<Integer, Integer> size = new HashMap<>();
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            if (grid[i][j] == 1) {
+                int s = paint(grid, i, j, label);
+                size.put(label++, s);
+                best = Math.max(best, s);
+            }
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            if (grid[i][j] == 0) {
+                Set<Integer> seen = new HashSet<>();
+                int total = 1;
+                for (int d = 0; d < 4; d++) {
+                    int x = i + dx[d], y = j + dy[d];
+                    if (x >= 0 && y >= 0 && x < n && y < n && grid[x][y] > 1 && seen.add(grid[x][y])) total += size.get(grid[x][y]);
+                }
+                best = Math.max(best, total);
+            }
+    return best;
+}
+
+private static int paint(int[][] g, int i, int j, int c) {
+    if (i < 0 || j < 0 || i >= g.length || j >= g.length || g[i][j] != 1) return 0;
+    g[i][j] = c;
+    return 1 + paint(g, i + 1, j, c) + paint(g, i - 1, j, c) + paint(g, i, j + 1, c) + paint(g, i, j - 1, c);
+}
+=== 387
+brute: Try all removal orders.
+opt: DSU joining a stone's row and column; removable = stones - components.
+why: Each connected group can be reduced to a single stone.
+expl: Union row r with column c + 10001 | Count distinct roots among stones | Answer = stones - components
+code:
+public static int removeStones(int[][] stones) {
+    int[] p = new int[20002];
+    for (int i = 0; i < p.length; i++) p[i] = i;
+    for (int[] s : stones) p[find(p, s[0])] = find(p, s[1] + 10001);
+    Set<Integer> roots = new HashSet<>();
+    for (int[] s : stones) roots.add(find(p, s[0]));
+    return stones.length - roots.size();
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}
+=== 388
+brute: Check mutual reachability for every pair.
+opt: Kosaraju: DFS order, reverse graph, DFS in reverse finish order.
+why: A DFS in the transposed graph from the latest finisher exactly covers one SCC.
+expl: DFS and push by finish time | Transpose edges | Pop nodes and DFS on the transposed graph counting starts
+code:
+public static int kosaraju(int v, List<List<Integer>> adj) {
+    boolean[] vis = new boolean[v];
+    Deque<Integer> st = new ArrayDeque<>();
+    for (int i = 0; i < v; i++) if (!vis[i]) dfs1(i, adj, vis, st);
+    List<List<Integer>> rev = new ArrayList<>();
+    for (int i = 0; i < v; i++) rev.add(new ArrayList<>());
+    for (int u = 0; u < v; u++) for (int w : adj.get(u)) rev.get(w).add(u);
+    Arrays.fill(vis, false);
+    int scc = 0;
+    while (!st.isEmpty()) {
+        int u = st.pop();
+        if (!vis[u]) { scc++; dfs2(u, rev, vis); }
+    }
+    return scc;
+}
+
+private static void dfs1(int u, List<List<Integer>> adj, boolean[] vis, Deque<Integer> st) {
+    vis[u] = true;
+    for (int w : adj.get(u)) if (!vis[w]) dfs1(w, adj, vis, st);
+    st.push(u);
+}
+
+private static void dfs2(int u, List<List<Integer>> g, boolean[] vis) {
+    vis[u] = true;
+    for (int w : g.get(u)) if (!vis[w]) dfs2(w, g, vis);
+}
+=== 389
+brute: Remove each edge and test connectivity.
+opt: Tarjan: discovery time and low-link values.
+why: An edge (u, v) is a bridge if low[v] > tin[u].
+expl: tin and low arrays | DFS updating low from back edges | If low[child] > tin[node] record the edge
+code:
+public static List<List<Integer>> criticalConnections(int n, List<List<Integer>> connections) {
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+    for (List<Integer> c : connections) { adj.get(c.get(0)).add(c.get(1)); adj.get(c.get(1)).add(c.get(0)); }
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(0, -1, adj, new int[n], new int[n], new boolean[n], new int[]{0}, res);
+    return res;
+}
+
+private static void dfs(int u, int p, List<List<Integer>> adj, int[] tin, int[] low, boolean[] vis, int[] timer, List<List<Integer>> res) {
+    vis[u] = true;
+    tin[u] = low[u] = timer[0]++;
+    for (int v : adj.get(u)) {
+        if (v == p) continue;
+        if (vis[v]) low[u] = Math.min(low[u], tin[v]);
+        else {
+            dfs(v, u, adj, tin, low, vis, timer, res);
+            low[u] = Math.min(low[u], low[v]);
+            if (low[v] > tin[u]) res.add(Arrays.asList(u, v));
+        }
+    }
+}
+=== 390
+brute: Remove each vertex and test connectivity.
+opt: Tarjan with low-link and a child count for the root.
+why: A non-root vertex u is a cut vertex if some child has low[v] >= tin[u]; the root needs 2+ children.
+expl: DFS computing tin and low | Non-root: low[v] >= tin[u] marks u | Root: more than one DFS child marks it | Return sorted points (or -1 if none)
+code:
+public static List<Integer> articulationPoints(int n, List<List<Integer>> adj) {
+    boolean[] vis = new boolean[n], mark = new boolean[n];
+    int[] tin = new int[n], low = new int[n];
+    for (int i = 0; i < n; i++) if (!vis[i]) dfs(i, -1, adj, tin, low, vis, mark, new int[]{0});
+    List<Integer> res = new ArrayList<>();
+    for (int i = 0; i < n; i++) if (mark[i]) res.add(i);
+    if (res.isEmpty()) res.add(-1);
+    return res;
+}
+
+private static void dfs(int u, int p, List<List<Integer>> adj, int[] tin, int[] low, boolean[] vis, boolean[] mark, int[] timer) {
+    vis[u] = true;
+    tin[u] = low[u] = timer[0]++;
+    int children = 0;
+    for (int v : adj.get(u)) {
+        if (v == p) continue;
+        if (vis[v]) low[u] = Math.min(low[u], tin[v]);
+        else {
+            dfs(v, u, adj, tin, low, vis, mark, timer);
+            low[u] = Math.min(low[u], low[v]);
+            if (low[v] >= tin[u] && p != -1) mark[u] = true;
+            children++;
+        }
+    }
+    if (p == -1 && children > 1) mark[u] = true;
+}

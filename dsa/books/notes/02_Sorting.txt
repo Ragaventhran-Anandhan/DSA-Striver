@@ -1,0 +1,118 @@
+=== 44
+brute: Repeatedly find the minimum with a full scan and copy into a new array.
+opt: Selection sort: swap the minimum of the unsorted part into position i.
+why: After pass i, the first i+1 positions hold the i+1 smallest values in order.
+expl: For i from 0 to n-2 | Find index of the minimum in [i, n-1] | Swap it with arr[i]
+code:
+public static void selectionSort(int[] arr) {
+    for (int i = 0; i < arr.length - 1; i++) {
+        int min = i;
+        for (int j = i + 1; j < arr.length; j++) if (arr[j] < arr[min]) min = j;
+        int t = arr[i]; arr[i] = arr[min]; arr[min] = t;
+    }
+}
+=== 45
+brute: Compare every pair and swap if out of order.
+opt: Bubble adjacent pairs; stop early if a pass makes no swap.
+why: Each pass pushes the largest remaining element to the end.
+expl: For i from n-1 down to 1 | Swap adjacent out-of-order pairs in [0, i] | Break if nothing swapped
+code:
+public static void bubbleSort(int[] arr) {
+    for (int i = arr.length - 1; i > 0; i--) {
+        boolean swapped = false;
+        for (int j = 0; j < i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int t = arr[j]; arr[j] = arr[j + 1]; arr[j + 1] = t;
+                swapped = true;
+            }
+        }
+        if (!swapped) break;
+    }
+}
+=== 46
+brute: Insert each element into a new sorted list.
+opt: Insertion sort in place: shift larger elements right then drop the key.
+why: Prefix [0, i-1] is always sorted, so inserting arr[i] keeps it sorted.
+expl: For i from 1 | key = arr[i] | Shift greater elements one step right | Place key in the gap
+code:
+public static void insertionSort(int[] arr) {
+    for (int i = 1; i < arr.length; i++) {
+        int key = arr[i], j = i - 1;
+        while (j >= 0 && arr[j] > key) { arr[j + 1] = arr[j]; j--; }
+        arr[j + 1] = key;
+    }
+}
+=== 47
+brute: Iterative bubble sort.
+opt: Recursion: one bubble pass for size n, then recurse on n-1.
+why: After one pass the maximum is fixed at the end, reducing the problem by one.
+expl: If n == 1 return | Bubble the largest to index n-1 | Recurse with n-1
+code:
+public static void recursiveBubbleSort(int[] arr) {
+    bubble(arr, arr.length);
+}
+
+private static void bubble(int[] a, int n) {
+    if (n <= 1) return;
+    for (int j = 0; j < n - 1; j++)
+        if (a[j] > a[j + 1]) { int t = a[j]; a[j] = a[j + 1]; a[j + 1] = t; }
+    bubble(a, n - 1);
+}
+=== 48
+brute: Iterative insertion sort.
+opt: Recursively sort the first n-1 elements then insert the n-th.
+why: Induction: sorted prefix plus one insertion gives a sorted prefix.
+expl: If n <= 1 return | Recurse on n-1 | Insert a[n-1] into the sorted prefix
+code:
+public static void recursiveInsertionSort(int[] arr) {
+    insertion(arr, arr.length);
+}
+
+private static void insertion(int[] a, int n) {
+    if (n <= 1) return;
+    insertion(a, n - 1);
+    int key = a[n - 1], j = n - 2;
+    while (j >= 0 && a[j] > key) { a[j + 1] = a[j]; j--; }
+    a[j + 1] = key;
+}
+=== 49
+brute: O(n^2) sorts.
+opt: Divide and conquer: split, sort halves, merge.
+why: Merging two sorted halves is linear and the depth is log n, giving O(n log n).
+expl: Split at mid | Sort left and right | Merge using a temp array | Copy back
+code:
+public static void mergeSort(int[] arr) {
+    sort(arr, 0, arr.length - 1);
+}
+
+private static void sort(int[] a, int lo, int hi) {
+    if (lo >= hi) return;
+    int mid = (lo + hi) / 2;
+    sort(a, lo, mid);
+    sort(a, mid + 1, hi);
+    int[] tmp = new int[hi - lo + 1];
+    int i = lo, j = mid + 1, k = 0;
+    while (i <= mid && j <= hi) tmp[k++] = a[i] <= a[j] ? a[i++] : a[j++];
+    while (i <= mid) tmp[k++] = a[i++];
+    while (j <= hi) tmp[k++] = a[j++];
+    System.arraycopy(tmp, 0, a, lo, tmp.length);
+}
+=== 50
+brute: O(n^2) sorts.
+opt: Quick sort: partition around a pivot then sort both sides.
+why: After partitioning, the pivot is in its final place; average depth is log n.
+expl: Choose pivot as the last element | Move smaller elements before it | Place pivot | Recurse on both sides
+code:
+public static void quickSort(int[] arr) {
+    qs(arr, 0, arr.length - 1);
+}
+
+private static void qs(int[] a, int lo, int hi) {
+    if (lo >= hi) return;
+    int pivot = a[hi], i = lo;
+    for (int j = lo; j < hi; j++)
+        if (a[j] < pivot) { int t = a[i]; a[i] = a[j]; a[j] = t; i++; }
+    int t = a[i]; a[i] = a[hi]; a[hi] = t;
+    qs(a, lo, i - 1);
+    qs(a, i + 1, hi);
+}

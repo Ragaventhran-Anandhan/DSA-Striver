@@ -1,0 +1,177 @@
+=== 202
+brute: Compare bit by bit with a loop over 32 bits.
+opt: XOR then count set bits.
+why: XOR has a 1 exactly where the numbers differ.
+expl: x = start ^ goal | Count set bits of x | Return that count
+code:
+public static int minBitFlips(int start, int goal) {
+    return Integer.bitCount(start ^ goal);
+}
+=== 203
+brute: Convert to a binary string and index it.
+opt: Shift right i and check the lowest bit.
+why: (n >> i) & 1 isolates bit i.
+expl: Shift n right by i | AND with 1
+code:
+public static boolean isBitSet(int n, int i) {
+    return ((n >> i) & 1) == 1;
+}
+=== 204
+brute: Rebuild from a binary string.
+opt: OR with 1 << i.
+why: OR forces the chosen bit to 1 and keeps others.
+expl: mask = 1 << i | Return n | mask
+code:
+public static int setBit(int n, int i) {
+    return n | (1 << i);
+}
+=== 205
+brute: Rebuild from a binary string.
+opt: AND with the complement of 1 << i.
+why: The mask has 0 at bit i and 1 elsewhere.
+expl: mask = ~(1 << i) | Return n & mask
+code:
+public static int clearBit(int n, int i) {
+    return n & ~(1 << i);
+}
+=== 206
+brute: Check the bit then set or clear it.
+opt: XOR with 1 << i.
+why: XOR with 1 flips a bit.
+expl: Return n ^ (1 << i)
+code:
+public static int toggleBit(int n, int i) {
+    return n ^ (1 << i);
+}
+=== 207
+brute: Find the position of the lowest 1 and clear it.
+opt: n & (n - 1).
+why: Subtracting 1 flips the lowest set bit and the zeros below it.
+expl: Compute n & (n-1)
+code:
+public static int removeLastSetBit(int n) {
+    return n & (n - 1);
+}
+=== 208
+brute: Keep dividing by 2 while even.
+opt: Check n > 0 and n & (n-1) == 0.
+why: A power of two has exactly one set bit.
+expl: n must be positive | Clearing the only set bit gives 0
+code:
+public static boolean isPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}
+=== 209
+brute: Check each of 32 bits.
+opt: Brian Kernighan: clear the lowest set bit until zero.
+why: The loop runs once per set bit.
+expl: count = 0 | While n != 0 n &= n-1 | count++
+code:
+public static int countSetBits(int n) {
+    int c = 0;
+    while (n != 0) { n &= n - 1; c++; }
+    return c;
+}
+=== 210
+brute: Use a temporary variable.
+opt: XOR swap.
+why: a ^ b ^ b = a and a ^ b ^ a = b.
+expl: a ^= b | b ^= a | a ^= b
+code:
+public static int[] swapNumbers(int a, int b) {
+    a ^= b;
+    b ^= a;
+    a ^= b;
+    return new int[]{a, b};
+}
+=== 211
+brute: Subtract the divisor repeatedly.
+opt: Subtract the largest shifted divisor each time.
+why: Doubling the divisor via shifts covers the quotient in binary in O(log^2 n).
+expl: Handle sign and overflow | For i from 31 down while (divisor << i) <= dividend subtract it | Add 1 << i to the quotient
+code:
+public static int divide(int dividend, int divisor) {
+    if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
+    boolean neg = (dividend < 0) ^ (divisor < 0);
+    long a = Math.abs((long) dividend), b = Math.abs((long) divisor);
+    long q = 0;
+    for (int i = 31; i >= 0; i--) {
+        if ((b << i) <= a) { a -= b << i; q += 1L << i; }
+    }
+    return (int) (neg ? -q : q);
+}
+=== 212
+brute: Count each element with a map.
+opt: XOR all, split by a set bit.
+why: XOR gives a^b; a set bit in it separates a and b into two groups.
+expl: x = XOR of all | bit = x & -x | XOR numbers with and without the bit separately
+code:
+public static int[] singleNumberIII(int[] arr) {
+    int x = 0;
+    for (int v : arr) x ^= v;
+    int bit = x & -x, a = 0, b = 0;
+    for (int v : arr) { if ((v & bit) != 0) a ^= v; else b ^= v; }
+    return new int[]{Math.min(a, b), Math.max(a, b)};
+}
+=== 213
+brute: Count each element with a map.
+opt: Count bit i across all numbers mod 3.
+why: Numbers appearing three times contribute multiples of 3 to each bit.
+expl: For each bit 0..31 sum that bit over all numbers | If sum % 3 != 0 set it in the answer
+code:
+public static int singleNumberII(int[] arr) {
+    int res = 0;
+    for (int i = 0; i < 32; i++) {
+        int s = 0;
+        for (int v : arr) s += (v >> i) & 1;
+        if (s % 3 != 0) res |= 1 << i;
+    }
+    return res;
+}
+=== 214
+brute: XOR every number from l to r.
+opt: Use the prefix XOR trick f(r) ^ f(l-1).
+why: XOR from 1..n follows a pattern repeating every 4.
+expl: f(n) by n % 4 | Return f(r) ^ f(l-1)
+code:
+public static int xorRange(int l, int r) {
+    return f(r) ^ f(l - 1);
+}
+
+private static int f(int n) {
+    switch (n % 4) {
+        case 0: return n;
+        case 1: return 1;
+        case 2: return n + 1;
+        default: return 0;
+    }
+}
+=== 215
+brute: Recursion with pick / not-pick.
+opt: Iterate masks 0 to 2^n - 1.
+why: Each bit of the mask decides whether an element is included.
+expl: For mask in 0..2^n-1 | For each bit set add that element | Add the subset
+code:
+public static List<List<Integer>> powerSetBits(int[] arr) {
+    List<List<Integer>> res = new ArrayList<>();
+    int n = arr.length;
+    for (int mask = 0; mask < (1 << n); mask++) {
+        List<Integer> s = new ArrayList<>();
+        for (int i = 0; i < n; i++) if ((mask & (1 << i)) != 0) s.add(arr[i]);
+        res.add(s);
+    }
+    return res;
+}
+=== 216
+brute: Test every number up to n for primality.
+opt: Trial division up to sqrt(n).
+why: After dividing out small factors, any remainder > 1 is prime.
+expl: For d from 2 while d*d <= n | Divide out d | If n > 1 add it
+code:
+public static List<Integer> primeFactors(int n) {
+    List<Integer> r = new ArrayList<>();
+    for (int d = 2; (long) d * d <= n; d++)
+        while (n % d == 0) { r.add(d); n /= d; }
+    if (n > 1) r.add(n);
+    return r;
+}

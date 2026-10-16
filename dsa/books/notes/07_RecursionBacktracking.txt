@@ -1,0 +1,479 @@
+=== 181
+brute: Generate all subsets by bitmask and filter by sum.
+opt: Recursion with pick / not-pick, pruning by sum.
+why: Each index has two choices, giving at most 2^n paths with early pruning.
+expl: At index i either take arr[i] or skip it | When i == n check if sum == k | Backtrack by removing the last element
+code:
+public static List<List<Integer>> subsequencesWithSumK(int[] arr, int k) {
+    List<List<Integer>> res = new ArrayList<>();
+    go(arr, 0, k, new ArrayList<>(), res);
+    return res;
+}
+
+private static void go(int[] a, int i, int rem, List<Integer> cur, List<List<Integer>> res) {
+    if (i == a.length) { if (rem == 0) res.add(new ArrayList<>(cur)); return; }
+    cur.add(a[i]);
+    go(a, i + 1, rem - a[i], cur, res);
+    cur.remove(cur.size() - 1);
+    go(a, i + 1, rem, cur, res);
+}
+=== 182
+brute: Enumerate all subsets and count.
+opt: Recursion returning 1 or 0 at the leaves.
+why: Summing results of both branches counts every valid subsequence.
+expl: Base: i == n returns 1 if sum == 0 | Return count(take) + count(skip)
+code:
+public static int countSubsequences(int[] arr, int k) {
+    return count(arr, 0, k);
+}
+
+private static int count(int[] a, int i, int rem) {
+    if (i == a.length) return rem == 0 ? 1 : 0;
+    return count(a, i + 1, rem - a[i]) + count(a, i + 1, rem);
+}
+=== 183
+brute: Generate all 2^(2n) strings and validate each.
+opt: Backtrack adding '(' if open < n and ')' if close < open.
+why: Only prefixes that can still be valid are extended.
+expl: open and close counters | Add '(' when open < n | Add ')' when close < open | Record at length 2n
+code:
+public static List<String> generateParenthesis(int n) {
+    List<String> res = new ArrayList<>();
+    build(n, 0, 0, new StringBuilder(), res);
+    return res;
+}
+
+private static void build(int n, int o, int c, StringBuilder sb, List<String> res) {
+    if (sb.length() == 2 * n) { res.add(sb.toString()); return; }
+    if (o < n) { sb.append('('); build(n, o + 1, c, sb, res); sb.deleteCharAt(sb.length() - 1); }
+    if (c < o) { sb.append(')'); build(n, o, c + 1, sb, res); sb.deleteCharAt(sb.length() - 1); }
+}
+=== 184
+brute: Build every subset and add it up.
+opt: Recursion carrying the running sum.
+why: Each leaf represents one subset and its sum.
+expl: At each index add the value or not | Record the sum at the end | Sort the result
+code:
+public static List<Integer> subsetSums(int[] arr) {
+    List<Integer> res = new ArrayList<>();
+    sums(arr, 0, 0, res);
+    Collections.sort(res);
+    return res;
+}
+
+private static void sums(int[] a, int i, int s, List<Integer> res) {
+    if (i == a.length) { res.add(s); return; }
+    sums(a, i + 1, s + a[i], res);
+    sums(a, i + 1, s, res);
+}
+=== 185
+brute: Generate all subsets and deduplicate with a set.
+opt: Sort and skip equal values at the same recursion level.
+why: Skipping duplicates at the same depth avoids producing identical subsets.
+expl: Sort the array | Add the current subset | For each j >= start skip arr[j] == arr[j-1] when j > start | Recurse
+code:
+public static List<List<Integer>> subsetsWithDup(int[] arr) {
+    Arrays.sort(arr);
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(arr, 0, new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int start, List<Integer> cur, List<List<Integer>> res) {
+    res.add(new ArrayList<>(cur));
+    for (int j = start; j < a.length; j++) {
+        if (j > start && a[j] == a[j - 1]) continue;
+        cur.add(a[j]);
+        dfs(a, j + 1, cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}
+=== 186
+brute: Try all multisets up to a bound.
+opt: Backtrack allowing the same index again.
+why: Staying on the same index models unlimited reuse; moving forward avoids permutations.
+expl: If remaining == 0 record | For j from start try a[j] if it fits | Recurse with start = j
+code:
+public static List<List<Integer>> combinationSum(int[] arr, int target) {
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(arr, 0, target, new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int s, int rem, List<Integer> cur, List<List<Integer>> res) {
+    if (rem == 0) { res.add(new ArrayList<>(cur)); return; }
+    for (int j = s; j < a.length; j++) {
+        if (a[j] > rem) continue;
+        cur.add(a[j]);
+        dfs(a, j, rem - a[j], cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}
+=== 187
+brute: All subsets filtered by sum and deduplicated.
+opt: Sort, use each index once, skip equal siblings.
+why: Duplicate skipping at the same level prevents repeated combinations.
+expl: Sort | Recurse with start = j+1 | Skip when j > start and a[j] == a[j-1] | Stop when a[j] > remaining
+code:
+public static List<List<Integer>> combinationSum2(int[] arr, int target) {
+    Arrays.sort(arr);
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(arr, 0, target, new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int s, int rem, List<Integer> cur, List<List<Integer>> res) {
+    if (rem == 0) { res.add(new ArrayList<>(cur)); return; }
+    for (int j = s; j < a.length && a[j] <= rem; j++) {
+        if (j > s && a[j] == a[j - 1]) continue;
+        cur.add(a[j]);
+        dfs(a, j + 1, rem - a[j], cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}
+=== 188
+brute: All subsets of 1..9 filtered by size and sum.
+opt: Backtrack with remaining count and sum.
+why: Numbers are increasing so no duplicates occur and pruning is simple.
+expl: Pick numbers from start to 9 | Stop when size == k | Record if sum == n
+code:
+public static List<List<Integer>> combinationSum3(int k, int n) {
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(1, k, n, new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(int s, int k, int rem, List<Integer> cur, List<List<Integer>> res) {
+    if (cur.size() == k) { if (rem == 0) res.add(new ArrayList<>(cur)); return; }
+    for (int i = s; i <= 9 && i <= rem; i++) {
+        cur.add(i);
+        dfs(i + 1, k, rem - i, cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}
+=== 189
+brute: Nested loops that depend on the input length.
+opt: Backtracking over digits with a phone map.
+why: Each digit multiplies the number of results by its letter count.
+expl: Map digits to letters | For each digit try every letter | Record when length equals digits length
+code:
+public static List<String> letterCombinations(String digits) {
+    List<String> res = new ArrayList<>();
+    if (digits.isEmpty()) return res;
+    String[] map = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    dfs(digits, 0, map, new StringBuilder(), res);
+    return res;
+}
+
+private static void dfs(String d, int i, String[] map, StringBuilder sb, List<String> res) {
+    if (i == d.length()) { res.add(sb.toString()); return; }
+    for (char c : map[d.charAt(i) - '0'].toCharArray()) {
+        sb.append(c);
+        dfs(d, i + 1, map, sb, res);
+        sb.deleteCharAt(sb.length() - 1);
+    }
+}
+=== 190
+brute: Try all ways to cut the string and test each part.
+opt: Backtrack cutting only at palindromic prefixes.
+why: Pruning invalid prefixes avoids exploring bad cuts.
+expl: For each end j from start check palindrome | Add the piece and recurse from j+1 | Record at the end of the string
+code:
+public static List<List<String>> partition(String s) {
+    List<List<String>> res = new ArrayList<>();
+    dfs(s, 0, new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(String s, int st, List<String> cur, List<List<String>> res) {
+    if (st == s.length()) { res.add(new ArrayList<>(cur)); return; }
+    for (int j = st; j < s.length(); j++) {
+        if (isPal(s, st, j)) {
+            cur.add(s.substring(st, j + 1));
+            dfs(s, j + 1, cur, res);
+            cur.remove(cur.size() - 1);
+        }
+    }
+}
+
+private static boolean isPal(String s, int l, int r) {
+    while (l < r) if (s.charAt(l++) != s.charAt(r--)) return false;
+    return true;
+}
+=== 191
+brute: Generate every path in the grid.
+opt: DFS from each cell, marking visited and backtracking.
+why: A path is abandoned as soon as a letter mismatches.
+expl: Try each cell as a start | Match letters in four directions | Mark the cell during the path then restore
+code:
+public static boolean exist(char[][] board, String word) {
+    for (int i = 0; i < board.length; i++)
+        for (int j = 0; j < board[0].length; j++)
+            if (dfs(board, word, i, j, 0)) return true;
+    return false;
+}
+
+private static boolean dfs(char[][] b, String w, int i, int j, int k) {
+    if (k == w.length()) return true;
+    if (i < 0 || j < 0 || i >= b.length || j >= b[0].length || b[i][j] != w.charAt(k)) return false;
+    char t = b[i][j];
+    b[i][j] = '#';
+    boolean ok = dfs(b, w, i + 1, j, k + 1) || dfs(b, w, i - 1, j, k + 1)
+              || dfs(b, w, i, j + 1, k + 1) || dfs(b, w, i, j - 1, k + 1);
+    b[i][j] = t;
+    return ok;
+}
+=== 192
+brute: Generate all n^n sequences and filter.
+opt: Backtrack with a used array.
+why: Each level picks an unused element, giving n! results.
+expl: If cur has n elements record | Try every unused index | Mark used, recurse, unmark
+code:
+public static List<List<Integer>> permute(int[] arr) {
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(arr, new boolean[arr.length], new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(int[] a, boolean[] used, List<Integer> cur, List<List<Integer>> res) {
+    if (cur.size() == a.length) { res.add(new ArrayList<>(cur)); return; }
+    for (int i = 0; i < a.length; i++) {
+        if (used[i]) continue;
+        used[i] = true;
+        cur.add(a[i]);
+        dfs(a, used, cur, res);
+        cur.remove(cur.size() - 1);
+        used[i] = false;
+    }
+}
+=== 193
+brute: Generate all permutations and take the k-th.
+opt: Factorial number system picks digits directly.
+why: Each position has (n-1)! permutations per leading digit, so k picks the digit by division.
+expl: Numbers list 1..n and k-- | block = (n-1)! | idx = k / block | Remove digit idx and reduce k
+code:
+public static String getPermutation(int n, int k) {
+    List<Integer> nums = new ArrayList<>();
+    int fact = 1;
+    for (int i = 1; i < n; i++) { fact *= i; nums.add(i); }
+    nums.add(n);
+    k--;
+    StringBuilder sb = new StringBuilder();
+    while (true) {
+        sb.append(nums.remove(k / fact));
+        if (nums.isEmpty()) break;
+        k %= fact;
+        fact /= nums.size();
+    }
+    return sb.toString();
+}
+=== 194
+brute: Try every path of moves without pruning.
+opt: DFS with a visited matrix in order D, L, R, U.
+why: Visited cells prevent cycles and the fixed direction order yields sorted output.
+expl: Start at (0,0) if open | Try four moves | Mark visited then unmark | Record the path at the destination
+code:
+public static List<String> findPaths(int[][] maze, int n) {
+    List<String> res = new ArrayList<>();
+    if (maze[0][0] == 0) return res;
+    dfs(maze, 0, 0, n, new boolean[n][n], new StringBuilder(), res);
+    return res;
+}
+
+private static void dfs(int[][] m, int i, int j, int n, boolean[][] vis, StringBuilder p, List<String> res) {
+    if (i == n - 1 && j == n - 1) { res.add(p.toString()); return; }
+    vis[i][j] = true;
+    int[] di = {1, 0, 0, -1}, dj = {0, -1, 1, 0};
+    char[] c = {'D', 'L', 'R', 'U'};
+    for (int d = 0; d < 4; d++) {
+        int x = i + di[d], y = j + dj[d];
+        if (x >= 0 && y >= 0 && x < n && y < n && m[x][y] == 1 && !vis[x][y]) {
+            p.append(c[d]);
+            dfs(m, x, y, n, vis, p, res);
+            p.deleteCharAt(p.length() - 1);
+        }
+    }
+    vis[i][j] = false;
+}
+=== 195
+brute: Try every operator combination by brute force evaluation.
+opt: Backtrack tracking the running value and the last operand.
+why: Multiplication needs the last operand so its precedence can be undone.
+expl: Split the number into operands | For +, - update value normally | For * replace last operand's contribution | Record when value == target
+code:
+public static List<String> addOperators(String num, int target) {
+    List<String> res = new ArrayList<>();
+    dfs(num, target, 0, "", 0, 0, res);
+    return res;
+}
+
+private static void dfs(String s, int t, int i, String expr, long val, long last, List<String> res) {
+    if (i == s.length()) { if (val == t) res.add(expr); return; }
+    for (int j = i; j < s.length(); j++) {
+        if (j > i && s.charAt(i) == '0') break;
+        long cur = Long.parseLong(s.substring(i, j + 1));
+        String part = s.substring(i, j + 1);
+        if (i == 0) dfs(s, t, j + 1, part, cur, cur, res);
+        else {
+            dfs(s, t, j + 1, expr + "+" + part, val + cur, cur, res);
+            dfs(s, t, j + 1, expr + "-" + part, val - cur, -cur, res);
+            dfs(s, t, j + 1, expr + "*" + part, val - last + last * cur, last * cur, res);
+        }
+    }
+}
+=== 196
+brute: Generate all permutations in order and take the k-th.
+opt: Factorial number system on the array elements.
+why: Same logic as the permutation sequence with sorted array values.
+expl: Sort a copy | k-- | Pick index k / (n-1)! | Remove it and continue
+code:
+public static List<Integer> kthPermutation(int[] arr, int k) {
+    List<Integer> nums = new ArrayList<>();
+    for (int x : arr) nums.add(x);
+    Collections.sort(nums);
+    int n = nums.size();
+    int[] fact = new int[n + 1];
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++) fact[i] = fact[i - 1] * i;
+    k--;
+    List<Integer> res = new ArrayList<>();
+    for (int i = n; i >= 1; i--) {
+        int idx = k / fact[i - 1];
+        res.add(nums.remove(idx));
+        k %= fact[i - 1];
+    }
+    return res;
+}
+=== 197
+brute: Combine subsets by hand.
+opt: Pick / not-pick recursion.
+why: Each element is either in or out, giving 2^n subsets.
+expl: Add the current subset | For each j >= start extend and recurse | Backtrack
+code:
+public static List<List<Integer>> powerSet(int[] arr) {
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(arr, 0, new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(int[] a, int s, List<Integer> cur, List<List<Integer>> res) {
+    res.add(new ArrayList<>(cur));
+    for (int j = s; j < a.length; j++) {
+        cur.add(a[j]);
+        dfs(a, j + 1, cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}
+=== 198
+brute: Place n queens anywhere and check validity at the end.
+opt: Place one queen per row with column and diagonal sets.
+why: Constant-time conflict checks prune invalid boards early.
+expl: Rows processed in order | Track used columns, diag (r-c), anti-diag (r+c) | Place and recurse | Build the board at the last row
+code:
+public static List<List<String>> solveNQueens(int n) {
+    List<List<String>> res = new ArrayList<>();
+    place(0, n, new int[n], new boolean[n], new boolean[2 * n], new boolean[2 * n], res);
+    return res;
+}
+
+private static void place(int r, int n, int[] pos, boolean[] col, boolean[] d1, boolean[] d2, List<List<String>> res) {
+    if (r == n) {
+        List<String> b = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            char[] row = new char[n];
+            Arrays.fill(row, '.');
+            row[pos[i]] = 'Q';
+            b.add(new String(row));
+        }
+        res.add(b);
+        return;
+    }
+    for (int c = 0; c < n; c++) {
+        if (col[c] || d1[r - c + n] || d2[r + c]) continue;
+        pos[r] = c; col[c] = d1[r - c + n] = d2[r + c] = true;
+        place(r + 1, n, pos, col, d1, d2, res);
+        col[c] = d1[r - c + n] = d2[r + c] = false;
+    }
+}
+=== 199
+brute: Try every digit in every cell.
+opt: Backtracking with validity checks per placement.
+why: Constraints prune most invalid choices immediately.
+expl: Find an empty cell | Try digits 1-9 if valid | Recurse; undo on failure
+code:
+public static void solveSudoku(char[][] board) {
+    solve(board);
+}
+
+private static boolean solve(char[][] b) {
+    for (int i = 0; i < 9; i++)
+        for (int j = 0; j < 9; j++) {
+            if (b[i][j] != '.') continue;
+            for (char c = '1'; c <= '9'; c++) {
+                if (ok(b, i, j, c)) {
+                    b[i][j] = c;
+                    if (solve(b)) return true;
+                    b[i][j] = '.';
+                }
+            }
+            return false;
+        }
+    return true;
+}
+
+private static boolean ok(char[][] b, int r, int c, char ch) {
+    for (int k = 0; k < 9; k++) {
+        if (b[r][k] == ch || b[k][c] == ch) return false;
+        if (b[3 * (r / 3) + k / 3][3 * (c / 3) + k % 3] == ch) return false;
+    }
+    return true;
+}
+=== 200
+brute: Try all m^n colourings.
+opt: Backtrack assigning colours with an adjacency check.
+why: A colour is tried only if no neighbour already has it.
+expl: Build adjacency | For vertex v try colours 1..m | Check neighbours | Recurse to v+1
+code:
+public static boolean graphColoring(int[][] edges, int n, int m) {
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+    for (int[] e : edges) { adj.get(e[0]).add(e[1]); adj.get(e[1]).add(e[0]); }
+    return color(0, n, m, adj, new int[n]);
+}
+
+private static boolean color(int v, int n, int m, List<List<Integer>> adj, int[] col) {
+    if (v == n) return true;
+    for (int c = 1; c <= m; c++) {
+        boolean ok = true;
+        for (int u : adj.get(v)) if (col[u] == c) { ok = false; break; }
+        if (!ok) continue;
+        col[v] = c;
+        if (color(v + 1, n, m, adj, col)) return true;
+        col[v] = 0;
+    }
+    return false;
+}
+=== 201
+brute: Try every split of the string.
+opt: Backtracking with a dictionary set and memoization of failures.
+why: Only prefixes that are dictionary words continue the search.
+expl: Try each prefix in the dictionary | Recurse on the remainder | Join words with spaces
+code:
+public static List<String> wordBreak(String s, List<String> dict) {
+    Set<String> set = new HashSet<>(dict);
+    List<String> res = new ArrayList<>();
+    dfs(s, 0, set, new ArrayList<>(), res);
+    return res;
+}
+
+private static void dfs(String s, int i, Set<String> d, List<String> cur, List<String> res) {
+    if (i == s.length()) { res.add(String.join(" ", cur)); return; }
+    for (int j = i + 1; j <= s.length(); j++) {
+        String w = s.substring(i, j);
+        if (d.contains(w)) {
+            cur.add(w);
+            dfs(s, j, d, cur, res);
+            cur.remove(cur.size() - 1);
+        }
+    }
+}

@@ -1,0 +1,830 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03 - Arrays</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>03 - Arrays</h1></header><main><nav class="toc"><a href="#p51">51. Largest Element in Array</a><a href="#p52">52. Second Largest Element</a><a href="#p53">53. Check if Array is Sorted</a><a href="#p54">54. Remove Duplicates from Sorted Array</a><a href="#p55">55. Left Rotate Array by One</a><a href="#p56">56. Left Rotate Array by D Places</a><a href="#p57">57. Move Zeros to End</a><a href="#p58">58. Linear Search</a><a href="#p59">59. Union of Two Sorted Arrays</a><a href="#p60">60. Intersection of Two Sorted Arrays</a><a href="#p61">61. Find Missing Number</a><a href="#p62">62. Maximum Consecutive Ones</a><a href="#p63">63. Single Number (Appears Once)</a><a href="#p64">64. Two Sum</a><a href="#p65">65. Merge Two Sorted Arrays Without Extra Space</a><a href="#p66">66. Pascal&#x27;s Triangle - Element at (r,c)</a><a href="#p67">67. Longest Subarray with Sum K (Positives)</a><a href="#p68">68. Longest Subarray with Sum K (Positives and Negatives)</a><a href="#p69">69. Sort Colors (0s, 1s, 2s)</a><a href="#p70">70. Majority Element (&gt; n/2)</a><a href="#p71">71. Maximum Subarray Sum (Kadane)</a><a href="#p72">72. Print Subarray with Maximum Sum</a><a href="#p73">73. Best Time to Buy and Sell Stock</a><a href="#p74">74. Rearrange Array Elements by Sign</a><a href="#p75">75. Rearrange Array by Sign (Unequal Counts)</a><a href="#p76">76. Next Permutation</a><a href="#p77">77. Leaders in an Array</a><a href="#p78">78. Longest Consecutive Sequence</a><a href="#p79">79. Set Matrix Zeroes</a><a href="#p80">80. Rotate Matrix by 90 Degrees</a><a href="#p81">81. Spiral Traversal of Matrix</a><a href="#p82">82. Count Subarrays with Given Sum</a><a href="#p83">83. Pascal&#x27;s Triangle (Variations)</a><a href="#p84">84. 3Sum</a><a href="#p85">85. 4Sum</a><a href="#p86">86. Largest Subarray with 0 Sum</a><a href="#p87">87. Merge Overlapping Intervals</a><a href="#p88">88. Pascal&#x27;s Triangle - Print Row N</a><a href="#p89">89. Search in 2D Matrix Row-wise Sorted</a><a href="#p90">90. Majority Element II (&gt; n/3)</a><a href="#p91">91. Count Subarrays with XOR K</a><a href="#p92">92. Find the Repeating and Missing Number</a><a href="#p93">93. Count Inversions</a><a href="#p94">94. Reverse Pairs</a><a href="#p95">95. Maximum Product Subarray</a></nav><section class="problem" id="p51">
+<h2>Problem 51: Largest Element in Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return the largest element.</p><div class="ex">Input: arr=[3,2,1,5,2]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort and take the last element.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>One scan keeping the maximum.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Every element is compared once so O(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findLargest(int[] arr) {
+    int max = arr[0];
+    for (int x : arr) if (x &gt; max) max = x;
+    return max;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>max = arr[0]</li><li>Update max when a larger value appears</li><li>Return max</li></ol></div></div>
+</div></section><section class="problem" id="p52">
+<h2>Problem 52: Second Largest Element<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return second largest distinct element, -1 if none.</p><div class="ex">Input: arr=[1,2,4,7,7,5]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort and pick the second distinct from the end.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Single pass tracking largest and second largest.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Strictly smaller than the largest and bigger than the current second keeps them distinct.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int secondLargest(int[] arr) {
+    int large = Integer.MIN_VALUE, second = -1;
+    for (int x : arr) {
+        if (x &gt; large) { second = large == Integer.MIN_VALUE ? -1 : large; large = x; }
+        else if (x &lt; large &amp;&amp; x &gt; second) second = x;
+    }
+    return second;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>largest = MIN, second = -1</li><li>If x &gt; largest then second = largest, largest = x</li><li>Else if x &lt; largest and x &gt; second then second = x</li></ol></div></div>
+</div></section><section class="problem" id="p53">
+<h2>Problem 53: Check if Array is Sorted<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>True if non-decreasing order.</p><div class="ex">Input: arr=[1,2,3,4,5]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort a copy and compare.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Check every adjacent pair.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Non-decreasing order is exactly a[i] &lt;= a[i+1] for all i.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isSorted(int[] arr) {
+    for (int i = 1; i &lt; arr.length; i++) if (arr[i] &lt; arr[i - 1]) return false;
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Loop i from 1</li><li>Return false if arr[i] &lt; arr[i-1]</li><li>Return true</li></ol></div></div>
+</div></section><section class="problem" id="p54">
+<h2>Problem 54: Remove Duplicates from Sorted Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>In place; return count of unique elements.</p><div class="ex">Input: arr=[1,1,2,2,2,3,3]<br>Output:<pre class="out">3, arr=[1,2,3,_,_,_,_]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Put elements in a LinkedHashSet and copy back.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers: i marks the last unique, j scans.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sorted order means duplicates are adjacent.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int removeDuplicates(int[] arr) {
+    if (arr.length == 0) return 0;
+    int i = 0;
+    for (int j = 1; j &lt; arr.length; j++)
+        if (arr[j] != arr[i]) arr[++i] = arr[j];
+    return i + 1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>i = 0</li><li>For each j, if arr[j] != arr[i] then arr[++i] = arr[j]</li><li>Return i+1</li></ol></div></div>
+</div></section><section class="problem" id="p55">
+<h2>Problem 55: Left Rotate Array by One<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rotate left by 1 place.</p><div class="ex">Input: arr=[1,2,3,4,5]<br>Output:<pre class="out">[2,3,4,5,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy into a temp array shifted by one.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Save the first element, shift the rest left, put it at the end.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only one element needs extra storage.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void rotateByOne(int[] arr) {
+    if (arr.length == 0) return;
+    int t = arr[0];
+    for (int i = 1; i &lt; arr.length; i++) arr[i - 1] = arr[i];
+    arr[arr.length - 1] = t;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>temp = arr[0]</li><li>Shift arr[1..] left</li><li>arr[n-1] = temp</li></ol></div></div>
+</div></section><section class="problem" id="p56">
+<h2>Problem 56: Left Rotate Array by D Places<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rotate left by d places.</p><div class="ex">Input: arr=[1,2,3,4,5,6,7], d=3<br>Output:<pre class="out">[4,5,6,7,1,2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rotate by one, d times, O(n*d).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reversal algorithm: reverse first d, reverse the rest, reverse all.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Three reversals compose to a left rotation in O(n) and O(1) space.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void rotateByD(int[] arr, int d) {
+    int n = arr.length;
+    if (n == 0) return;
+    d %= n;
+    reverse(arr, 0, d - 1);
+    reverse(arr, d, n - 1);
+    reverse(arr, 0, n - 1);
+}
+
+private static void reverse(int[] a, int l, int r) {
+    while (l &lt; r) { int t = a[l]; a[l++] = a[r]; a[r--] = t; }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>d %= n</li><li>Reverse [0, d-1]</li><li>Reverse [d, n-1]</li><li>Reverse the whole array</li></ol></div></div>
+</div></section><section class="problem" id="p57">
+<h2>Problem 57: Move Zeros to End<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Move all zeros to end, keep order of others.</p><div class="ex">Input: arr=[1,0,2,3,0,4,0,1]<br>Output:<pre class="out">[1,2,3,4,1,0,0,0]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy non-zeros to a temp list then pad with zeros.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers: write non-zero values forward, fill the rest with zeros.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Non-zero order is preserved because we move forward only.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void moveZeros(int[] arr) {
+    int pos = 0;
+    for (int x : arr) if (x != 0) arr[pos++] = x;
+    while (pos &lt; arr.length) arr[pos++] = 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>pos = 0</li><li>Copy each non-zero to arr[pos++]</li><li>Fill the remainder with 0</li></ol></div></div>
+</div></section><section class="problem" id="p58">
+<h2>Problem 58: Linear Search<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Index of target or -1.</p><div class="ex">Input: arr=[6,7,8,4,1], target=4<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Linear scan is already the baseline.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan and return the first index that matches.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Unsorted data allows no faster approach than O(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int linearSearch(int[] arr, int target) {
+    for (int i = 0; i &lt; arr.length; i++) if (arr[i] == target) return i;
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Loop through the array</li><li>Return the index when equal</li><li>Return -1 at the end</li></ol></div></div>
+</div></section><section class="problem" id="p59">
+<h2>Problem 59: Union of Two Sorted Arrays<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sorted union without duplicates.</p><div class="ex">Input: a=[1,2,3,4,5], b=[2,3,4,4,5]<br>Output:<pre class="out">[1,2,3,4,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Put both arrays in a TreeSet.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Merge with two pointers, skipping duplicates.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Both arrays are sorted, so the merged output is sorted with O(n+m).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; unionSorted(int[] a, int[] b) {
+    List&lt;Integer&gt; r = new ArrayList&lt;&gt;();
+    int i = 0, j = 0;
+    while (i &lt; a.length || j &lt; b.length) {
+        int v;
+        if (j &gt;= b.length || (i &lt; a.length &amp;&amp; a[i] &lt;= b[j])) v = a[i++];
+        else v = b[j++];
+        if (r.isEmpty() || r.get(r.size() - 1) != v) r.add(v);
+    }
+    return r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compare a[i] and b[j]</li><li>Add the smaller if it differs from the last added</li><li>Advance that pointer</li><li>Drain the leftovers</li></ol></div></div>
+</div></section><section class="problem" id="p60">
+<h2>Problem 60: Intersection of Two Sorted Arrays<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Common elements (with multiplicity).</p><div class="ex">Input: a=[1,2,2,3,3,4,5,6], b=[2,3,3,5,6,6,7]<br>Output:<pre class="out">[2,3,3,5,6]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each element of a search in b.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers over the sorted arrays.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Equal elements are matched once; the smaller side advances otherwise.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; intersection(int[] a, int[] b) {
+    List&lt;Integer&gt; r = new ArrayList&lt;&gt;();
+    int i = 0, j = 0;
+    while (i &lt; a.length &amp;&amp; j &lt; b.length) {
+        if (a[i] == b[j]) { r.add(a[i]); i++; j++; }
+        else if (a[i] &lt; b[j]) i++;
+        else j++;
+    }
+    return r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>i = j = 0</li><li>If equal add and advance both</li><li>Else advance the pointer with smaller value</li></ol></div></div>
+</div></section><section class="problem" id="p61">
+<h2>Problem 61: Find Missing Number<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Array has n-1 distinct numbers from 1..n; find missing.</p><div class="ex">Input: arr=[1,2,4,5], n=5<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each number 1..n check if it exists, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Expected sum n(n+1)/2 minus actual sum (or XOR).</p></div>
+<div class="card w"><h3>Why it works</h3><p>The only number absent from the sum is the missing one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int missingNumber(int[] arr, int n) {
+    long expected = (long) n * (n + 1) / 2, sum = 0;
+    for (int x : arr) sum += x;
+    return (int) (expected - sum);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>expected = n*(n+1)/2</li><li>actual = sum of array</li><li>Return the difference</li></ol></div></div>
+</div></section><section class="problem" id="p62">
+<h2>Problem 62: Maximum Consecutive Ones<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest run of 1s.</p><div class="ex">Input: arr=[1,1,0,1,1,1]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every subarray for all ones.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Keep a running count that resets on 0.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A run of ones is broken only by a zero.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxConsecutiveOnes(int[] arr) {
+    int cur = 0, best = 0;
+    for (int x : arr) {
+        cur = x == 1 ? cur + 1 : 0;
+        best = Math.max(best, cur);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>cur = best = 0</li><li>If 1 increment cur else reset</li><li>best = max(best, cur)</li></ol></div></div>
+</div></section><section class="problem" id="p63">
+<h2>Problem 63: Single Number (Appears Once)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Every element appears twice except one.</p><div class="ex">Input: arr=[4,1,2,1,2]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count each element with nested loops.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>XOR all elements.</p></div>
+<div class="card w"><h3>Why it works</h3><p>a ^ a = 0 and 0 ^ x = x, so pairs cancel and the single remains.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int singleNumber(int[] arr) {
+    int x = 0;
+    for (int v : arr) x ^= v;
+    return x;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>res = 0</li><li>XOR every element</li><li>Return res</li></ol></div></div>
+</div></section><section class="problem" id="p64">
+<h2>Problem 64: Two Sum<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return indices of two numbers adding to target.</p><div class="ex">Input: arr=[2,6,5,8,11], target=14<br>Output:<pre class="out">[1,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all pairs, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>HashMap of value to index; look up target - x.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each element needs one O(1) lookup for its complement.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] twoSum(int[] arr, int target) {
+    Map&lt;Integer, Integer&gt; m = new HashMap&lt;&gt;();
+    for (int i = 0; i &lt; arr.length; i++) {
+        Integer j = m.get(target - arr[i]);
+        if (j != null) return new int[]{j, i};
+        m.put(arr[i], i);
+    }
+    return new int[]{-1, -1};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each i compute need = target - arr[i]</li><li>If need is in the map return both indices</li><li>Otherwise store arr[i] -&gt; i</li></ol></div></div>
+</div></section><section class="problem" id="p65">
+<h2>Problem 65: Merge Two Sorted Arrays Without Extra Space<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Merge so a holds smallest, b the rest.</p><div class="ex">Input: a=[1,4,8,10], b=[2,3,9]<br>Output:<pre class="out">a=[1,2,3,4], b=[8,9,10]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Merge into a temp array then split.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Swap from the ends then sort both (or gap method).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Comparing a&#x27;s largest with b&#x27;s smallest moves each misplaced element across until arrays are partitioned.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void mergeSortedInPlace(int[] a, int[] b) {
+    int i = a.length - 1, j = 0;
+    while (i &gt;= 0 &amp;&amp; j &lt; b.length &amp;&amp; a[i] &gt; b[j]) {
+        int t = a[i]; a[i] = b[j]; b[j] = t;
+        i--; j++;
+    }
+    Arrays.sort(a);
+    Arrays.sort(b);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>i = n-1, j = 0</li><li>While a[i] &gt; b[j] swap and move inward</li><li>Sort both arrays</li></ol></div></div>
+</div></section><section class="problem" id="p66">
+<h2>Problem 66: Pascal&#x27;s Triangle - Element at (r,c)<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Value at row r column c (1-indexed).</p><div class="ex">Input: r=5, c=3<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build the whole triangle up to row r.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>nCr formula with r-1 choose c-1 computed iteratively.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Multiplying and dividing step by step avoids factorials and overflow for small inputs.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int pascalElement(int r, int c) {
+    int n = r - 1, k = c - 1;
+    long res = 1;
+    for (int i = 0; i &lt; k; i++) res = res * (n - i) / (i + 1);
+    return (int) res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>n = r-1, k = c-1</li><li>res = 1</li><li>For i in 0..k-1 res = res*(n-i)/(i+1)</li></ol></div></div>
+</div></section><section class="problem" id="p67">
+<h2>Problem 67: Longest Subarray with Sum K (Positives)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length of longest subarray with sum k.</p><div class="ex">Input: arr=[2,3,5], k=5<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all subarrays, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sliding window since all values are positive.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Shrinking from the left lowers the sum, expanding raises it, so each element enters and leaves once.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestSubarrayPositive(int[] arr, int k) {
+    int l = 0, best = 0;
+    long sum = 0;
+    for (int r = 0; r &lt; arr.length; r++) {
+        sum += arr[r];
+        while (sum &gt; k &amp;&amp; l &lt;= r) sum -= arr[l++];
+        if (sum == k) best = Math.max(best, r - l + 1);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Expand right and add</li><li>While sum &gt; k shrink left</li><li>If sum == k update max length</li></ol></div></div>
+</div></section><section class="problem" id="p68">
+<h2>Problem 68: Longest Subarray with Sum K (Positives and Negatives)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length of longest subarray with sum k.</p><div class="ex">Input: arr=[10,5,2,7,1,9], k=15<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all subarrays, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Prefix sum with a HashMap of first occurrence.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Subarray (i, j] sums to k when prefix[j] - prefix[i] = k; the earliest i gives the longest length.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestSubarrayWithSumK(int[] arr, int k) {
+    Map&lt;Long, Integer&gt; first = new HashMap&lt;&gt;();
+    long sum = 0;
+    int best = 0;
+    for (int i = 0; i &lt; arr.length; i++) {
+        sum += arr[i];
+        if (sum == k) best = i + 1;
+        Integer j = first.get(sum - k);
+        if (j != null) best = Math.max(best, i - j);
+        first.putIfAbsent(sum, i);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Keep running sum</li><li>If sum == k update length</li><li>Look up sum-k in the map</li><li>Store sum only if absent</li></ol></div></div>
+</div></section><section class="problem" id="p69">
+<h2>Problem 69: Sort Colors (0s, 1s, 2s)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort array of 0,1,2 in one pass.</p><div class="ex">Input: arr=[2,0,2,1,1,0]<br>Output:<pre class="out">[0,0,1,1,2,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort the array.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Dutch National Flag with low, mid, high.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Zeros go to the front, twos to the back, ones remain in the middle in one pass.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void sortColors(int[] arr) {
+    int lo = 0, mid = 0, hi = arr.length - 1;
+    while (mid &lt;= hi) {
+        if (arr[mid] == 0) { int t = arr[lo]; arr[lo++] = arr[mid]; arr[mid++] = t; }
+        else if (arr[mid] == 1) mid++;
+        else { int t = arr[hi]; arr[hi--] = arr[mid]; arr[mid] = t; }
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>low = mid = 0, high = n-1</li><li>0 swaps with low</li><li>2 swaps with high</li><li>1 moves mid</li></ol></div></div>
+</div></section><section class="problem" id="p70">
+<h2>Problem 70: Majority Element (&gt; n/2)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Element appearing more than n/2 times.</p><div class="ex">Input: arr=[2,2,1,1,1,2,2]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count every element with a nested loop.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Boyer-Moore voting.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The majority element survives cancellation with all other elements.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int majorityElement(int[] arr) {
+    int cand = 0, count = 0;
+    for (int x : arr) {
+        if (count == 0) cand = x;
+        count += x == cand ? 1 : -1;
+    }
+    return cand;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>cand = none, count = 0</li><li>If count == 0 pick current as candidate</li><li>Same increments else decrements</li><li>Return the candidate</li></ol></div></div>
+</div></section><section class="problem" id="p71">
+<h2>Problem 71: Maximum Subarray Sum (Kadane)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest sum of a contiguous subarray.</p><div class="ex">Input: arr=[-2,1,-3,4,-1,2,1,-5,4]<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sum every subarray, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Kadane: extend the current sum or restart at x.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A negative running sum can never help a later subarray.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxSubarraySum(int[] arr) {
+    int cur = arr[0], best = arr[0];
+    for (int i = 1; i &lt; arr.length; i++) {
+        cur = Math.max(arr[i], cur + arr[i]);
+        best = Math.max(best, cur);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>cur = best = arr[0]</li><li>cur = max(x, cur + x)</li><li>best = max(best, cur)</li></ol></div></div>
+</div></section><section class="problem" id="p72">
+<h2>Problem 72: Print Subarray with Maximum Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return the subarray with maximum sum.</p><div class="ex">Input: arr=[-2,1,-3,4,-1,2,1,-5,4]<br>Output:<pre class="out">[4,-1,2,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every subarray and track the best.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Kadane with start index tracking.</p></div>
+<div class="card w"><h3>Why it works</h3><p>When the sum resets, the new subarray begins at the current index.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] maxSubarray(int[] arr) {
+    int cur = 0, best = Integer.MIN_VALUE, start = 0, bs = 0, be = 0;
+    for (int i = 0; i &lt; arr.length; i++) {
+        if (cur &lt;= 0) { cur = arr[i]; start = i; } else cur += arr[i];
+        if (cur &gt; best) { best = cur; bs = start; be = i; }
+    }
+    return Arrays.copyOfRange(arr, bs, be + 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Track start of the current run</li><li>On reset update start</li><li>When best improves record start and end</li><li>Copy the range</li></ol></div></div>
+</div></section><section class="problem" id="p73">
+<h2>Problem 73: Best Time to Buy and Sell Stock<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max profit with one transaction.</p><div class="ex">Input: prices=[7,1,5,3,6,4]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every buy and sell pair.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track the minimum price so far and best difference.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The best sell on day i uses the cheapest earlier buy.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProfit(int[] prices) {
+    int min = Integer.MAX_VALUE, best = 0;
+    for (int p : prices) {
+        min = Math.min(min, p);
+        best = Math.max(best, p - min);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>min = prices[0]</li><li>profit = max(profit, price - min)</li><li>min = min(min, price)</li></ol></div></div>
+</div></section><section class="problem" id="p74">
+<h2>Problem 74: Rearrange Array Elements by Sign<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Alternate positive and negative starting with positive.</p><div class="ex">Input: arr=[1,2,-4,-5]<br>Output:<pre class="out">[1,-4,2,-5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Separate positives and negatives then merge alternately.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Same idea with two index pointers writing into a result array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Positives go to even positions and negatives to odd positions as they appear.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] rearrangeBySign(int[] arr) {
+    int[] res = new int[arr.length];
+    int pos = 0, neg = 1;
+    for (int x : arr) {
+        if (x &gt; 0) { res[pos] = x; pos += 2; }
+        else { res[neg] = x; neg += 2; }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>pos = 0, neg = 1</li><li>Place each element at the matching pointer</li><li>Advance pointer by 2</li></ol></div></div>
+</div></section><section class="problem" id="p75">
+<h2>Problem 75: Rearrange Array by Sign (Unequal Counts)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Alternate signs, leftovers appended at end.</p><div class="ex">Input: arr=[1,2,-4,-5,3,4]<br>Output:<pre class="out">[1,-4,2,-5,3,4]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Same as the equal-count case with checks.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Collect positives and negatives separately, interleave, append leftovers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Order is preserved within each sign group.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] rearrangeBySignUnequal(int[] arr) {
+    List&lt;Integer&gt; pos = new ArrayList&lt;&gt;(), neg = new ArrayList&lt;&gt;();
+    for (int x : arr) (x &gt; 0 ? pos : neg).add(x);
+    int[] res = new int[arr.length];
+    int i = 0, p = 0, n = 0;
+    while (p &lt; pos.size() &amp;&amp; n &lt; neg.size()) { res[i++] = pos.get(p++); res[i++] = neg.get(n++); }
+    while (p &lt; pos.size()) res[i++] = pos.get(p++);
+    while (n &lt; neg.size()) res[i++] = neg.get(n++);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Split into pos and neg lists</li><li>Interleave while both have items</li><li>Append the remaining items</li></ol></div></div>
+</div></section><section class="problem" id="p76">
+<h2>Problem 76: Next Permutation<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rearrange to next lexicographic permutation.</p><div class="ex">Input: arr=[1,3,2]<br>Output:<pre class="out">[2,1,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all permutations and pick the next.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Find pivot, swap with next larger on the right, reverse suffix.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The suffix after the pivot is non-increasing, so reversing gives the smallest suffix.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void nextPermutation(int[] arr) {
+    int n = arr.length, i = n - 2;
+    while (i &gt;= 0 &amp;&amp; arr[i] &gt;= arr[i + 1]) i--;
+    if (i &gt;= 0) {
+        int j = n - 1;
+        while (arr[j] &lt;= arr[i]) j--;
+        int t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    for (int l = i + 1, r = n - 1; l &lt; r; l++, r--) { int t = arr[l]; arr[l] = arr[r]; arr[r] = t; }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find the last i with a[i] &lt; a[i+1]</li><li>Find the last j &gt; i with a[j] &gt; a[i]</li><li>Swap</li><li>Reverse a[i+1..]</li></ol></div></div>
+</div></section><section class="problem" id="p77">
+<h2>Problem 77: Leaders in an Array<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Elements greater than all to their right.</p><div class="ex">Input: arr=[10,22,12,3,0,6]<br>Output:<pre class="out">[22,12,6]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each element check everything on its right.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan from the right keeping the maximum so far.</p></div>
+<div class="card w"><h3>Why it works</h3><p>An element is a leader iff it is greater than the max to its right.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; leaders(int[] arr) {
+    List&lt;Integer&gt; r = new ArrayList&lt;&gt;();
+    int max = Integer.MIN_VALUE;
+    for (int i = arr.length - 1; i &gt;= 0; i--) {
+        if (arr[i] &gt; max) { r.add(arr[i]); max = arr[i]; }
+    }
+    Collections.reverse(r);
+    return r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>max = MIN</li><li>Walk i from n-1 to 0</li><li>If arr[i] &gt; max add and update</li><li>Reverse to restore order</li></ol></div></div>
+</div></section><section class="problem" id="p78">
+<h2>Problem 78: Longest Consecutive Sequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length of longest run of consecutive integers.</p><div class="ex">Input: arr=[100,4,200,1,3,2]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort and count runs, O(n log n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Put values in a HashSet and extend only from sequence starts.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Starting only where x-1 is absent makes each element visited at most twice.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestConsecutive(int[] arr) {
+    Set&lt;Integer&gt; s = new HashSet&lt;&gt;();
+    for (int x : arr) s.add(x);
+    int best = 0;
+    for (int x : s) {
+        if (!s.contains(x - 1)) {
+            int y = x;
+            while (s.contains(y + 1)) y++;
+            best = Math.max(best, y - x + 1);
+        }
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Insert all into a set</li><li>For x with no x-1 start counting upward</li><li>Track the longest</li></ol></div></div>
+</div></section><section class="problem" id="p79">
+<h2>Problem 79: Set Matrix Zeroes<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>If a cell is 0 set its whole row and column to 0.</p><div class="ex">Input: matrix=[[1,1,1],[1,0,1],[1,1,1]]<br>Output:<pre class="out">[[1,0,1],[0,0,0],[1,0,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Copy the matrix and mark rows/cols for each zero.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Use first row and column as markers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Markers avoid extra arrays, giving O(1) space.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void setZeroes(int[][] matrix) {
+    int m = matrix.length, n = matrix[0].length;
+    boolean r0 = false, c0 = false;
+    for (int j = 0; j &lt; n; j++) if (matrix[0][j] == 0) r0 = true;
+    for (int i = 0; i &lt; m; i++) if (matrix[i][0] == 0) c0 = true;
+    for (int i = 1; i &lt; m; i++)
+        for (int j = 1; j &lt; n; j++)
+            if (matrix[i][j] == 0) { matrix[i][0] = 0; matrix[0][j] = 0; }
+    for (int i = 1; i &lt; m; i++)
+        for (int j = 1; j &lt; n; j++)
+            if (matrix[i][0] == 0 || matrix[0][j] == 0) matrix[i][j] = 0;
+    if (r0) for (int j = 0; j &lt; n; j++) matrix[0][j] = 0;
+    if (c0) for (int i = 0; i &lt; m; i++) matrix[i][0] = 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Record if first row/col has a zero</li><li>Mark rows/cols in first row/col</li><li>Zero out marked cells</li><li>Fix first row/col</li></ol></div></div>
+</div></section><section class="problem" id="p80">
+<h2>Problem 80: Rotate Matrix by 90 Degrees<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rotate N x N matrix clockwise in place.</p><div class="ex">Input: matrix=[[1,2,3],[4,5,6],[7,8,9]]<br>Output:<pre class="out">[[7,4,1],[8,5,2],[9,6,3]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use a second matrix: res[j][n-1-i] = a[i][j].</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Transpose then reverse each row.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Transpose swaps axes; reversing rows turns it into a clockwise rotation.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void rotateMatrix(int[][] matrix) {
+    int n = matrix.length;
+    for (int i = 0; i &lt; n; i++)
+        for (int j = i + 1; j &lt; n; j++) {
+            int t = matrix[i][j]; matrix[i][j] = matrix[j][i]; matrix[j][i] = t;
+        }
+    for (int[] row : matrix)
+        for (int l = 0, r = n - 1; l &lt; r; l++, r--) { int t = row[l]; row[l] = row[r]; row[r] = t; }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Swap a[i][j] with a[j][i] for j &gt; i</li><li>Reverse each row</li></ol></div></div>
+</div></section><section class="problem" id="p81">
+<h2>Problem 81: Spiral Traversal of Matrix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return elements in spiral order.</p><div class="ex">Input: matrix=[[1,2,3],[4,5,6],[7,8,9]]<br>Output:<pre class="out">[1,2,3,6,9,8,7,4,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Mark visited cells in a boolean matrix.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Shrink four boundaries after each side.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each layer is walked once so every cell is visited once.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; spiralOrder(int[][] matrix) {
+    List&lt;Integer&gt; r = new ArrayList&lt;&gt;();
+    int t = 0, b = matrix.length - 1, l = 0, rt = matrix[0].length - 1;
+    while (t &lt;= b &amp;&amp; l &lt;= rt) {
+        for (int j = l; j &lt;= rt; j++) r.add(matrix[t][j]);
+        t++;
+        for (int i = t; i &lt;= b; i++) r.add(matrix[i][rt]);
+        rt--;
+        if (t &lt;= b) { for (int j = rt; j &gt;= l; j--) r.add(matrix[b][j]); b--; }
+        if (l &lt;= rt) { for (int i = b; i &gt;= t; i--) r.add(matrix[i][l]); l++; }
+    }
+    return r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>top, bottom, left, right</li><li>Walk right, down, left, up</li><li>Move boundaries inward after each side</li></ol></div></div>
+</div></section><section class="problem" id="p82">
+<h2>Problem 82: Count Subarrays with Given Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Number of subarrays with sum k.</p><div class="ex">Input: arr=[1,2,3,-3,1,1,1,4,2,-3], k=3<br>Output:<pre class="out">8</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all subarrays, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Prefix sum with a frequency map.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each earlier prefix equal to sum-k forms a valid subarray ending here.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int subarraySum(int[] arr, int k) {
+    Map&lt;Integer, Integer&gt; m = new HashMap&lt;&gt;();
+    m.put(0, 1);
+    int sum = 0, count = 0;
+    for (int x : arr) {
+        sum += x;
+        count += m.getOrDefault(sum - k, 0);
+        m.merge(sum, 1, Integer::sum);
+    }
+    return count;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>map[0] = 1</li><li>sum += x</li><li>count += map[sum-k]</li><li>map[sum]++</li></ol></div></div>
+</div></section><section class="problem" id="p83">
+<h2>Problem 83: Pascal&#x27;s Triangle (Variations)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Generate first n rows.</p><div class="ex">Input: n=5<br>Output:<pre class="out">[[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute every element with nCr using factorials.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Build each row from the previous row.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each inner value is the sum of the two values above it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; pascalTriangle(int n) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) {
+        List&lt;Integer&gt; row = new ArrayList&lt;&gt;();
+        for (int j = 0; j &lt;= i; j++)
+            row.add(j == 0 || j == i ? 1 : res.get(i - 1).get(j - 1) + res.get(i - 1).get(j));
+        res.add(row);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Row starts and ends with 1</li><li>Inner value = prev[j-1] + prev[j]</li><li>Append rows to the result</li></ol></div></div>
+</div></section><section class="problem" id="p84">
+<h2>Problem 84: 3Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Unique triplets summing to 0.</p><div class="ex">Input: arr=[-1,0,1,2,-1,-4]<br>Output:<pre class="out">[[-1,-1,2],[-1,0,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Three loops with a set for uniqueness, O(n^3).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort then fix one element and use two pointers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sorted order lets pointers move based on the sum and skip duplicates easily.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; threeSum(int[] arr) {
+    Arrays.sort(arr);
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; arr.length - 2; i++) {
+        if (i &gt; 0 &amp;&amp; arr[i] == arr[i - 1]) continue;
+        int l = i + 1, r = arr.length - 1;
+        while (l &lt; r) {
+            int s = arr[i] + arr[l] + arr[r];
+            if (s == 0) {
+                res.add(Arrays.asList(arr[i], arr[l], arr[r]));
+                l++; r--;
+                while (l &lt; r &amp;&amp; arr[l] == arr[l - 1]) l++;
+                while (l &lt; r &amp;&amp; arr[r] == arr[r + 1]) r--;
+            } else if (s &lt; 0) l++;
+            else r--;
+        }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort</li><li>For each i skip duplicates</li><li>Two pointers l and r on the rest</li><li>Move based on sum and skip duplicates</li></ol></div></div>
+</div></section><section class="problem" id="p85">
+<h2>Problem 85: 4Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Unique quadruplets summing to target.</p><div class="ex">Input: arr=[1,0,-1,0,-2,2], target=0<br>Output:<pre class="out">[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Four loops, O(n^4).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort, two fixed loops, two pointers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Reduces to two-sum on the sorted tail, giving O(n^3).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; fourSum(int[] arr, int target) {
+    Arrays.sort(arr);
+    int n = arr.length;
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n - 3; i++) {
+        if (i &gt; 0 &amp;&amp; arr[i] == arr[i - 1]) continue;
+        for (int j = i + 1; j &lt; n - 2; j++) {
+            if (j &gt; i + 1 &amp;&amp; arr[j] == arr[j - 1]) continue;
+            int l = j + 1, r = n - 1;
+            while (l &lt; r) {
+                long s = (long) arr[i] + arr[j] + arr[l] + arr[r];
+                if (s == target) {
+                    res.add(Arrays.asList(arr[i], arr[j], arr[l], arr[r]));
+                    l++; r--;
+                    while (l &lt; r &amp;&amp; arr[l] == arr[l - 1]) l++;
+                    while (l &lt; r &amp;&amp; arr[r] == arr[r + 1]) r--;
+                } else if (s &lt; target) l++;
+                else r--;
+            }
+        }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort</li><li>Fix i and j skipping duplicates</li><li>Two pointers on the rest using long sums</li><li>Skip duplicates after a hit</li></ol></div></div>
+</div></section><section class="problem" id="p86">
+<h2>Problem 86: Largest Subarray with 0 Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length of longest subarray summing to 0.</p><div class="ex">Input: arr=[9,-3,3,-1,6,-5]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all subarrays.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Prefix sum; repeated prefix means a zero-sum subarray.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Equal prefixes at i and j mean elements between sum to zero.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestZeroSumSubarray(int[] arr) {
+    Map&lt;Integer, Integer&gt; first = new HashMap&lt;&gt;();
+    first.put(0, -1);
+    int sum = 0, best = 0;
+    for (int i = 0; i &lt; arr.length; i++) {
+        sum += arr[i];
+        if (first.containsKey(sum)) best = Math.max(best, i - first.get(sum));
+        else first.put(sum, i);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Store first index of each prefix</li><li>If sum seen before, update length</li><li>Treat sum 0 as index -1</li></ol></div></div>
+</div></section><section class="problem" id="p87">
+<h2>Problem 87: Merge Overlapping Intervals<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Merge all overlapping intervals.</p><div class="ex">Input: intervals=[[1,3],[2,6],[8,10],[15,18]]<br>Output:<pre class="out">[[1,6],[8,10],[15,18]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare every pair of intervals.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by start and merge in one pass.</p></div>
+<div class="card w"><h3>Why it works</h3><p>After sorting, an interval can only overlap the last merged one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[][] mergeIntervals(int[][] intervals) {
+    Arrays.sort(intervals, (a, b) -&gt; Integer.compare(a[0], b[0]));
+    List&lt;int[]&gt; res = new ArrayList&lt;&gt;();
+    for (int[] in : intervals) {
+        if (res.isEmpty() || res.get(res.size() - 1)[1] &lt; in[0]) res.add(new int[]{in[0], in[1]});
+        else res.get(res.size() - 1)[1] = Math.max(res.get(res.size() - 1)[1], in[1]);
+    }
+    return res.toArray(new int[0][]);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort by start</li><li>If start &lt;= last end extend the end</li><li>Else start a new interval</li></ol></div></div>
+</div></section><section class="problem" id="p88">
+<h2>Problem 88: Pascal&#x27;s Triangle - Print Row N<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return the n-th row.</p><div class="ex">Input: n=5<br>Output:<pre class="out">[1,4,6,4,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build the whole triangle.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Generate the row from the previous element: next = prev * (n-i) / i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>C(n-1, i) = C(n-1, i-1) * (n-i) / i.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; pascalRow(int n) {
+    List&lt;Integer&gt; row = new ArrayList&lt;&gt;();
+    long v = 1;
+    row.add(1);
+    for (int i = 1; i &lt; n; i++) {
+        v = v * (n - i) / i;
+        row.add((int) v);
+    }
+    return row;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start with 1</li><li>For i from 1 to n-1 multiply and divide</li><li>Add to the row</li></ol></div></div>
+</div></section><section class="problem" id="p89">
+<h2>Problem 89: Search in 2D Matrix Row-wise Sorted<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rows sorted, first of row &gt; last of previous.</p><div class="ex">Input: matrix=[[1,3,5,7],[10,11,16,20],[23,30,34,60]], target=3<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan every cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Treat the matrix as one sorted array and binary search.</p></div>
+<div class="card w"><h3>Why it works</h3><p>mid maps to row mid/m and column mid%m since rows chain in order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean searchMatrix(int[][] matrix, int target) {
+    int n = matrix.length, m = matrix[0].length, lo = 0, hi = n * m - 1;
+    while (lo &lt;= hi) {
+        int mid = (lo + hi) &gt;&gt;&gt; 1, v = matrix[mid / m][mid % m];
+        if (v == target) return true;
+        if (v &lt; target) lo = mid + 1; else hi = mid - 1;
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = 0, hi = n*m-1</li><li>mid element = matrix[mid/m][mid%m]</li><li>Narrow based on comparison</li></ol></div></div>
+</div></section><section class="problem" id="p90">
+<h2>Problem 90: Majority Element II (&gt; n/3)<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Elements appearing more than n/3 times.</p><div class="ex">Input: arr=[1,2,1,1,3,2]<br>Output:<pre class="out">[1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count each element, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Extended Boyer-Moore with two candidates.</p></div>
+<div class="card w"><h3>Why it works</h3><p>At most two elements can exceed n/3 occurrences.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; majorityElementII(int[] arr) {
+    int c1 = 0, c2 = 1, n1 = 0, n2 = 0;
+    for (int x : arr) {
+        if (x == c1) n1++;
+        else if (x == c2) n2++;
+        else if (n1 == 0) { c1 = x; n1 = 1; }
+        else if (n2 == 0) { c2 = x; n2 = 1; }
+        else { n1--; n2--; }
+    }
+    n1 = n2 = 0;
+    for (int x : arr) { if (x == c1) n1++; else if (x == c2) n2++; }
+    List&lt;Integer&gt; r = new ArrayList&lt;&gt;();
+    if (n1 &gt; arr.length / 3) r.add(c1);
+    if (n2 &gt; arr.length / 3) r.add(c2);
+    return r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Keep two candidates and counts</li><li>Update using voting rules</li><li>Verify counts of both candidates</li></ol></div></div>
+</div></section><section class="problem" id="p91">
+<h2>Problem 91: Count Subarrays with XOR K<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Number of subarrays with XOR equal to k.</p><div class="ex">Input: arr=[4,2,2,6,4], k=6<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>XOR every subarray, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Prefix XOR with a frequency map.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Subarray XOR equals prefix[j] ^ prefix[i]; need prefix[i] = prefix[j] ^ k.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int subarraysWithXorK(int[] arr, int k) {
+    Map&lt;Integer, Integer&gt; m = new HashMap&lt;&gt;();
+    m.put(0, 1);
+    int xr = 0, count = 0;
+    for (int x : arr) {
+        xr ^= x;
+        count += m.getOrDefault(xr ^ k, 0);
+        m.merge(xr, 1, Integer::sum);
+    }
+    return count;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>map[0] = 1</li><li>xr ^= x</li><li>count += map[xr ^ k]</li><li>map[xr]++</li></ol></div></div>
+</div></section><section class="problem" id="p92">
+<h2>Problem 92: Find the Repeating and Missing Number<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Array 1..n with one repeated and one missing. Return {repeating, missing}.</p><div class="ex">Input: arr=[3,1,2,5,3]<br>Output:<pre class="out">[3,4]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count every number 1..n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Math with sum and sum of squares, or a frequency array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Frequency array shows the number with 2 occurrences and the one with 0.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] repeatingAndMissing(int[] arr) {
+    int n = arr.length;
+    int[] cnt = new int[n + 1];
+    for (int x : arr) cnt[x]++;
+    int rep = -1, miss = -1;
+    for (int i = 1; i &lt;= n; i++) {
+        if (cnt[i] == 2) rep = i;
+        else if (cnt[i] == 0) miss = i;
+    }
+    return new int[]{rep, miss};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count occurrences in an array</li><li>Value with count 2 is repeating</li><li>Value with count 0 is missing</li></ol></div></div>
+</div></section><section class="problem" id="p93">
+<h2>Problem 93: Count Inversions<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Pairs i&lt;j with arr[i]&gt;arr[j].</p><div class="ex">Input: arr=[5,3,2,4,1]<br>Output:<pre class="out">8</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare every pair, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Modified merge sort counting while merging.</p></div>
+<div class="card w"><h3>Why it works</h3><p>When a right element goes first, all remaining left elements form inversions with it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static long countInversions(int[] arr) {
+    return sort(arr.clone(), 0, arr.length - 1);
+}
+
+private static long sort(int[] a, int lo, int hi) {
+    if (lo &gt;= hi) return 0;
+    int mid = (lo + hi) / 2;
+    long c = sort(a, lo, mid) + sort(a, mid + 1, hi);
+    int[] t = new int[hi - lo + 1];
+    int i = lo, j = mid + 1, k = 0;
+    while (i &lt;= mid &amp;&amp; j &lt;= hi) {
+        if (a[i] &lt;= a[j]) t[k++] = a[i++];
+        else { c += mid - i + 1; t[k++] = a[j++]; }
+    }
+    while (i &lt;= mid) t[k++] = a[i++];
+    while (j &lt;= hi) t[k++] = a[j++];
+    System.arraycopy(t, 0, a, lo, t.length);
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Split</li><li>Count in each half</li><li>During merge if right &lt; left add mid-i+1</li><li>Merge</li></ol></div></div>
+</div></section><section class="problem" id="p94">
+<h2>Problem 94: Reverse Pairs<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Pairs i&lt;j with arr[i] &gt; 2*arr[j].</p><div class="ex">Input: arr=[1,3,2,3,1]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all pairs, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Merge sort; count pairs before merging with two pointers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Both halves are sorted so a pointer on the right only moves forward.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int reversePairs(int[] arr) {
+    return sort(arr.clone(), 0, arr.length - 1);
+}
+
+private static int sort(int[] a, int lo, int hi) {
+    if (lo &gt;= hi) return 0;
+    int mid = (lo + hi) / 2;
+    int c = sort(a, lo, mid) + sort(a, mid + 1, hi);
+    int j = mid + 1;
+    for (int i = lo; i &lt;= mid; i++) {
+        while (j &lt;= hi &amp;&amp; (long) a[i] &gt; 2L * a[j]) j++;
+        c += j - (mid + 1);
+    }
+    Arrays.sort(a, lo, hi + 1);
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort each half</li><li>For each left element advance j while a[i] &gt; 2*a[j]</li><li>Add j - (mid+1)</li><li>Merge normally</li></ol></div></div>
+</div></section><section class="problem" id="p95">
+<h2>Problem 95: Maximum Product Subarray<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest product of a contiguous subarray.</p><div class="ex">Input: arr=[1,2,3,4,5,0]<br>Output:<pre class="out">120</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Multiply every subarray, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track both max and min product ending here.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A negative number can turn the minimum into the maximum.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProductSubarray(int[] arr) {
+    int max = arr[0], min = arr[0], best = arr[0];
+    for (int i = 1; i &lt; arr.length; i++) {
+        int x = arr[i];
+        if (x &lt; 0) { int t = max; max = min; min = t; }
+        max = Math.max(x, max * x);
+        min = Math.min(x, min * x);
+        best = Math.max(best, max);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>curMax, curMin, best = arr[0]</li><li>On negative swap max and min</li><li>Update with x or x*prev</li><li>best = max(best, curMax)</li></ol></div></div>
+</div></section></main></body></html>

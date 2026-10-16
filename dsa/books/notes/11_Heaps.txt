@@ -1,0 +1,373 @@
+=== 259
+brute: Keep an unsorted list and scan for the minimum.
+opt: Array-based binary heap with sift up and sift down.
+why: The parent of i is (i-1)/2, so insert and extract are O(log n).
+expl: insert: append then sift up | extractMin: swap root with last, remove, sift down | peek returns a[0]
+code:
+public static void minHeap() {
+    class MinHeap {
+        List<Integer> a = new ArrayList<>();
+        void insert(int x) {
+            a.add(x);
+            int i = a.size() - 1;
+            while (i > 0 && a.get((i - 1) / 2) > a.get(i)) { Collections.swap(a, i, (i - 1) / 2); i = (i - 1) / 2; }
+        }
+        int peek() { return a.get(0); }
+        int extractMin() {
+            int top = a.get(0);
+            a.set(0, a.get(a.size() - 1));
+            a.remove(a.size() - 1);
+            int i = 0, n = a.size();
+            while (true) {
+                int l = 2 * i + 1, r = l + 1, m = i;
+                if (l < n && a.get(l) < a.get(m)) m = l;
+                if (r < n && a.get(r) < a.get(m)) m = r;
+                if (m == i) break;
+                Collections.swap(a, i, m);
+                i = m;
+            }
+            return top;
+        }
+    }
+    MinHeap h = new MinHeap();
+    h.insert(3); h.insert(1); h.insert(2);
+    System.out.println(h.extractMin());
+}
+=== 260
+brute: Scan for the maximum each time.
+opt: Same heap with the comparison reversed.
+why: The largest element stays at the root.
+expl: insert: append then sift up while parent < child | extractMax: swap root with last, sift down
+code:
+public static void maxHeap() {
+    class MaxHeap {
+        List<Integer> a = new ArrayList<>();
+        void insert(int x) {
+            a.add(x);
+            int i = a.size() - 1;
+            while (i > 0 && a.get((i - 1) / 2) < a.get(i)) { Collections.swap(a, i, (i - 1) / 2); i = (i - 1) / 2; }
+        }
+        int extractMax() {
+            int top = a.get(0);
+            a.set(0, a.get(a.size() - 1));
+            a.remove(a.size() - 1);
+            int i = 0, n = a.size();
+            while (true) {
+                int l = 2 * i + 1, r = l + 1, m = i;
+                if (l < n && a.get(l) > a.get(m)) m = l;
+                if (r < n && a.get(r) > a.get(m)) m = r;
+                if (m == i) break;
+                Collections.swap(a, i, m);
+                i = m;
+            }
+            return top;
+        }
+    }
+    MaxHeap h = new MaxHeap();
+    h.insert(3); h.insert(1); h.insert(2);
+    System.out.println(h.extractMax());
+}
+=== 261
+brute: Insert elements one by one in O(n log n).
+opt: Sift down every internal node from n/2-1 to 0.
+why: Most nodes are near the bottom so the total work is O(n).
+expl: Start from the last parent | Sift each node down | Repeat up to the root
+code:
+public static void buildHeap(int[] arr) {
+    int n = arr.length;
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        int j = i;
+        while (true) {
+            int l = 2 * j + 1, r = l + 1, m = j;
+            if (l < n && arr[l] < arr[m]) m = l;
+            if (r < n && arr[r] < arr[m]) m = r;
+            if (m == j) break;
+            int t = arr[j]; arr[j] = arr[m]; arr[m] = t;
+            j = m;
+        }
+    }
+}
+=== 262
+brute: Selection sort.
+opt: Build a max heap then repeatedly move the max to the end.
+why: Each extraction costs O(log n), giving O(n log n) in place.
+expl: Build a max heap | Swap root with the last unsorted item | Sift down within the shrunken range
+code:
+public static void heapSort(int[] arr) {
+    int n = arr.length;
+    for (int i = n / 2 - 1; i >= 0; i--) sift(arr, i, n);
+    for (int end = n - 1; end > 0; end--) {
+        int t = arr[0]; arr[0] = arr[end]; arr[end] = t;
+        sift(arr, 0, end);
+    }
+}
+
+private static void sift(int[] a, int i, int n) {
+    while (true) {
+        int l = 2 * i + 1, r = l + 1, m = i;
+        if (l < n && a[l] > a[m]) m = l;
+        if (r < n && a[r] > a[m]) m = r;
+        if (m == i) return;
+        int t = a[i]; a[i] = a[m]; a[m] = t;
+        i = m;
+    }
+}
+=== 263
+brute: Build a heap and compare.
+opt: Check each internal node against its children.
+why: Min-heap property: parent <= both children.
+expl: For i in 0..n/2-1 | Compare with 2i+1 and 2i+2 | Return false on violation
+code:
+public static boolean isMinHeap(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i <= (n - 2) / 2; i++) {
+        if (2 * i + 1 < n && arr[i] > arr[2 * i + 1]) return false;
+        if (2 * i + 2 < n && arr[i] > arr[2 * i + 2]) return false;
+    }
+    return true;
+}
+=== 264
+brute: Sort and take the k-th from the end.
+opt: Min heap of size k.
+why: The heap keeps the k largest, and its root is the k-th largest.
+expl: Push each element | If size > k pop the smallest | Return the root
+code:
+public static int findKthLargest(int[] arr, int k) {
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    for (int x : arr) {
+        pq.add(x);
+        if (pq.size() > k) pq.poll();
+    }
+    return pq.peek();
+}
+=== 265
+brute: Sort and take the k-th.
+opt: Max heap of size k.
+why: The heap keeps the k smallest, so the root is the k-th smallest.
+expl: Push each element | If size > k pop the largest | Return the root
+code:
+public static int findKthSmallest(int[] arr, int k) {
+    PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+    for (int x : arr) {
+        pq.add(x);
+        if (pq.size() > k) pq.poll();
+    }
+    return pq.peek();
+}
+=== 266
+brute: Sort the whole array in O(n log n).
+opt: Min heap of size k+1.
+why: The smallest of the next k+1 elements is always the next output.
+expl: Push the first k+1 | Poll the min and push the next element | Drain at the end
+code:
+public static int[] sortKSorted(int[] arr, int k) {
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    int[] res = new int[arr.length];
+    int idx = 0;
+    for (int x : arr) {
+        pq.add(x);
+        if (pq.size() > k) res[idx++] = pq.poll();
+    }
+    while (!pq.isEmpty()) res[idx++] = pq.poll();
+    return res;
+}
+=== 267
+brute: Collect all values, sort, rebuild.
+opt: Min heap of the current heads of all lists.
+why: The smallest head is always the next node of the result.
+expl: Push all non-null heads | Poll the smallest and attach | Push its next
+code:
+public static Node mergeKLists(Node[] lists) {
+    PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+    for (Node n : lists) if (n != null) pq.add(n);
+    Node d = new Node(0), t = d;
+    while (!pq.isEmpty()) {
+        Node n = pq.poll();
+        t.next = n;
+        t = n;
+        if (n.next != null) pq.add(n.next);
+    }
+    return d.next;
+}
+=== 268
+brute: For each element count smaller distinct values.
+opt: Sort a copy, assign ranks to distinct values, look up.
+why: Rank is the position among sorted distinct values.
+expl: Sort a copy | Map each value to its rank | Replace each element
+code:
+public static int[] replaceByRank(int[] arr) {
+    int[] s = arr.clone();
+    Arrays.sort(s);
+    Map<Integer, Integer> rank = new HashMap<>();
+    for (int x : s) rank.putIfAbsent(x, rank.size() + 1);
+    int[] res = new int[arr.length];
+    for (int i = 0; i < arr.length; i++) res[i] = rank.get(arr[i]);
+    return res;
+}
+=== 269
+brute: Simulate time step by step with a heap.
+opt: Formula based on the maximum frequency.
+why: The most frequent task forces (maxF-1) gaps of size n+1; ties fill the last row.
+expl: Count frequencies | maxF and how many tasks have it | (maxF-1)*(n+1)+countMax | At least tasks.length
+code:
+public static int leastInterval(char[] tasks, int n) {
+    int[] f = new int[26];
+    for (char c : tasks) f[c - 'A']++;
+    int maxF = 0, cnt = 0;
+    for (int x : f) maxF = Math.max(maxF, x);
+    for (int x : f) if (x == maxF) cnt++;
+    return Math.max(tasks.length, (maxF - 1) * (n + 1) + cnt);
+}
+=== 270
+brute: Try every grouping.
+opt: Greedy from the smallest card using a TreeMap.
+why: The smallest remaining card must start a group.
+expl: If size % groupSize != 0 return false | Count cards in a TreeMap | Take the smallest card and remove a run of groupSize
+code:
+public static boolean isNStraightHand(int[] hand, int groupSize) {
+    if (hand.length % groupSize != 0) return false;
+    TreeMap<Integer, Integer> m = new TreeMap<>();
+    for (int x : hand) m.merge(x, 1, Integer::sum);
+    while (!m.isEmpty()) {
+        int first = m.firstKey();
+        for (int i = 0; i < groupSize; i++) {
+            Integer c = m.get(first + i);
+            if (c == null) return false;
+            if (c == 1) m.remove(first + i); else m.put(first + i, c - 1);
+        }
+    }
+    return true;
+}
+=== 271
+brute: Store all tweets in one list and sort each time.
+opt: Per-user tweet lists merged with a max heap by timestamp.
+why: The feed needs the 10 most recent from followees, a k-way merge.
+expl: postTweet stores (time, id) | follow/unfollow modify sets | getNewsFeed pushes latest of each followee into a heap and pops 10
+code:
+public static void designTwitter() {
+    class Twitter {
+        int time = 0;
+        Map<Integer, List<int[]>> tweets = new HashMap<>();
+        Map<Integer, Set<Integer>> follows = new HashMap<>();
+        void postTweet(int u, int id) { tweets.computeIfAbsent(u, x -> new ArrayList<>()).add(new int[]{time++, id}); }
+        void follow(int a, int b) { follows.computeIfAbsent(a, x -> new HashSet<>()).add(b); }
+        void unfollow(int a, int b) { if (follows.containsKey(a)) follows.get(a).remove(b); }
+        List<Integer> getNewsFeed(int u) {
+            PriorityQueue<int[]> pq = new PriorityQueue<>((x, y) -> y[0] - x[0]);
+            Set<Integer> users = new HashSet<>(follows.getOrDefault(u, new HashSet<>()));
+            users.add(u);
+            for (int v : users) for (int[] t : tweets.getOrDefault(v, new ArrayList<>())) pq.add(t);
+            List<Integer> res = new ArrayList<>();
+            while (!pq.isEmpty() && res.size() < 10) res.add(pq.poll()[1]);
+            return res;
+        }
+    }
+    Twitter t = new Twitter();
+    t.postTweet(1, 5);
+    System.out.println(t.getNewsFeed(1));
+}
+=== 272
+brute: Try all merge orders.
+opt: Greedy: always merge the two shortest ropes with a min heap.
+why: Smaller ropes are paid for more times if merged late, so merge them first.
+expl: Push all ropes | Pop two and add their sum to cost | Push the sum back until one rope remains
+code:
+public static int minCostRopes(int[] ropes) {
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    for (int r : ropes) pq.add(r);
+    int cost = 0;
+    while (pq.size() > 1) {
+        int s = pq.poll() + pq.poll();
+        cost += s;
+        pq.add(s);
+    }
+    return cost;
+}
+=== 273
+brute: Sort after every add.
+opt: Min heap of size k.
+why: The root is always the k-th largest seen so far.
+expl: Keep the k largest values | add: push and pop if size > k | Return the root
+code:
+public static void kthLargestStream() {
+    class KthLargest {
+        int k;
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        KthLargest(int k) { this.k = k; }
+        int add(int x) {
+            pq.add(x);
+            if (pq.size() > k) pq.poll();
+            return pq.peek();
+        }
+    }
+    KthLargest s = new KthLargest(3);
+    for (int x : new int[]{4, 5, 8, 2}) System.out.println(s.add(x));
+}
+=== 274
+brute: Compute all n*n sums and sort.
+opt: Sort both descending and use a max heap with a visited set.
+why: The next largest sum is always adjacent to a previously chosen pair.
+expl: Sort descending | Push (a[0]+b[0], 0, 0) | Pop and push (i+1,j) and (i,j+1) if unseen | Repeat k times
+code:
+public static int[] maxSumCombination(int[] a, int[] b, int k) {
+    int n = a.length;
+    Integer[] x = new Integer[n], y = new Integer[n];
+    for (int i = 0; i < n; i++) { x[i] = a[i]; y[i] = b[i]; }
+    Arrays.sort(x, Collections.reverseOrder());
+    Arrays.sort(y, Collections.reverseOrder());
+    PriorityQueue<int[]> pq = new PriorityQueue<>((p, q) -> q[0] - p[0]);
+    Set<Long> seen = new HashSet<>();
+    pq.add(new int[]{x[0] + y[0], 0, 0});
+    seen.add(0L);
+    int[] res = new int[k];
+    for (int t = 0; t < k; t++) {
+        int[] cur = pq.poll();
+        res[t] = cur[0];
+        int i = cur[1], j = cur[2];
+        if (i + 1 < n && seen.add((long) (i + 1) * n + j)) pq.add(new int[]{x[i + 1] + y[j], i + 1, j});
+        if (j + 1 < n && seen.add((long) i * n + j + 1)) pq.add(new int[]{x[i] + y[j + 1], i, j + 1});
+    }
+    return res;
+}
+=== 275
+brute: Sort after every insertion and take the middle.
+opt: Two heaps: max heap for the lower half, min heap for the upper half.
+why: Heap tops are the middle elements; sizes differ by at most one.
+expl: Add to the max heap then move its top to the min heap | Rebalance so low has >= high | Median is the top or the average of both tops
+code:
+public static void medianFinder() {
+    class MedianFinder {
+        PriorityQueue<Integer> lo = new PriorityQueue<>(Collections.reverseOrder()), hi = new PriorityQueue<>();
+        void addNum(int x) {
+            lo.add(x);
+            hi.add(lo.poll());
+            if (hi.size() > lo.size()) lo.add(hi.poll());
+        }
+        double findMedian() {
+            return lo.size() > hi.size() ? lo.peek() : (lo.peek() + hi.peek()) / 2.0;
+        }
+    }
+    MedianFinder m = new MedianFinder();
+    m.addNum(1); m.addNum(2);
+    System.out.println(m.findMedian());
+    m.addNum(3);
+    System.out.println(m.findMedian());
+}
+=== 276
+brute: Count frequencies and sort all entries.
+opt: Frequency map plus a min heap of size k.
+why: The heap keeps the k highest frequencies in O(n log k).
+expl: Count frequencies | Push entries into a min heap by count | Pop when size > k | Collect the heap
+code:
+public static int[] topKFrequent(int[] arr, int k) {
+    Map<Integer, Integer> m = new HashMap<>();
+    for (int x : arr) m.merge(x, 1, Integer::sum);
+    PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> m.get(a) - m.get(b));
+    for (int key : m.keySet()) {
+        pq.add(key);
+        if (pq.size() > k) pq.poll();
+    }
+    int[] res = new int[k];
+    for (int i = k - 1; i >= 0; i--) res[i] = pq.poll();
+    return res;
+}

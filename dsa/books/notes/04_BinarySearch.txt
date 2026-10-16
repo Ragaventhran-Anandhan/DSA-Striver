@@ -1,0 +1,545 @@
+=== 96
+brute: Linear scan for the target.
+opt: Binary search on the sorted array.
+why: Each comparison halves the search range, giving O(log n).
+expl: lo = 0, hi = n-1 | mid = lo + (hi-lo)/2 | Return mid on match | Move lo or hi to discard half
+code:
+public static int binarySearch(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;
+    }
+    return -1;
+}
+=== 97
+brute: Scan for the first element >= x.
+opt: Binary search keeping the best candidate.
+why: The predicate arr[i] >= x is monotone over a sorted array.
+expl: ans = n | If arr[mid] >= x record mid and go left | Else go right
+code:
+public static int lowerBound(int[] arr, int x) {
+    int lo = 0, hi = arr.length - 1, ans = arr.length;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] >= x) { ans = mid; hi = mid - 1; } else lo = mid + 1;
+    }
+    return ans;
+}
+=== 98
+brute: Scan for the first element > x.
+opt: Binary search with predicate arr[i] > x.
+why: The predicate is monotone so the boundary can be found in O(log n).
+expl: ans = n | If arr[mid] > x record mid and go left | Else go right
+code:
+public static int upperBound(int[] arr, int x) {
+    int lo = 0, hi = arr.length - 1, ans = arr.length;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] > x) { ans = mid; hi = mid - 1; } else lo = mid + 1;
+    }
+    return ans;
+}
+=== 99
+brute: Scan until arr[i] >= x.
+opt: The answer is the lower bound.
+why: Lower bound is the first position where x could be placed in order.
+expl: Run lower bound | Return its index
+code:
+public static int searchInsert(int[] arr, int x) {
+    int lo = 0, hi = arr.length;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] >= x) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 100
+brute: Scan for largest <= x and smallest >= x.
+opt: Binary search for both boundaries.
+why: Floor is just before the upper bound, ceil is the lower bound.
+expl: floor = last value <= x | ceil = first value >= x | Use -1 when none exists
+code:
+public static int[] floorCeil(int[] arr, int x) {
+    int floor = -1, ceil = -1, lo = 0, hi = arr.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] <= x) { floor = arr[mid]; lo = mid + 1; } else hi = mid - 1;
+    }
+    lo = 0; hi = arr.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] >= x) { ceil = arr[mid]; hi = mid - 1; } else lo = mid + 1;
+    }
+    return new int[]{floor, ceil};
+}
+=== 101
+brute: Scan and track first and last matches.
+opt: Two binary searches, one biased left and one right.
+why: Sorted order places duplicates in one contiguous block.
+expl: First = lower bound if arr[idx]==x | Last = upper bound - 1 | Return {-1,-1} if absent
+code:
+public static int[] firstLast(int[] arr, int x) {
+    int lo = lowerB(arr, x), hi = lowerB(arr, x + 1) - 1;
+    if (lo >= arr.length || arr[lo] != x) return new int[]{-1, -1};
+    return new int[]{lo, hi};
+}
+
+private static int lowerB(int[] a, int x) {
+    int l = 0, r = a.length;
+    while (l < r) {
+        int m = l + (r - l) / 2;
+        if (a[m] >= x) r = m; else l = m + 1;
+    }
+    return l;
+}
+=== 102
+brute: Count while scanning.
+opt: last - first + 1 from the two binary searches.
+why: Duplicates form a single block.
+expl: Find first and last | Return 0 if missing | Else last-first+1
+code:
+public static int countOccurrences(int[] arr, int x) {
+    int lo = lb(arr, x), hi = lb(arr, x + 1);
+    return hi - lo;
+}
+
+private static int lb(int[] a, int x) {
+    int l = 0, r = a.length;
+    while (l < r) {
+        int m = l + (r - l) / 2;
+        if (a[m] >= x) r = m; else l = m + 1;
+    }
+    return l;
+}
+=== 103
+brute: Scan for the minimum.
+opt: Binary search comparing mid to the right end.
+why: If mid > hi the pivot is on the right, otherwise on the left including mid.
+expl: lo, hi | If arr[mid] > arr[hi] lo = mid+1 | Else hi = mid | Return arr[lo]
+code:
+public static int findMin(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] > arr[hi]) lo = mid + 1; else hi = mid;
+    }
+    return arr[lo];
+}
+=== 104
+brute: Find the index of the minimum by scanning.
+opt: Rotation count equals the index of the minimum.
+why: A sorted array rotated k times has its minimum at index k.
+expl: Binary search for the minimum index | Return that index
+code:
+public static int rotationCount(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] > arr[hi]) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}
+=== 105
+brute: XOR all elements.
+opt: Binary search on index parity.
+why: Before the single element pairs start at even indices; after it, at odd indices.
+expl: Make mid even | If arr[mid]==arr[mid+1] go right | Else go left
+code:
+public static int singleNonDuplicate(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (mid % 2 == 1) mid--;
+        if (arr[mid] == arr[mid + 1]) lo = mid + 2; else hi = mid;
+    }
+    return arr[lo];
+}
+=== 106
+brute: Try every i until i*i > n.
+opt: Binary search on the answer.
+why: i*i is monotone so the largest valid i is found in O(log n).
+expl: lo = 1, hi = n | If mid*mid <= n record and go right | Else go left
+code:
+public static int sqrt(int n) {
+    int lo = 1, hi = n, ans = 0;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if ((long) mid * mid <= n) { ans = mid; lo = mid + 1; } else hi = mid - 1;
+    }
+    return ans;
+}
+=== 107
+brute: Try every x from 1 to m.
+opt: Binary search on x with a power check.
+why: x^n grows monotonically so comparing with m decides direction.
+expl: Compute x^n capped above m | Equal -> return x | Smaller -> go right | Larger -> go left
+code:
+public static int nthRoot(int n, int m) {
+    int lo = 1, hi = m;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        long p = 1;
+        for (int i = 0; i < n && p <= m; i++) p *= mid;
+        if (p == m) return mid;
+        if (p < m) lo = mid + 1; else hi = mid - 1;
+    }
+    return -1;
+}
+=== 108
+brute: Linear scan.
+opt: Binary search; one half is always sorted.
+why: Check which half is sorted and whether the target lies inside it.
+expl: If arr[lo] <= arr[mid] left is sorted | Check if target is in the sorted half | Narrow accordingly
+code:
+public static int searchRotated(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[lo] <= arr[mid]) {
+            if (arr[lo] <= target && target < arr[mid]) hi = mid - 1; else lo = mid + 1;
+        } else {
+            if (arr[mid] < target && target <= arr[hi]) lo = mid + 1; else hi = mid - 1;
+        }
+    }
+    return -1;
+}
+=== 109
+brute: Linear scan.
+opt: Same as I but shrink both ends when arr[lo]==arr[mid]==arr[hi].
+why: Duplicates hide which half is sorted so we drop one element each side.
+expl: If all three equal shrink | Else decide the sorted half | Narrow as in version I
+code:
+public static boolean searchRotatedDup(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] == target) return true;
+        if (arr[lo] == arr[mid] && arr[mid] == arr[hi]) { lo++; hi--; }
+        else if (arr[lo] <= arr[mid]) {
+            if (arr[lo] <= target && target < arr[mid]) hi = mid - 1; else lo = mid + 1;
+        } else {
+            if (arr[mid] < target && target <= arr[hi]) lo = mid + 1; else hi = mid - 1;
+        }
+    }
+    return false;
+}
+=== 110
+brute: Scan for an element greater than neighbours.
+opt: Binary search by slope direction.
+why: If arr[mid] < arr[mid+1] a peak lies to the right, otherwise on the left including mid.
+expl: lo, hi = n-1 | If arr[mid] < arr[mid+1] lo = mid+1 | Else hi = mid
+code:
+public static int findPeak(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] < arr[mid + 1]) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}
+=== 111
+brute: Try every speed from 1 up to max pile.
+opt: Binary search on speed with an hours check.
+why: Hours needed decreases monotonically as speed increases.
+expl: lo = 1, hi = max(piles) | hours = sum of ceil(pile/speed) | If hours <= h try smaller speed
+code:
+public static int minEatingSpeed(int[] piles, int h) {
+    int lo = 1, hi = 0;
+    for (int p : piles) hi = Math.max(hi, p);
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        long hours = 0;
+        for (int p : piles) hours += (p + mid - 1) / mid;
+        if (hours <= h) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 112
+brute: Try each day and count bouquets.
+opt: Binary search on days with a bouquet counter.
+why: If bouquets can be made on day d they can also be made on any later day.
+expl: If m*k > n return -1 | Check(day) counts runs of k bloomed flowers | Binary search min day
+code:
+public static int minDays(int[] bloomDay, int m, int k) {
+    if ((long) m * k > bloomDay.length) return -1;
+    int lo = Integer.MAX_VALUE, hi = 0;
+    for (int b : bloomDay) { lo = Math.min(lo, b); hi = Math.max(hi, b); }
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, run = 0, cnt = 0;
+        for (int b : bloomDay) {
+            if (b <= mid) { if (++run == k) { cnt++; run = 0; } } else run = 0;
+        }
+        if (cnt >= m) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 113
+brute: Try each divisor from 1 to max.
+opt: Binary search on the divisor.
+why: Sum of ceilings decreases as the divisor grows.
+expl: lo = 1, hi = max | Compute sum of ceil(a/d) | If sum <= threshold go left
+code:
+public static int smallestDivisor(int[] arr, int threshold) {
+    int lo = 1, hi = 0;
+    for (int a : arr) hi = Math.max(hi, a);
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        long sum = 0;
+        for (int a : arr) sum += (a + mid - 1) / mid;
+        if (sum <= threshold) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 114
+brute: Try every capacity.
+opt: Binary search from max weight to total weight.
+why: Required days decrease as capacity increases.
+expl: lo = max, hi = sum | Greedily count days with capacity mid | If days <= D go left
+code:
+public static int shipWithinDays(int[] weights, int days) {
+    int lo = 0, hi = 0;
+    for (int w : weights) { lo = Math.max(lo, w); hi += w; }
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, d = 1, load = 0;
+        for (int w : weights) {
+            if (load + w > mid) { d++; load = 0; }
+            load += w;
+        }
+        if (d <= days) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 115
+brute: Walk numbers from 1 counting the missing ones.
+opt: Binary search on how many are missing before index i (arr[i]-(i+1)).
+why: Missing count before an index is monotone non-decreasing.
+expl: Find the first index where missing >= k | Answer is k + lo
+code:
+public static int findKthPositive(int[] arr, int k) {
+    int lo = 0, hi = arr.length;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] - (mid + 1) >= k) hi = mid; else lo = mid + 1;
+    }
+    return lo + k;
+}
+=== 116
+brute: Try every distance and place cows greedily.
+opt: Sort then binary search the largest feasible minimum distance.
+why: If distance d is feasible any smaller distance is too.
+expl: Sort stalls | Greedy placement check for distance d | Binary search the maximum feasible d
+code:
+public static int aggressiveCows(int[] stalls, int cows) {
+    Arrays.sort(stalls);
+    int lo = 1, hi = stalls[stalls.length - 1] - stalls[0], ans = 0;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2, placed = 1, last = stalls[0];
+        for (int s : stalls) if (s - last >= mid) { placed++; last = s; }
+        if (placed >= cows) { ans = mid; lo = mid + 1; } else hi = mid - 1;
+    }
+    return ans;
+}
+=== 117
+brute: Try every possible maximum page count.
+opt: Binary search on the max pages per student.
+why: Required students decrease as the limit grows.
+expl: lo = max page, hi = total | Greedily count students | If count <= k go left
+code:
+public static int allocateBooks(int[] pages, int students) {
+    if (students > pages.length) return -1;
+    int lo = 0, hi = 0;
+    for (int p : pages) { lo = Math.max(lo, p); hi += p; }
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 1, cur = 0;
+        for (int p : pages) {
+            if (cur + p > mid) { cnt++; cur = 0; }
+            cur += p;
+        }
+        if (cnt <= students) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 118
+brute: Try all ways to split into k parts.
+opt: Binary search on the largest allowed sum.
+why: Same monotone structure as book allocation.
+expl: lo = max element, hi = sum | Greedy count of parts | If parts <= k go left
+code:
+public static int splitArray(int[] arr, int k) {
+    int lo = 0, hi = 0;
+    for (int a : arr) { lo = Math.max(lo, a); hi += a; }
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, parts = 1, cur = 0;
+        for (int a : arr) {
+            if (cur + a > mid) { parts++; cur = 0; }
+            cur += a;
+        }
+        if (parts <= k) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 119
+brute: Count ones in every row.
+opt: Binary search the first 1 in each row.
+why: Rows are sorted so ones = m - lowerBound(1).
+expl: For each row find first 1 | ones = m - idx | Track the row with the maximum
+code:
+public static int rowWithMaxOnes(int[][] matrix) {
+    int best = -1, max = 0, m = matrix[0].length;
+    for (int i = 0; i < matrix.length; i++) {
+        int lo = 0, hi = m;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (matrix[i][mid] == 1) hi = mid; else lo = mid + 1;
+        }
+        if (m - lo > max) { max = m - lo; best = i; }
+    }
+    return best;
+}
+=== 120
+brute: Scan every cell.
+opt: Binary search over the flattened index.
+why: Rows chain in sorted order so the flattened array is sorted.
+expl: lo = 0, hi = n*m-1 | row = mid/m, col = mid%m | Compare and narrow
+code:
+public static boolean searchMatrix1(int[][] matrix, int target) {
+    int n = matrix.length, m = matrix[0].length, lo = 0, hi = n * m - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2, v = matrix[mid / m][mid % m];
+        if (v == target) return true;
+        if (v < target) lo = mid + 1; else hi = mid - 1;
+    }
+    return false;
+}
+=== 121
+brute: Scan every cell.
+opt: Staircase search from the top-right corner.
+why: Moving left decreases and moving down increases, so each step removes a row or column.
+expl: Start at (0, m-1) | If value > target move left | If value < target move down | Stop on match
+code:
+public static boolean searchMatrix2(int[][] matrix, int target) {
+    int r = 0, c = matrix[0].length - 1;
+    while (r < matrix.length && c >= 0) {
+        int v = matrix[r][c];
+        if (v == target) return true;
+        if (v > target) c--; else r++;
+    }
+    return false;
+}
+=== 122
+brute: Check every cell against its neighbours.
+opt: Binary search on columns, pick max row in the middle column.
+why: The max in a column is greater than its vertical neighbours; compare horizontally to pick a side.
+expl: mid column | Find the row of maximum | Compare with left and right | Move toward the larger neighbour
+code:
+public static int[] findPeakGrid(int[][] mat) {
+    int lo = 0, hi = mat[0].length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2, row = 0;
+        for (int i = 0; i < mat.length; i++) if (mat[i][mid] > mat[row][mid]) row = i;
+        int left = mid > 0 ? mat[row][mid - 1] : -1, right = mid < mat[0].length - 1 ? mat[row][mid + 1] : -1;
+        if (mat[row][mid] > left && mat[row][mid] > right) return new int[]{row, mid};
+        if (left > mat[row][mid]) hi = mid - 1; else lo = mid + 1;
+    }
+    return new int[]{-1, -1};
+}
+=== 123
+brute: Try all partitions of boards.
+opt: Binary search on the maximum time per painter.
+why: Same structure as book allocation on contiguous boards.
+expl: lo = max, hi = sum | Count painters needed | Narrow range
+code:
+public static int paintersPartition(int[] boards, int painters) {
+    int lo = 0, hi = 0;
+    for (int b : boards) { lo = Math.max(lo, b); hi += b; }
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 1, cur = 0;
+        for (int b : boards) {
+            if (cur + b > mid) { cnt++; cur = 0; }
+            cur += b;
+        }
+        if (cnt <= painters) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}
+=== 124
+brute: Try placing stations one by one at the biggest gap.
+opt: Binary search on the answer (a real number) with a counting check.
+why: Stations needed for max gap d is sum(floor(gap/d)); it decreases as d grows.
+expl: lo = 0, hi = max gap | Count stations needed for mid | If needed <= k go left | Repeat until precision 1e-6
+code:
+public static double minMaxGasDistance(int[] stations, int k) {
+    double lo = 0, hi = 0;
+    for (int i = 1; i < stations.length; i++) hi = Math.max(hi, stations[i] - stations[i - 1]);
+    while (hi - lo > 1e-6) {
+        double mid = (lo + hi) / 2;
+        int need = 0;
+        for (int i = 1; i < stations.length; i++) need += (int) ((stations[i] - stations[i - 1]) / mid);
+        if (need <= k) hi = mid; else lo = mid;
+    }
+    return hi;
+}
+=== 125
+brute: Merge both arrays and take the median.
+opt: Binary search the partition on the smaller array.
+why: A correct partition has left maxima <= right minima.
+expl: Ensure a is shorter | Pick cut i in a and j in b | Check cross conditions | Compute the median from the borders
+code:
+public static double findMedian(int[] a, int[] b) {
+    if (a.length > b.length) return findMedian(b, a);
+    int n = a.length, m = b.length, lo = 0, hi = n, half = (n + m + 1) / 2;
+    while (lo <= hi) {
+        int i = (lo + hi) / 2, j = half - i;
+        int l1 = i == 0 ? Integer.MIN_VALUE : a[i - 1], r1 = i == n ? Integer.MAX_VALUE : a[i];
+        int l2 = j == 0 ? Integer.MIN_VALUE : b[j - 1], r2 = j == m ? Integer.MAX_VALUE : b[j];
+        if (l1 <= r2 && l2 <= r1) {
+            if ((n + m) % 2 == 1) return Math.max(l1, l2);
+            return (Math.max(l1, l2) + Math.min(r1, r2)) / 2.0;
+        }
+        if (l1 > r2) hi = i - 1; else lo = i + 1;
+    }
+    return 0;
+}
+=== 126
+brute: Merge and take index k-1.
+opt: Binary search the partition to take k elements from both.
+why: Same partition logic as median with total left size k.
+expl: Ensure a is shorter | Pick i from a and k-i from b | Validate crossings | Answer is max of left side
+code:
+public static int kthElement(int[] a, int[] b, int k) {
+    if (a.length > b.length) return kthElement(b, a, k);
+    int n = a.length, m = b.length;
+    int lo = Math.max(0, k - m), hi = Math.min(k, n);
+    while (lo <= hi) {
+        int i = (lo + hi) / 2, j = k - i;
+        int l1 = i == 0 ? Integer.MIN_VALUE : a[i - 1], r1 = i == n ? Integer.MAX_VALUE : a[i];
+        int l2 = j == 0 ? Integer.MIN_VALUE : b[j - 1], r2 = j == m ? Integer.MAX_VALUE : b[j];
+        if (l1 <= r2 && l2 <= r1) return Math.max(l1, l2);
+        if (l1 > r2) hi = i - 1; else lo = i + 1;
+    }
+    return -1;
+}
+=== 127
+brute: Flatten, sort, take the middle.
+opt: Binary search on value with row-wise upper bounds.
+why: The median is the smallest value with at least (n*m+1)/2 elements <= it.
+expl: lo = min of first col, hi = max of last col | Count elements <= mid per row | Adjust range
+code:
+public static int matrixMedian(int[][] matrix) {
+    int n = matrix.length, m = matrix[0].length, lo = Integer.MAX_VALUE, hi = Integer.MIN_VALUE;
+    for (int[] r : matrix) { lo = Math.min(lo, r[0]); hi = Math.max(hi, r[m - 1]); }
+    int need = (n * m + 1) / 2;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 0;
+        for (int[] r : matrix) {
+            int l = 0, h = m;
+            while (l < h) { int x = (l + h) / 2; if (r[x] <= mid) l = x + 1; else h = x; }
+            cnt += l;
+        }
+        if (cnt < need) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}

@@ -1,0 +1,244 @@
+=== 246
+brute: Check every substring for uniqueness.
+opt: Sliding window with a last-seen index array.
+why: The left pointer jumps past the previous occurrence, so each char is processed once.
+expl: l = 0 | If char seen at index >= l move l past it | Update last seen | Track max window
+code:
+public static int lengthOfLongestSubstring(String s) {
+    int[] last = new int[256];
+    Arrays.fill(last, -1);
+    int l = 0, best = 0;
+    for (int r = 0; r < s.length(); r++) {
+        char c = s.charAt(r);
+        if (last[c] >= l) l = last[c] + 1;
+        last[c] = r;
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}
+=== 247
+brute: Try every subarray and count zeros.
+opt: Window with at most k zeros.
+why: Shrink from the left whenever zeros exceed k.
+expl: Expand r and count zeros | While zeros > k shrink l | Update best
+code:
+public static int longestOnes(int[] arr, int k) {
+    int l = 0, zeros = 0, best = 0;
+    for (int r = 0; r < arr.length; r++) {
+        if (arr[r] == 0) zeros++;
+        while (zeros > k) if (arr[l++] == 0) zeros--;
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}
+=== 248
+brute: Try every subarray and count distinct fruit types.
+opt: Sliding window with at most 2 distinct.
+why: It is the longest-substring-with-k-distinct problem with k = 2.
+expl: Count map | Shrink while distinct > 2 | Track max
+code:
+public static int totalFruit(int[] fruits) {
+    Map<Integer, Integer> m = new HashMap<>();
+    int l = 0, best = 0;
+    for (int r = 0; r < fruits.length; r++) {
+        m.merge(fruits[r], 1, Integer::sum);
+        while (m.size() > 2) {
+            if (m.merge(fruits[l], -1, Integer::sum) == 0) m.remove(fruits[l]);
+            l++;
+        }
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}
+=== 249
+brute: Check every substring.
+opt: Window plus a count map.
+why: Shrinking only when distinct > k keeps the window valid.
+expl: Add s[r] | While map size > k remove s[l] | best = max length
+code:
+public static int longestKDistinct(String s, int k) {
+    Map<Character, Integer> m = new HashMap<>();
+    int l = 0, best = 0;
+    for (int r = 0; r < s.length(); r++) {
+        m.merge(s.charAt(r), 1, Integer::sum);
+        while (m.size() > k) {
+            char c = s.charAt(l++);
+            if (m.merge(c, -1, Integer::sum) == 0) m.remove(c);
+        }
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}
+=== 250
+brute: Check each substring for a, b and c.
+opt: Track last seen index of each letter.
+why: At position r, valid starts are 0..min(last)+... so add min(last)+1.
+expl: last = [-1,-1,-1] | Update last for s[r] | If all seen add min(last)+1
+code:
+public static int numberOfSubstrings(String s) {
+    int[] last = {-1, -1, -1};
+    int count = 0;
+    for (int i = 0; i < s.length(); i++) {
+        last[s.charAt(i) - 'a'] = i;
+        count += 1 + Math.min(last[0], Math.min(last[1], last[2]));
+    }
+    return count;
+}
+=== 251
+brute: Try every substring and check replacements.
+opt: Window where (length - maxFreq) <= k.
+why: Replacements needed equal length minus the most frequent letter count.
+expl: Count letters in window | Track maxFreq | If length - maxFreq > k move l | Track best
+code:
+public static int characterReplacement(String s, int k) {
+    int[] c = new int[26];
+    int l = 0, maxF = 0, best = 0;
+    for (int r = 0; r < s.length(); r++) {
+        maxF = Math.max(maxF, ++c[s.charAt(r) - 'A']);
+        if (r - l + 1 - maxF > k) c[s.charAt(l++) - 'A']--;
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}
+=== 252
+brute: Check every subarray sum.
+opt: atMost(goal) - atMost(goal - 1).
+why: Subarrays with sum exactly goal are those with sum <= goal minus those <= goal-1.
+expl: atMost uses a sliding window | Handle goal < 0 as 0 | Subtract the two
+code:
+public static int numSubarraysWithSum(int[] arr, int goal) {
+    return atMost(arr, goal) - atMost(arr, goal - 1);
+}
+
+private static int atMost(int[] a, int g) {
+    if (g < 0) return 0;
+    int l = 0, sum = 0, c = 0;
+    for (int r = 0; r < a.length; r++) {
+        sum += a[r];
+        while (sum > g) sum -= a[l++];
+        c += r - l + 1;
+    }
+    return c;
+}
+=== 253
+brute: Count odd numbers for every subarray.
+opt: atMost(k) - atMost(k - 1) on odd counts.
+why: Converting values to parity reduces this to binary subarray sum.
+expl: Treat odd as 1 | Sliding window atMost | Subtract
+code:
+public static int numberOfSubarrays(int[] arr, int k) {
+    return atMost(arr, k) - atMost(arr, k - 1);
+}
+
+private static int atMost(int[] a, int k) {
+    int l = 0, odd = 0, c = 0;
+    for (int r = 0; r < a.length; r++) {
+        odd += a[r] & 1;
+        while (odd > k) odd -= a[l++] & 1;
+        c += r - l + 1;
+    }
+    return c;
+}
+=== 254
+brute: Try all ways to pick from the ends.
+opt: Slide a window of size k across the boundary.
+why: Choosing i from the left and k-i from the right covers every case.
+expl: Start with the sum of the first k | Move one card from left to right at a time | Track the max
+code:
+public static int maxScore(int[] cards, int k) {
+    int sum = 0, n = cards.length;
+    for (int i = 0; i < k; i++) sum += cards[i];
+    int best = sum;
+    for (int i = 0; i < k; i++) {
+        sum += cards[n - 1 - i] - cards[k - 1 - i];
+        best = Math.max(best, sum);
+    }
+    return best;
+}
+=== 255
+brute: Count distinct elements for every subarray.
+opt: atMost(k) - atMost(k - 1).
+why: Exactly k = at most k minus at most k-1.
+expl: Window with a frequency map | Count subarrays ending at r | Subtract
+code:
+public static int subarraysWithKDistinct(int[] arr, int k) {
+    return atMost(arr, k) - atMost(arr, k - 1);
+}
+
+private static int atMost(int[] a, int k) {
+    Map<Integer, Integer> m = new HashMap<>();
+    int l = 0, c = 0;
+    for (int r = 0; r < a.length; r++) {
+        m.merge(a[r], 1, Integer::sum);
+        while (m.size() > k) {
+            if (m.merge(a[l], -1, Integer::sum) == 0) m.remove(a[l]);
+            l++;
+        }
+        c += r - l + 1;
+    }
+    return c;
+}
+=== 256
+brute: Check every substring for coverage.
+opt: Window with a need counter.
+why: Expand until valid, then shrink as far as possible.
+expl: need[] from t and missing = |t| | Expand r reducing missing | While missing == 0 shrink l and record | Return the best window
+code:
+public static String minWindow(String s, String t) {
+    int[] need = new int[128];
+    for (char c : t.toCharArray()) need[c]++;
+    int missing = t.length(), l = 0, start = 0, best = Integer.MAX_VALUE;
+    for (int r = 0; r < s.length(); r++) {
+        if (need[s.charAt(r)]-- > 0) missing--;
+        while (missing == 0) {
+            if (r - l + 1 < best) { best = r - l + 1; start = l; }
+            if (++need[s.charAt(l++)] > 0) missing++;
+        }
+    }
+    return best == Integer.MAX_VALUE ? "" : s.substring(start, start + best);
+}
+=== 257
+brute: Check every substring for the subsequence.
+opt: Match t forward, then walk back to the shortest start.
+why: The backward pass shrinks the window from the first end that completes t.
+expl: Scan s matching t forward | When t is fully matched go backwards to find the start | Record the length | Restart after the start
+code:
+public static String minWindowSubsequence(String s, String t) {
+    int best = Integer.MAX_VALUE, start = -1, i = 0, n = s.length(), m = t.length();
+    while (i < n) {
+        int j = 0;
+        while (i < n) {
+            if (s.charAt(i) == t.charAt(j) && ++j == m) break;
+            i++;
+        }
+        if (i == n) break;
+        int end = i;
+        j = m - 1;
+        while (j >= 0) {
+            if (s.charAt(i) == t.charAt(j)) j--;
+            i--;
+        }
+        i++;
+        if (end - i + 1 < best) { best = end - i + 1; start = i; }
+        i++;
+    }
+    return start == -1 ? "" : s.substring(start, start + best);
+}
+=== 258
+brute: Compute the max of every window.
+opt: Monotonic deque of indices.
+why: The deque front always holds the maximum of the window.
+expl: Remove indices out of the window | Pop smaller values from the back | Add the current index | Front is the answer once the window is full
+code:
+public static int[] maxSlidingWindow(int[] arr, int k) {
+    int n = arr.length;
+    int[] res = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>();
+    for (int i = 0; i < n; i++) {
+        if (!dq.isEmpty() && dq.peekFirst() <= i - k) dq.pollFirst();
+        while (!dq.isEmpty() && arr[dq.peekLast()] < arr[i]) dq.pollLast();
+        dq.addLast(i);
+        if (i >= k - 1) res[i - k + 1] = arr[dq.peekFirst()];
+    }
+    return res;
+}

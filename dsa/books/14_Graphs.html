@@ -1,0 +1,1287 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>14 - Graphs</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>14 - Graphs</h1></header><main><nav class="toc"><a href="#p343">343. Print Adjacency List</a><a href="#p344">344. BFS of Graph</a><a href="#p345">345. DFS of Graph</a><a href="#p346">346. Number of Provinces</a><a href="#p347">347. Number of Islands</a><a href="#p348">348. Flood Fill</a><a href="#p349">349. Rotten Oranges</a><a href="#p350">350. Distance of Nearest Cell Having 1</a><a href="#p351">351. Surrounded Regions</a><a href="#p352">352. Number of Enclaves</a><a href="#p353">353. Word Ladder I</a><a href="#p354">354. Number of Distinct Islands</a><a href="#p355">355. Is Graph Bipartite</a><a href="#p356">356. Detect Cycle in Undirected Graph (BFS)</a><a href="#p357">357. Detect Cycle in Undirected Graph (DFS)</a><a href="#p358">358. Detect Cycle in Directed Graph (DFS)</a><a href="#p359">359. Find Eventual Safe States</a><a href="#p360">360. Topological Sort (DFS)</a><a href="#p361">361. Topological Sort (Kahn&#x27;s BFS)</a><a href="#p362">362. Course Schedule I</a><a href="#p363">363. Course Schedule II</a><a href="#p364">364. Shortest Path in Undirected Graph with Unit Weights</a><a href="#p365">365. Shortest Path in DAG</a><a href="#p366">366. Word Ladder (Shortest Path BFS)</a><a href="#p367">367. Dijkstra&#x27;s Algorithm</a><a href="#p368">368. Print Shortest Path (Dijkstra)</a><a href="#p369">369. Shortest Distance in Binary Maze</a><a href="#p370">370. Path with Minimum Effort</a><a href="#p371">371. Cheapest Flights Within K Stops</a><a href="#p372">372. Minimum Multiplications to Reach End</a><a href="#p373">373. Number of Ways to Arrive at Destination</a><a href="#p374">374. Bellman-Ford Algorithm</a><a href="#p375">375. Floyd Warshall Algorithm</a><a href="#p376">376. Find the City with Smallest Number of Neighbours at Threshold</a><a href="#p377">377. Minimum Spanning Tree (Prim&#x27;s)</a><a href="#p378">378. Disjoint Set (Union by Rank / Size)</a><a href="#p379">379. Kruskal&#x27;s Algorithm</a><a href="#p380">380. Number of Provinces (DSU)</a><a href="#p381">381. Number of Operations to Make Network Connected</a><a href="#p382">382. Word Ladder II</a><a href="#p383">383. Alien Dictionary</a><a href="#p384">384. Accounts Merge</a><a href="#p385">385. Number of Islands II (Online Queries)</a><a href="#p386">386. Making a Large Island</a><a href="#p387">387. Most Stones Removed with Same Row or Column</a><a href="#p388">388. Strongly Connected Components (Kosaraju)</a><a href="#p389">389. Bridges in Graph</a><a href="#p390">390. Articulation Points in Graph</a></nav><section class="problem" id="p343">
+<h2>Problem 343: Print Adjacency List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Build adjacency list.</p><div class="ex">Input: n=3, edges=[[0,1],[1,2]]<br>Output:<pre class="out">[[1],[0,2],[1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use an n x n adjacency matrix (O(n^2) memory).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>List of lists, adding both directions for an undirected edge.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Memory is O(V + E) and neighbours are listed directly.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; adjacencyList(int n, int[][] edges) {
+    List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] e : edges) { adj.get(e[0]).add(e[1]); adj.get(e[1]).add(e[0]); }
+    return adj;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Create n empty lists</li><li>For each edge add u to v and v to u</li><li>Return the lists</li></ol></div></div>
+</div></section><section class="problem" id="p344">
+<h2>Problem 344: BFS of Graph<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Breadth-first traversal from 0.</p><div class="ex">Input: adj=[[1,2],[0],[0]]<br>Output:<pre class="out">[0,1,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use recursion with a global list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Queue-based BFS with a visited array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>BFS visits vertices in order of distance from the source.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; bfsOfGraph(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    boolean[] vis = new boolean[v];
+    Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+    q.add(0);
+    vis[0] = true;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        res.add(u);
+        for (int w : adj.get(u)) if (!vis[w]) { vis[w] = true; q.add(w); }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Queue the source and mark visited</li><li>Poll a vertex and record it</li><li>Enqueue unvisited neighbours</li></ol></div></div>
+</div></section><section class="problem" id="p345">
+<h2>Problem 345: DFS of Graph<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Depth-first traversal from 0.</p><div class="ex">Input: adj=[[1,2],[0],[0]]<br>Output:<pre class="out">[0,1,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Iterative stack.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursive DFS with a visited array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>DFS goes as deep as possible before backtracking.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; dfsOfGraph(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    dfs(0, adj, new boolean[v], res);
+    return res;
+}
+
+private static void dfs(int u, List&lt;List&lt;Integer&gt;&gt; adj, boolean[] vis, List&lt;Integer&gt; res) {
+    vis[u] = true;
+    res.add(u);
+    for (int w : adj.get(u)) if (!vis[w]) dfs(w, adj, vis, res);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Mark the vertex and record it</li><li>Recurse into unvisited neighbours</li></ol></div></div>
+</div></section><section class="problem" id="p346">
+<h2>Problem 346: Number of Provinces<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count connected components.</p><div class="ex">Input: isConnected=[[1,1,0],[1,1,0],[0,0,1]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute reachability for every pair.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS from each unvisited city and count the starts.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each DFS covers exactly one connected component.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findCircleNum(int[][] isConnected) {
+    int n = isConnected.length, count = 0;
+    boolean[] vis = new boolean[n];
+    for (int i = 0; i &lt; n; i++) if (!vis[i]) { count++; dfs(i, isConnected, vis); }
+    return count;
+}
+
+private static void dfs(int u, int[][] g, boolean[] vis) {
+    vis[u] = true;
+    for (int v = 0; v &lt; g.length; v++) if (g[u][v] == 1 &amp;&amp; !vis[v]) dfs(v, g, vis);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each unvisited city start a DFS</li><li>Visit every connected city</li><li>Count the starts</li></ol></div></div>
+</div></section><section class="problem" id="p347">
+<h2>Problem 347: Number of Islands<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count islands.</p><div class="ex">Input: grid=[[1,1,0],[0,1,0],[0,0,1]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare every land cell with every other.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS/BFS sinking each island once.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Marking visited land prevents counting an island twice.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int numIslands(char[][] grid) {
+    int count = 0;
+    for (int i = 0; i &lt; grid.length; i++)
+        for (int j = 0; j &lt; grid[0].length; j++)
+            if (grid[i][j] == &#x27;1&#x27;) { count++; sink(grid, i, j); }
+    return count;
+}
+
+private static void sink(char[][] g, int i, int j) {
+    if (i &lt; 0 || j &lt; 0 || i &gt;= g.length || j &gt;= g[0].length || g[i][j] != &#x27;1&#x27;) return;
+    g[i][j] = &#x27;0&#x27;;
+    sink(g, i + 1, j); sink(g, i - 1, j); sink(g, i, j + 1); sink(g, i, j - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Scan the grid</li><li>At an unvisited &#x27;1&#x27; count++ and flood it</li><li>Mark cells as &#x27;0&#x27;</li></ol></div></div>
+</div></section><section class="problem" id="p348">
+<h2>Problem 348: Flood Fill<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Fill connected region.</p><div class="ex">Input: image=[[1,1,1],[1,1,0],[1,0,1]], sr=1, sc=1, color=2<br>Output:<pre class="out">[[2,2,2],[2,2,0],[2,0,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Repaint every matching pixel in the image.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS only from the start pixel through 4-connected cells of the same colour.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only the connected region should change.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[][] floodFill(int[][] image, int sr, int sc, int color) {
+    int old = image[sr][sc];
+    if (old != color) fill(image, sr, sc, old, color);
+    return image;
+}
+
+private static void fill(int[][] a, int i, int j, int old, int c) {
+    if (i &lt; 0 || j &lt; 0 || i &gt;= a.length || j &gt;= a[0].length || a[i][j] != old) return;
+    a[i][j] = c;
+    fill(a, i + 1, j, old, c); fill(a, i - 1, j, old, c); fill(a, i, j + 1, old, c); fill(a, i, j - 1, old, c);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If the colour is already the target return</li><li>DFS recolouring neighbours with the original colour</li></ol></div></div>
+</div></section><section class="problem" id="p349">
+<h2>Problem 349: Rotten Oranges<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Minutes until all rotten.</p><div class="ex">Input: grid=[[2,1,1],[1,1,0],[0,1,1]]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Simulate each minute with a full-grid scan.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Multi-source BFS from all rotten oranges.</p></div>
+<div class="card w"><h3>Why it works</h3><p>BFS levels equal minutes.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int orangesRotting(int[][] grid) {
+    int m = grid.length, n = grid[0].length, fresh = 0, minutes = 0;
+    Queue&lt;int[]&gt; q = new LinkedList&lt;&gt;();
+    for (int i = 0; i &lt; m; i++)
+        for (int j = 0; j &lt; n; j++) {
+            if (grid[i][j] == 2) q.add(new int[]{i, j});
+            else if (grid[i][j] == 1) fresh++;
+        }
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!q.isEmpty() &amp;&amp; fresh &gt; 0) {
+        for (int s = q.size(); s &gt; 0; s--) {
+            int[] c = q.poll();
+            for (int d = 0; d &lt; 4; d++) {
+                int x = c[0] + dx[d], y = c[1] + dy[d];
+                if (x &gt;= 0 &amp;&amp; y &gt;= 0 &amp;&amp; x &lt; m &amp;&amp; y &lt; n &amp;&amp; grid[x][y] == 1) { grid[x][y] = 2; fresh--; q.add(new int[]{x, y}); }
+            }
+        }
+        minutes++;
+    }
+    return fresh == 0 ? minutes : -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Queue all rotten and count fresh</li><li>Spread level by level</li><li>Return minutes or -1 if fresh remain</li></ol></div></div>
+</div></section><section class="problem" id="p350">
+<h2>Problem 350: Distance of Nearest Cell Having 1<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Nearest 1 distance.</p><div class="ex">Input: mat=[[0,0,0],[0,1,0],[1,1,1]]<br>Output:<pre class="out">[[0,0,0],[0,1,0],[1,2,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>BFS from each cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Multi-source BFS from all 1s.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each cell receives the distance of the first wave that reaches it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[][] updateMatrix(int[][] mat) {
+    int m = mat.length, n = mat[0].length;
+    int[][] dist = new int[m][n];
+    Queue&lt;int[]&gt; q = new LinkedList&lt;&gt;();
+    for (int i = 0; i &lt; m; i++)
+        for (int j = 0; j &lt; n; j++) {
+            if (mat[i][j] == 1) q.add(new int[]{i, j}); else dist[i][j] = -1;
+        }
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!q.isEmpty()) {
+        int[] c = q.poll();
+        for (int d = 0; d &lt; 4; d++) {
+            int x = c[0] + dx[d], y = c[1] + dy[d];
+            if (x &gt;= 0 &amp;&amp; y &gt;= 0 &amp;&amp; x &lt; m &amp;&amp; y &lt; n &amp;&amp; dist[x][y] == -1) { dist[x][y] = dist[c[0]][c[1]] + 1; q.add(new int[]{x, y}); }
+        }
+    }
+    return dist;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Distances start at -1; enqueue 1s with 0</li><li>BFS to neighbours</li><li>Set dist = parent + 1</li></ol></div></div>
+</div></section><section class="problem" id="p351">
+<h2>Problem 351: Surrounded Regions<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Capture regions of O.</p><div class="ex">Input: board=[[X,X,X],[X,O,X],[X,X,X]]<br>Output:<pre class="out">[[X,X,X],[X,X,X],[X,X,X]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check each O region for a path to the border.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Mark O&#x27;s connected to the border, then flip the rest.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only border-connected regions survive.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void solveSurrounded(char[][] board) {
+    int m = board.length, n = board[0].length;
+    for (int i = 0; i &lt; m; i++) { mark(board, i, 0); mark(board, i, n - 1); }
+    for (int j = 0; j &lt; n; j++) { mark(board, 0, j); mark(board, m - 1, j); }
+    for (int i = 0; i &lt; m; i++)
+        for (int j = 0; j &lt; n; j++) {
+            if (board[i][j] == &#x27;O&#x27;) board[i][j] = &#x27;X&#x27;;
+            else if (board[i][j] == &#x27;#&#x27;) board[i][j] = &#x27;O&#x27;;
+        }
+}
+
+private static void mark(char[][] b, int i, int j) {
+    if (i &lt; 0 || j &lt; 0 || i &gt;= b.length || j &gt;= b[0].length || b[i][j] != &#x27;O&#x27;) return;
+    b[i][j] = &#x27;#&#x27;;
+    mark(b, i + 1, j); mark(b, i - 1, j); mark(b, i, j + 1); mark(b, i, j - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS from border &#x27;O&#x27;s marking them safe</li><li>Flip remaining &#x27;O&#x27; to &#x27;X&#x27;</li><li>Restore safe cells to &#x27;O&#x27;</li></ol></div></div>
+</div></section><section class="problem" id="p352">
+<h2>Problem 352: Number of Enclaves<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Land cells not reaching boundary.</p><div class="ex">Input: grid=[[0,0,0,0],[1,0,1,0],[0,1,1,0],[0,0,0,0]]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>BFS from every land cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Remove land reachable from the border and count what is left.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Land not connected to the border cannot walk off the grid.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int numEnclaves(int[][] grid) {
+    int m = grid.length, n = grid[0].length, count = 0;
+    for (int i = 0; i &lt; m; i++) { sink(grid, i, 0); sink(grid, i, n - 1); }
+    for (int j = 0; j &lt; n; j++) { sink(grid, 0, j); sink(grid, m - 1, j); }
+    for (int[] r : grid) for (int x : r) count += x;
+    return count;
+}
+
+private static void sink(int[][] g, int i, int j) {
+    if (i &lt; 0 || j &lt; 0 || i &gt;= g.length || j &gt;= g[0].length || g[i][j] != 1) return;
+    g[i][j] = 0;
+    sink(g, i + 1, j); sink(g, i - 1, j); sink(g, i, j + 1); sink(g, i, j - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS from border land cells</li><li>Count remaining land cells</li></ol></div></div>
+</div></section><section class="problem" id="p353">
+<h2>Problem 353: Word Ladder I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Shortest transformation length.</p><div class="ex">Input: begin=&quot;hit&quot;, end=&quot;cog&quot;, wordList=[hot,dot,dog,lot,log,cog]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all transformation sequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS over words differing by one letter.</p></div>
+<div class="card w"><h3>Why it works</h3><p>BFS finds the shortest sequence.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int ladderLength(String begin, String end, List&lt;String&gt; wordList) {
+    Set&lt;String&gt; dict = new HashSet&lt;&gt;(wordList);
+    if (!dict.contains(end)) return 0;
+    Queue&lt;String&gt; q = new LinkedList&lt;&gt;();
+    q.add(begin);
+    int steps = 1;
+    while (!q.isEmpty()) {
+        for (int s = q.size(); s &gt; 0; s--) {
+            String w = q.poll();
+            if (w.equals(end)) return steps;
+            char[] c = w.toCharArray();
+            for (int i = 0; i &lt; c.length; i++) {
+                char old = c[i];
+                for (char x = &#x27;a&#x27;; x &lt;= &#x27;z&#x27;; x++) {
+                    c[i] = x;
+                    String nw = new String(c);
+                    if (dict.remove(nw)) q.add(nw);
+                }
+                c[i] = old;
+            }
+        }
+        steps++;
+    }
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Put words in a set</li><li>Queue (word, steps)</li><li>Try all 26 letters per position</li><li>Return steps at the end word</li></ol></div></div>
+</div></section><section class="problem" id="p354">
+<h2>Problem 354: Number of Distinct Islands<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Distinct island shapes.</p><div class="ex">Input: grid=[[1,1,0],[1,0,0],[0,0,1]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare every pair of islands cell by cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Encode each island by coordinates relative to its first cell.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Equal shapes give equal coordinate strings.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countDistinctIslands(int[][] grid) {
+    Set&lt;String&gt; shapes = new HashSet&lt;&gt;();
+    for (int i = 0; i &lt; grid.length; i++)
+        for (int j = 0; j &lt; grid[0].length; j++)
+            if (grid[i][j] == 1) {
+                StringBuilder sb = new StringBuilder();
+                dfs(grid, i, j, i, j, sb);
+                shapes.add(sb.toString());
+            }
+    return shapes.size();
+}
+
+private static void dfs(int[][] g, int i, int j, int i0, int j0, StringBuilder sb) {
+    if (i &lt; 0 || j &lt; 0 || i &gt;= g.length || j &gt;= g[0].length || g[i][j] != 1) return;
+    g[i][j] = 0;
+    sb.append(i - i0).append(&#x27;,&#x27;).append(j - j0).append(&#x27;;&#x27;);
+    dfs(g, i + 1, j, i0, j0, sb); dfs(g, i - 1, j, i0, j0, sb);
+    dfs(g, i, j + 1, i0, j0, sb); dfs(g, i, j - 1, i0, j0, sb);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS an island recording (i - i0, j - j0)</li><li>Store the encoding in a set</li><li>Return the set size</li></ol></div></div>
+</div></section><section class="problem" id="p355">
+<h2>Problem 355: Is Graph Bipartite<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Two-colorable.</p><div class="ex">Input: graph=[[1,3],[0,2],[1,3],[0,2]]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all 2-colourings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS colouring each component.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A graph is bipartite iff no edge joins same-coloured nodes.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isBipartite(int[][] graph) {
+    int n = graph.length;
+    int[] col = new int[n];
+    Arrays.fill(col, -1);
+    for (int s = 0; s &lt; n; s++) {
+        if (col[s] != -1) continue;
+        Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+        q.add(s);
+        col[s] = 0;
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int v : graph[u]) {
+                if (col[v] == -1) { col[v] = 1 - col[u]; q.add(v); }
+                else if (col[v] == col[u]) return false;
+            }
+        }
+    }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Colour array initialised to -1</li><li>BFS giving neighbours the opposite colour</li><li>A same colour edge means false</li></ol></div></div>
+</div></section><section class="problem" id="p356">
+<h2>Problem 356: Detect Cycle in Undirected Graph (BFS)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Cycle detection.</p><div class="ex">Input: adj=[[1,2],[0,2],[0,1]]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all subsets of edges.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS carrying the parent; a visited neighbour that is not the parent means a cycle.</p></div>
+<div class="card w"><h3>Why it works</h3><p>In an undirected graph the only legal revisit is the parent.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean hasCycleBFS(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    boolean[] vis = new boolean[v];
+    for (int s = 0; s &lt; v; s++) {
+        if (vis[s]) continue;
+        Queue&lt;int[]&gt; q = new LinkedList&lt;&gt;();
+        q.add(new int[]{s, -1});
+        vis[s] = true;
+        while (!q.isEmpty()) {
+            int[] c = q.poll();
+            for (int w : adj.get(c[0])) {
+                if (!vis[w]) { vis[w] = true; q.add(new int[]{w, c[0]}); }
+                else if (w != c[1]) return true;
+            }
+        }
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Queue (node, parent)</li><li>For each neighbour: unvisited -&gt; enqueue</li><li>Visited and not parent -&gt; cycle</li></ol></div></div>
+</div></section><section class="problem" id="p357">
+<h2>Problem 357: Detect Cycle in Undirected Graph (DFS)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Cycle detection.</p><div class="ex">Input: adj=[[1,2],[0,2],[0,1]]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all subsets of edges.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS carrying the parent.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Reaching a visited non-parent node closes a cycle.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean hasCycleDFS(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    boolean[] vis = new boolean[v];
+    for (int s = 0; s &lt; v; s++) if (!vis[s] &amp;&amp; dfs(s, -1, adj, vis)) return true;
+    return false;
+}
+
+private static boolean dfs(int u, int p, List&lt;List&lt;Integer&gt;&gt; adj, boolean[] vis) {
+    vis[u] = true;
+    for (int w : adj.get(u)) {
+        if (!vis[w]) { if (dfs(w, u, adj, vis)) return true; }
+        else if (w != p) return true;
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dfs(u, parent)</li><li>Visit unvisited neighbours recursively</li><li>A visited non-parent neighbour means a cycle</li></ol></div></div>
+</div></section><section class="problem" id="p358">
+<h2>Problem 358: Detect Cycle in Directed Graph (DFS)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Cycle detection.</p><div class="ex">Input: adj=[[1],[2],[0]]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all node orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS with a recursion-stack (path) array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A back edge to a node on the current path forms a directed cycle.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean hasCycleDirected(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    boolean[] vis = new boolean[v], path = new boolean[v];
+    for (int s = 0; s &lt; v; s++) if (!vis[s] &amp;&amp; dfs(s, adj, vis, path)) return true;
+    return false;
+}
+
+private static boolean dfs(int u, List&lt;List&lt;Integer&gt;&gt; adj, boolean[] vis, boolean[] path) {
+    vis[u] = path[u] = true;
+    for (int w : adj.get(u)) {
+        if (!vis[w]) { if (dfs(w, adj, vis, path)) return true; }
+        else if (path[w]) return true;
+    }
+    path[u] = false;
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>vis and path arrays</li><li>Mark path on entry</li><li>Neighbour on the path means cycle</li><li>Unmark path on exit</li></ol></div></div>
+</div></section><section class="problem" id="p359">
+<h2>Problem 359: Find Eventual Safe States<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Nodes leading only to terminals.</p><div class="ex">Input: graph=[[1,2],[2,3],[5],[0],[5],[],[]]<br>Output:<pre class="out">[2,4,5,6]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every node&#x27;s paths for cycles separately.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS marking nodes in cycles as unsafe.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A node is safe iff it is not on or leading into a cycle.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; eventualSafeNodes(int[][] graph) {
+    int n = graph.length;
+    int[] state = new int[n];
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) if (safe(i, graph, state)) res.add(i);
+    return res;
+}
+
+private static boolean safe(int u, int[][] g, int[] st) {
+    if (st[u] &gt; 0) return st[u] == 2;
+    st[u] = 1;
+    for (int v : g[u]) if (!safe(v, g, st)) return false;
+    st[u] = 2;
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>State per node: 0 unvisited, 1 visiting, 2 safe</li><li>A node revisited while visiting is unsafe</li><li>Collect the safe nodes in order</li></ol></div></div>
+</div></section><section class="problem" id="p360">
+<h2>Problem 360: Topological Sort (DFS)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Ordering of DAG.</p><div class="ex">Input: adj=[[],[],[3],[1],[0,1],[0,2]]<br>Output:<pre class="out">[5,4,2,3,1,0]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all permutations for a valid order.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS pushing a node to a stack after its neighbours.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A node finishes only after everything it points to, so reversing finish order is topological.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] topoSortDFS(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    boolean[] vis = new boolean[v];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; v; i++) if (!vis[i]) dfs(i, adj, vis, st);
+    int[] res = new int[v];
+    for (int i = 0; i &lt; v; i++) res[i] = st.pop();
+    return res;
+}
+
+private static void dfs(int u, List&lt;List&lt;Integer&gt;&gt; adj, boolean[] vis, Deque&lt;Integer&gt; st) {
+    vis[u] = true;
+    for (int w : adj.get(u)) if (!vis[w]) dfs(w, adj, vis, st);
+    st.push(u);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS each unvisited node</li><li>After exploring push the node</li><li>Pop the stack for the order</li></ol></div></div>
+</div></section><section class="problem" id="p361">
+<h2>Problem 361: Topological Sort (Kahn&#x27;s BFS)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Ordering via indegree.</p><div class="ex">Input: adj=[[],[],[3],[1],[0,1],[0,2]]<br>Output:<pre class="out">[4,5,0,2,3,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Repeatedly scan for nodes without incoming edges.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Kahn&#x27;s algorithm with indegrees and a queue.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A node with indegree 0 has no unmet dependencies.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] topoSortKahn(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    int[] indeg = new int[v];
+    for (List&lt;Integer&gt; l : adj) for (int w : l) indeg[w]++;
+    Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+    for (int i = 0; i &lt; v; i++) if (indeg[i] == 0) q.add(i);
+    int[] res = new int[v];
+    int k = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        res[k++] = u;
+        for (int w : adj.get(u)) if (--indeg[w] == 0) q.add(w);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute indegrees</li><li>Queue indegree-0 nodes</li><li>Pop, output, decrement neighbours</li><li>Queue newly free nodes</li></ol></div></div>
+</div></section><section class="problem" id="p362">
+<h2>Problem 362: Course Schedule I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Can all courses be taken.</p><div class="ex">Input: numCourses=2, prerequisites=[[1,0]]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all course orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Topological sort; if all courses are processed there is no cycle.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A cycle in prerequisites makes finishing impossible.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean canFinish(int numCourses, int[][] prerequisites) {
+    List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+    int[] indeg = new int[numCourses];
+    for (int i = 0; i &lt; numCourses; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] p : prerequisites) { adj.get(p[1]).add(p[0]); indeg[p[0]]++; }
+    Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+    for (int i = 0; i &lt; numCourses; i++) if (indeg[i] == 0) q.add(i);
+    int done = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        done++;
+        for (int w : adj.get(u)) if (--indeg[w] == 0) q.add(w);
+    }
+    return done == numCourses;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build edges b -&gt; a for [a, b]</li><li>Run Kahn</li><li>Count processed nodes == numCourses</li></ol></div></div>
+</div></section><section class="problem" id="p363">
+<h2>Problem 363: Course Schedule II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return an order.</p><div class="ex">Input: numCourses=4, prerequisites=[[1,0],[2,0],[3,1],[3,2]]<br>Output:<pre class="out">[0,1,2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all permutations.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Kahn&#x27;s order; return empty if a cycle exists.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The Kahn queue yields a valid order exactly when the graph is a DAG.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] findOrder(int numCourses, int[][] prerequisites) {
+    List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+    int[] indeg = new int[numCourses];
+    for (int i = 0; i &lt; numCourses; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] p : prerequisites) { adj.get(p[1]).add(p[0]); indeg[p[0]]++; }
+    Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+    for (int i = 0; i &lt; numCourses; i++) if (indeg[i] == 0) q.add(i);
+    int[] res = new int[numCourses];
+    int k = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        res[k++] = u;
+        for (int w : adj.get(u)) if (--indeg[w] == 0) q.add(w);
+    }
+    return k == numCourses ? res : new int[0];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build the graph</li><li>Run Kahn collecting the order</li><li>If fewer than n courses return an empty array</li></ol></div></div>
+</div></section><section class="problem" id="p364">
+<h2>Problem 364: Shortest Path in Undirected Graph with Unit Weights<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>BFS distances.</p><div class="ex">Input: n=3, edges=[[0,1],[1,2]], src=0<br>Output:<pre class="out">[0,1,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Run DFS and track the minimum depth.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS from the source.</p></div>
+<div class="card w"><h3>Why it works</h3><p>With unit weights BFS levels are shortest distances.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] shortestPathUnit(int n, int[][] edges, int src) {
+    List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] e : edges) { adj.get(e[0]).add(e[1]); adj.get(e[1]).add(e[0]); }
+    int[] dist = new int[n];
+    Arrays.fill(dist, -1);
+    dist[src] = 0;
+    Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+    q.add(src);
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        for (int w : adj.get(u)) if (dist[w] == -1) { dist[w] = dist[u] + 1; q.add(w); }
+    }
+    return dist;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dist = -1 for all, dist[src] = 0</li><li>BFS updating unvisited neighbours</li><li>Return dist</li></ol></div></div>
+</div></section><section class="problem" id="p365">
+<h2>Problem 365: Shortest Path in DAG<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Weighted DAG from node 0.</p><div class="ex">Input: n=4, edges=[[0,1,2],[0,2,1],[1,3,1],[2,3,3]]<br>Output:<pre class="out">[0,2,1,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Dijkstra with a heap.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Relax edges in topological order.</p></div>
+<div class="card w"><h3>Why it works</h3><p>In a DAG all predecessors of a node are processed before the node, so one pass suffices.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] shortestPathDAG(int n, int[][] edges) {
+    List&lt;List&lt;int[]&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] e : edges) adj.get(e[0]).add(new int[]{e[1], e[2]});
+    boolean[] vis = new boolean[n];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) if (!vis[i]) topo(i, adj, vis, st);
+    int INF = Integer.MAX_VALUE;
+    int[] dist = new int[n];
+    Arrays.fill(dist, INF);
+    dist[0] = 0;
+    while (!st.isEmpty()) {
+        int u = st.pop();
+        if (dist[u] == INF) continue;
+        for (int[] e : adj.get(u)) dist[e[0]] = Math.min(dist[e[0]], dist[u] + e[1]);
+    }
+    for (int i = 0; i &lt; n; i++) if (dist[i] == INF) dist[i] = -1;
+    return dist;
+}
+
+private static void topo(int u, List&lt;List&lt;int[]&gt;&gt; adj, boolean[] vis, Deque&lt;Integer&gt; st) {
+    vis[u] = true;
+    for (int[] e : adj.get(u)) if (!vis[e[0]]) topo(e[0], adj, vis, st);
+    st.push(u);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Topological order via DFS</li><li>dist[0] = 0</li><li>For each node in order relax outgoing edges</li><li>Unreachable stays -1</li></ol></div></div>
+</div></section><section class="problem" id="p366">
+<h2>Problem 366: Word Ladder (Shortest Path BFS)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>BFS version.</p><div class="ex">Input: begin=&quot;hit&quot;, end=&quot;cog&quot;<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>DFS over all transformations.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS where each edge is a one-letter change.</p></div>
+<div class="card w"><h3>Why it works</h3><p>BFS gives the shortest number of transformations.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int wordLadderBFS(String begin, String end, List&lt;String&gt; words) {
+    Set&lt;String&gt; dict = new HashSet&lt;&gt;(words);
+    Queue&lt;String&gt; q = new LinkedList&lt;&gt;();
+    q.add(begin);
+    int steps = 1;
+    while (!q.isEmpty()) {
+        for (int s = q.size(); s &gt; 0; s--) {
+            String w = q.poll();
+            if (w.equals(end)) return steps;
+            char[] c = w.toCharArray();
+            for (int i = 0; i &lt; c.length; i++) {
+                char old = c[i];
+                for (char x = &#x27;a&#x27;; x &lt;= &#x27;z&#x27;; x++) {
+                    c[i] = x;
+                    String nw = new String(c);
+                    if (dict.remove(nw)) q.add(nw);
+                }
+                c[i] = old;
+            }
+        }
+        steps++;
+    }
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Dictionary set</li><li>Queue the start word</li><li>Generate neighbours by replacing each letter</li><li>First time reaching end is the answer</li></ol></div></div>
+</div></section><section class="problem" id="p367">
+<h2>Problem 367: Dijkstra&#x27;s Algorithm<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Shortest path in weighted graph.</p><div class="ex">Input: adj=[[[1,1],[2,6]],[[2,2]],[]], src=0<br>Output:<pre class="out">[0,1,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Bellman-Ford, O(VE).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Min heap of (dist, node).</p></div>
+<div class="card w"><h3>Why it works</h3><p>The smallest tentative distance is final when popped, since weights are non-negative.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] dijkstra(int v, List&lt;List&lt;int[]&gt;&gt; adj, int src) {
+    int[] dist = new int[v];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[src] = 0;
+    PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; a[0] - b[0]);
+    pq.add(new int[]{0, src});
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (c[0] &gt; dist[c[1]]) continue;
+        for (int[] e : adj.get(c[1])) {
+            if (c[0] + e[1] &lt; dist[e[0]]) { dist[e[0]] = c[0] + e[1]; pq.add(new int[]{dist[e[0]], e[0]}); }
+        }
+    }
+    return dist;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dist = INF, dist[src] = 0</li><li>Pop the closest node</li><li>Relax its edges and push improvements</li></ol></div></div>
+</div></section><section class="problem" id="p368">
+<h2>Problem 368: Print Shortest Path (Dijkstra)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return the path from 1 to n.</p><div class="ex">Input: n=5, edges=[[1,2,2],[2,5,5],[2,3,4],[1,4,1],[4,3,3],[3,5,1]]<br>Output:<pre class="out">[1,4,3,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Run Dijkstra then search all paths.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Dijkstra with a parent array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Following parents back from n reconstructs the shortest path.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; dijkstraPath(int n, int[][] edges) {
+    List&lt;List&lt;int[]&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt;= n; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] e : edges) { adj.get(e[0]).add(new int[]{e[1], e[2]}); adj.get(e[1]).add(new int[]{e[0], e[2]}); }
+    int[] dist = new int[n + 1], par = new int[n + 1];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[1] = 0;
+    PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; a[0] - b[0]);
+    pq.add(new int[]{0, 1});
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (c[0] &gt; dist[c[1]]) continue;
+        for (int[] e : adj.get(c[1])) {
+            if (c[0] + e[1] &lt; dist[e[0]]) { dist[e[0]] = c[0] + e[1]; par[e[0]] = c[1]; pq.add(new int[]{dist[e[0]], e[0]}); }
+        }
+    }
+    List&lt;Integer&gt; path = new ArrayList&lt;&gt;();
+    if (dist[n] == Integer.MAX_VALUE) { path.add(-1); return path; }
+    for (int x = n; x != 0; x = par[x]) path.add(x);
+    Collections.reverse(path);
+    return path;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Run Dijkstra from 1 recording parent</li><li>If n is unreachable return [-1]</li><li>Walk back from n and reverse</li></ol></div></div>
+</div></section><section class="problem" id="p369">
+<h2>Problem 369: Shortest Distance in Binary Maze<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Shortest path in 0/1 grid.</p><div class="ex">Input: grid=[[1,1,1],[1,0,1],[1,1,1]], src=[0,0], dest=[2,2]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>DFS exploring all paths.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS on the grid through cells equal to 1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each move costs one, so BFS gives the shortest path.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int shortestPathBinaryMatrix(int[][] grid, int[] src, int[] dest) {
+    int m = grid.length, n = grid[0].length;
+    if (grid[src[0]][src[1]] == 0) return -1;
+    int[][] dist = new int[m][n];
+    for (int[] r : dist) Arrays.fill(r, -1);
+    Queue&lt;int[]&gt; q = new LinkedList&lt;&gt;();
+    q.add(src);
+    dist[src[0]][src[1]] = 0;
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!q.isEmpty()) {
+        int[] c = q.poll();
+        if (c[0] == dest[0] &amp;&amp; c[1] == dest[1]) return dist[c[0]][c[1]];
+        for (int d = 0; d &lt; 4; d++) {
+            int x = c[0] + dx[d], y = c[1] + dy[d];
+            if (x &gt;= 0 &amp;&amp; y &gt;= 0 &amp;&amp; x &lt; m &amp;&amp; y &lt; n &amp;&amp; grid[x][y] == 1 &amp;&amp; dist[x][y] == -1) {
+                dist[x][y] = dist[c[0]][c[1]] + 1;
+                q.add(new int[]{x, y});
+            }
+        }
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Distance matrix</li><li>BFS in 4 directions</li><li>Return the distance at dest or -1</li></ol></div></div>
+</div></section><section class="problem" id="p370">
+<h2>Problem 370: Path with Minimum Effort<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Minimize max abs difference.</p><div class="ex">Input: heights=[[1,2,2],[3,8,2],[5,3,5]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all paths and compute their effort.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Dijkstra where the path cost is the maximum step difference.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Minimizing the max over a path is monotone, so Dijkstra&#x27;s greedy choice is valid.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minimumEffortPath(int[][] heights) {
+    int m = heights.length, n = heights[0].length;
+    int[][] eff = new int[m][n];
+    for (int[] r : eff) Arrays.fill(r, Integer.MAX_VALUE);
+    eff[0][0] = 0;
+    PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; a[0] - b[0]);
+    pq.add(new int[]{0, 0, 0});
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (c[1] == m - 1 &amp;&amp; c[2] == n - 1) return c[0];
+        if (c[0] &gt; eff[c[1]][c[2]]) continue;
+        for (int d = 0; d &lt; 4; d++) {
+            int x = c[1] + dx[d], y = c[2] + dy[d];
+            if (x &lt; 0 || y &lt; 0 || x &gt;= m || y &gt;= n) continue;
+            int e = Math.max(c[0], Math.abs(heights[x][y] - heights[c[1]][c[2]]));
+            if (e &lt; eff[x][y]) { eff[x][y] = e; pq.add(new int[]{e, x, y}); }
+        }
+    }
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>effort[0][0] = 0</li><li>Pop the smallest effort cell</li><li>New effort = max(current, |h difference|)</li><li>Update neighbours when smaller</li></ol></div></div>
+</div></section><section class="problem" id="p371">
+<h2>Problem 371: Cheapest Flights Within K Stops<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Cheapest with at most k stops.</p><div class="ex">Input: n=4, flights=[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]], src=0, dst=3, k=1<br>Output:<pre class="out">700</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>DFS over all paths with at most k+1 edges.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS/Bellman-Ford limited to k+1 rounds.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each round allows one more edge, so k+1 rounds bound the stops.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+    int INF = Integer.MAX_VALUE;
+    int[] dist = new int[n];
+    Arrays.fill(dist, INF);
+    dist[src] = 0;
+    for (int i = 0; i &lt;= k; i++) {
+        int[] nd = dist.clone();
+        for (int[] f : flights)
+            if (dist[f[0]] != INF &amp;&amp; dist[f[0]] + f[2] &lt; nd[f[1]]) nd[f[1]] = dist[f[0]] + f[2];
+        dist = nd;
+    }
+    return dist[dst] == INF ? -1 : dist[dst];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dist[src] = 0</li><li>For k+1 rounds relax edges using the previous round&#x27;s distances</li><li>Return dist[dst] or -1</li></ol></div></div>
+</div></section><section class="problem" id="p372">
+<h2>Problem 372: Minimum Multiplications to Reach End<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Mod 100000 multiplication steps.</p><div class="ex">Input: arr=[2,5,7], start=3, end=30<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>DFS over all multiplication sequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS over values mod 100000.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only 100000 states exist, so BFS finds the fewest steps in bounded time.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minimumMultiplications(int[] arr, int start, int end) {
+    if (start == end) return 0;
+    int MOD = 100000;
+    int[] dist = new int[MOD];
+    Arrays.fill(dist, -1);
+    Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+    q.add(start);
+    dist[start] = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        for (int a : arr) {
+            int v = (int) ((long) u * a % MOD);
+            if (dist[v] == -1) {
+                dist[v] = dist[u] + 1;
+                if (v == end) return dist[v];
+                q.add(v);
+            }
+        }
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If start == end return 0</li><li>Queue (value, steps)</li><li>Multiply by each arr[i] mod 100000</li><li>Return steps on reaching end</li></ol></div></div>
+</div></section><section class="problem" id="p373">
+<h2>Problem 373: Number of Ways to Arrive at Destination<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Shortest-path count mod 1e9+7.</p><div class="ex">Input: n=7, roads=[[0,6,7],[0,1,2],[1,2,3],[1,3,3],[6,3,3],[3,5,1],[6,5,1],[2,5,1],[0,4,5],[4,6,2]]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all paths and keep the shortest ones.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Dijkstra with a ways[] array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Equal-distance arrivals add ways; shorter arrivals replace them.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countPaths(int n, int[][] roads) {
+    final int MOD = 1_000_000_007;
+    List&lt;List&lt;long[]&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] r : roads) { adj.get(r[0]).add(new long[]{r[1], r[2]}); adj.get(r[1]).add(new long[]{r[0], r[2]}); }
+    long[] dist = new long[n];
+    int[] ways = new int[n];
+    Arrays.fill(dist, Long.MAX_VALUE);
+    dist[0] = 0; ways[0] = 1;
+    PriorityQueue&lt;long[]&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; Long.compare(a[0], b[0]));
+    pq.add(new long[]{0, 0});
+    while (!pq.isEmpty()) {
+        long[] c = pq.poll();
+        int u = (int) c[1];
+        if (c[0] &gt; dist[u]) continue;
+        for (long[] e : adj.get(u)) {
+            int v = (int) e[0];
+            long nd = c[0] + e[1];
+            if (nd &lt; dist[v]) { dist[v] = nd; ways[v] = ways[u]; pq.add(new long[]{nd, v}); }
+            else if (nd == dist[v]) ways[v] = (ways[v] + ways[u]) % MOD;
+        }
+    }
+    return ways[n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dist, ways initialised</li><li>When a shorter distance is found ways = ways of parent</li><li>When equal add ways</li><li>Answer is ways[n-1]</li></ol></div></div>
+</div></section><section class="problem" id="p374">
+<h2>Problem 374: Bellman-Ford Algorithm<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Distances with negative edges.</p><div class="ex">Input: v=3, edges=[[0,1,5],[1,2,-2]], src=0<br>Output:<pre class="out">[0,5,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Dijkstra fails with negative edges.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Relax all edges V-1 times; one more pass detects a negative cycle.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A shortest path has at most V-1 edges.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] bellmanFord(int v, int[][] edges, int src) {
+    int INF = 100_000_000;
+    int[] dist = new int[v];
+    Arrays.fill(dist, INF);
+    dist[src] = 0;
+    for (int i = 0; i &lt; v - 1; i++)
+        for (int[] e : edges)
+            if (dist[e[0]] != INF &amp;&amp; dist[e[0]] + e[2] &lt; dist[e[1]]) dist[e[1]] = dist[e[0]] + e[2];
+    for (int[] e : edges)
+        if (dist[e[0]] != INF &amp;&amp; dist[e[0]] + e[2] &lt; dist[e[1]]) return new int[]{-1};
+    return dist;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dist = INF, dist[src] = 0</li><li>Relax all edges V-1 times</li><li>If another relaxation succeeds return [-1]</li></ol></div></div>
+</div></section><section class="problem" id="p375">
+<h2>Problem 375: Floyd Warshall Algorithm<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All pairs shortest path.</p><div class="ex">Input: matrix=[[0,2,-1],[1,0,3],[-1,-1,0]]<br>Output:<pre class="out">updated matrix</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Run Dijkstra from every node.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP over intermediate vertices k.</p></div>
+<div class="card w"><h3>Why it works</h3><p>dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]) considers paths via every vertex.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void floydWarshall(int[][] matrix) {
+    int n = matrix.length, INF = 1_000_000_000;
+    for (int i = 0; i &lt; n; i++) for (int j = 0; j &lt; n; j++) if (matrix[i][j] == -1) matrix[i][j] = INF;
+    for (int k = 0; k &lt; n; k++)
+        for (int i = 0; i &lt; n; i++)
+            for (int j = 0; j &lt; n; j++)
+                if (matrix[i][k] + matrix[k][j] &lt; matrix[i][j]) matrix[i][j] = matrix[i][k] + matrix[k][j];
+    for (int i = 0; i &lt; n; i++) for (int j = 0; j &lt; n; j++) if (matrix[i][j] &gt;= INF) matrix[i][j] = -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Replace -1 with INF</li><li>For k, i, j relax through k</li><li>Replace INF with -1</li></ol></div></div>
+</div></section><section class="problem" id="p376">
+<h2>Problem 376: Find the City with Smallest Number of Neighbours at Threshold<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Use Floyd-Warshall.</p><div class="ex">Input: n=4, edges=[[0,1,3],[1,2,1],[1,3,4],[2,3,1]], distanceThreshold=4<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Dijkstra from every city.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Floyd-Warshall then count reachable cities.</p></div>
+<div class="card w"><h3>Why it works</h3><p>All-pairs distances give the number of cities within the threshold directly.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findTheCity(int n, int[][] edges, int distanceThreshold) {
+    int INF = 1_000_000;
+    int[][] d = new int[n][n];
+    for (int[] r : d) Arrays.fill(r, INF);
+    for (int i = 0; i &lt; n; i++) d[i][i] = 0;
+    for (int[] e : edges) { d[e[0]][e[1]] = e[2]; d[e[1]][e[0]] = e[2]; }
+    for (int k = 0; k &lt; n; k++)
+        for (int i = 0; i &lt; n; i++)
+            for (int j = 0; j &lt; n; j++) d[i][j] = Math.min(d[i][j], d[i][k] + d[k][j]);
+    int best = -1, min = Integer.MAX_VALUE;
+    for (int i = 0; i &lt; n; i++) {
+        int c = 0;
+        for (int j = 0; j &lt; n; j++) if (i != j &amp;&amp; d[i][j] &lt;= distanceThreshold) c++;
+        if (c &lt;= min) { min = c; best = i; }
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build the distance matrix</li><li>Floyd-Warshall</li><li>Count cities with dist &lt;= threshold</li><li>Pick the smallest count, ties to the largest index</li></ol></div></div>
+</div></section><section class="problem" id="p377">
+<h2>Problem 377: Minimum Spanning Tree (Prim&#x27;s)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sum of MST edge weights.</p><div class="ex">Input: v=3, edges=[[0,1,5],[1,2,3],[0,2,1]]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all spanning trees.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Prim: grow the tree by the cheapest crossing edge using a min heap.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The cut property guarantees the cheapest edge leaving the tree is in some MST.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int spanningTreePrim(int v, int[][] edges) {
+    List&lt;List&lt;int[]&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; v; i++) adj.add(new ArrayList&lt;&gt;());
+    for (int[] e : edges) { adj.get(e[0]).add(new int[]{e[1], e[2]}); adj.get(e[1]).add(new int[]{e[0], e[2]}); }
+    boolean[] in = new boolean[v];
+    PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; a[1] - b[1]);
+    pq.add(new int[]{0, 0});
+    int sum = 0;
+    while (!pq.isEmpty()) {
+        int[] c = pq.poll();
+        if (in[c[0]]) continue;
+        in[c[0]] = true;
+        sum += c[1];
+        for (int[] e : adj.get(c[0])) if (!in[e[0]]) pq.add(e);
+    }
+    return sum;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start at 0</li><li>Pop the cheapest edge to an unvisited node</li><li>Add its weight and push its edges</li></ol></div></div>
+</div></section><section class="problem" id="p378">
+<h2>Problem 378: Disjoint Set (Union by Rank / Size)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Implement findParent, unionByRank, unionBySize.</p><div class="ex">Input: union(1,2) union(2,3) find(3)==find(1)<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Run a DFS to check connectivity for each query.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Disjoint set with path compression and union by rank/size.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Both optimizations make operations nearly O(1) amortized (inverse Ackermann).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void disjointSet() {
+    class DSU {
+        int[] parent, rank, size;
+        DSU(int n) {
+            parent = new int[n + 1]; rank = new int[n + 1]; size = new int[n + 1];
+            for (int i = 0; i &lt;= n; i++) { parent[i] = i; size[i] = 1; }
+        }
+        int find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }
+        void unionByRank(int a, int b) {
+            int pa = find(a), pb = find(b);
+            if (pa == pb) return;
+            if (rank[pa] &lt; rank[pb]) parent[pa] = pb;
+            else if (rank[pa] &gt; rank[pb]) parent[pb] = pa;
+            else { parent[pb] = pa; rank[pa]++; }
+        }
+        void unionBySize(int a, int b) {
+            int pa = find(a), pb = find(b);
+            if (pa == pb) return;
+            if (size[pa] &lt; size[pb]) { parent[pa] = pb; size[pb] += size[pa]; }
+            else { parent[pb] = pa; size[pa] += size[pb]; }
+        }
+    }
+    DSU d = new DSU(7);
+    d.unionByRank(1, 2);
+    d.unionByRank(2, 3);
+    System.out.println(d.find(3) == d.find(1));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>parent[i] = i</li><li>find with path compression</li><li>union attaches the smaller/lower rank tree under the other</li></ol></div></div>
+</div></section><section class="problem" id="p379">
+<h2>Problem 379: Kruskal&#x27;s Algorithm<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>MST using DSU.</p><div class="ex">Input: v=3, edges=[[0,1,5],[1,2,3],[0,2,1]]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all spanning trees.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort edges and add them if they join different components.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The cheapest edge that does not form a cycle is always safe for an MST.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int spanningTreeKruskal(int v, int[][] edges) {
+    int[] p = new int[v];
+    for (int i = 0; i &lt; v; i++) p[i] = i;
+    int[][] es = edges.clone();
+    Arrays.sort(es, (a, b) -&gt; a[2] - b[2]);
+    int sum = 0;
+    for (int[] e : es) {
+        int a = find(p, e[0]), b = find(p, e[1]);
+        if (a != b) { p[a] = b; sum += e[2]; }
+    }
+    return sum;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort edges by weight</li><li>DSU find on both ends</li><li>If different components union and add the weight</li></ol></div></div>
+</div></section><section class="problem" id="p380">
+<h2>Problem 380: Number of Provinces (DSU)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Provinces using DSU.</p><div class="ex">Input: isConnected=[[1,1,0],[1,1,0],[0,0,1]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>DFS from every city.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Union connected cities and count roots.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each union merges two provinces into one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findCircleNumDSU(int[][] isConnected) {
+    int n = isConnected.length;
+    int[] p = new int[n];
+    for (int i = 0; i &lt; n; i++) p[i] = i;
+    for (int i = 0; i &lt; n; i++)
+        for (int j = i + 1; j &lt; n; j++)
+            if (isConnected[i][j] == 1) p[find(p, i)] = find(p, j);
+    int c = 0;
+    for (int i = 0; i &lt; n; i++) if (find(p, i) == i) c++;
+    return c;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Union i and j when connected</li><li>Count nodes that are their own parent</li></ol></div></div>
+</div></section><section class="problem" id="p381">
+<h2>Problem 381: Number of Operations to Make Network Connected<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min cables moves.</p><div class="ex">Input: n=4, connections=[[0,1],[0,2],[1,2]]<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all ways to move cables.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DSU: components - 1 moves needed if enough cables exist.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Connecting c components needs c-1 cables; extra cables come from redundant edges.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int makeConnected(int n, int[][] connections) {
+    if (connections.length &lt; n - 1) return -1;
+    int[] p = new int[n];
+    for (int i = 0; i &lt; n; i++) p[i] = i;
+    int comps = n;
+    for (int[] c : connections) {
+        int a = find(p, c[0]), b = find(p, c[1]);
+        if (a != b) { p[a] = b; comps--; }
+    }
+    return comps - 1;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If edges &lt; n-1 return -1</li><li>Union all edges</li><li>Count components and return components - 1</li></ol></div></div>
+</div></section><section class="problem" id="p382">
+<h2>Problem 382: Word Ladder II<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All shortest sequences.</p><div class="ex">Input: begin=&quot;hit&quot;, end=&quot;cog&quot;<br>Output:<pre class="out">[[hit,hot,dot,dog,cog],[hit,hot,lot,log,cog]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>DFS enumerating all transformation paths.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS for distances, then DFS back from the end following distance-1 steps.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only edges that go one level deeper lie on shortest paths.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;String&gt;&gt; findLadders(String begin, String end, List&lt;String&gt; wordList) {
+    Set&lt;String&gt; dict = new HashSet&lt;&gt;(wordList);
+    List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();
+    if (!dict.contains(end)) return res;
+    Map&lt;String, Integer&gt; dist = new HashMap&lt;&gt;();
+    Queue&lt;String&gt; q = new LinkedList&lt;&gt;();
+    q.add(begin);
+    dist.put(begin, 0);
+    while (!q.isEmpty()) {
+        String w = q.poll();
+        char[] c = w.toCharArray();
+        for (int i = 0; i &lt; c.length; i++) {
+            char old = c[i];
+            for (char x = &#x27;a&#x27;; x &lt;= &#x27;z&#x27;; x++) {
+                c[i] = x;
+                String nw = new String(c);
+                if (dict.contains(nw) &amp;&amp; !dist.containsKey(nw)) { dist.put(nw, dist.get(w) + 1); q.add(nw); }
+            }
+            c[i] = old;
+        }
+    }
+    if (!dist.containsKey(end)) return res;
+    LinkedList&lt;String&gt; path = new LinkedList&lt;&gt;();
+    path.add(end);
+    back(end, begin, dist, path, res);
+    return res;
+}
+
+private static void back(String w, String begin, Map&lt;String, Integer&gt; dist, LinkedList&lt;String&gt; path, List&lt;List&lt;String&gt;&gt; res) {
+    if (w.equals(begin)) { List&lt;String&gt; r = new ArrayList&lt;&gt;(path); Collections.reverse(r); res.add(r); return; }
+    char[] c = w.toCharArray();
+    for (int i = 0; i &lt; c.length; i++) {
+        char old = c[i];
+        for (char x = &#x27;a&#x27;; x &lt;= &#x27;z&#x27;; x++) {
+            c[i] = x;
+            String nw = new String(c);
+            if (dist.containsKey(nw) &amp;&amp; dist.get(nw) == dist.get(w) - 1) {
+                path.add(nw);
+                back(nw, begin, dist, path, res);
+                path.removeLast();
+            }
+        }
+        c[i] = old;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>BFS levels from begin</li><li>Backtrack from end using words one level closer</li><li>Reverse each path</li></ol></div></div>
+</div></section><section class="problem" id="p383">
+<h2>Problem 383: Alien Dictionary<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Order of letters.</p><div class="ex">Input: words=[&quot;baa&quot;,&quot;abcd&quot;,&quot;abca&quot;,&quot;cab&quot;,&quot;cad&quot;]<br>Output:<pre class="out">&quot;bdac&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all letter permutations.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Build a graph from adjacent words and topologically sort.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first differing letters of adjacent words give ordering constraints.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String alienOrder(String[] words) {
+    Map&lt;Character, Set&lt;Character&gt;&gt; g = new LinkedHashMap&lt;&gt;();
+    Map&lt;Character, Integer&gt; indeg = new LinkedHashMap&lt;&gt;();
+    for (String w : words) for (char c : w.toCharArray()) { g.putIfAbsent(c, new HashSet&lt;&gt;()); indeg.putIfAbsent(c, 0); }
+    for (int i = 0; i + 1 &lt; words.length; i++) {
+        String a = words[i], b = words[i + 1];
+        if (a.length() &gt; b.length() &amp;&amp; a.startsWith(b)) return &quot;&quot;;
+        for (int j = 0; j &lt; Math.min(a.length(), b.length()); j++) {
+            if (a.charAt(j) != b.charAt(j)) {
+                if (g.get(a.charAt(j)).add(b.charAt(j))) indeg.merge(b.charAt(j), 1, Integer::sum);
+                break;
+            }
+        }
+    }
+    Queue&lt;Character&gt; q = new LinkedList&lt;&gt;();
+    for (char c : indeg.keySet()) if (indeg.get(c) == 0) q.add(c);
+    StringBuilder sb = new StringBuilder();
+    while (!q.isEmpty()) {
+        char c = q.poll();
+        sb.append(c);
+        for (char n : g.get(c)) if (indeg.merge(n, -1, Integer::sum) == 0) q.add(n);
+    }
+    return sb.length() == g.size() ? sb.toString() : &quot;&quot;;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Collect letters</li><li>Add edge for the first mismatch between adjacent words</li><li>Detect an invalid prefix case</li><li>Kahn&#x27;s order of letters</li></ol></div></div>
+</div></section><section class="problem" id="p384">
+<h2>Problem 384: Accounts Merge<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Merge accounts by common email.</p><div class="ex">Input: accounts=[[John,a@m.com,b@m.com],[John,b@m.com,c@m.com]]<br>Output:<pre class="out">[[John,a@m.com,b@m.com,c@m.com]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare every pair of accounts for shared emails.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DSU on accounts joined through shared emails.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Accounts sharing an email belong to the same person.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;String&gt;&gt; accountsMerge(List&lt;List&lt;String&gt;&gt; accounts) {
+    int n = accounts.size();
+    int[] p = new int[n];
+    for (int i = 0; i &lt; n; i++) p[i] = i;
+    Map&lt;String, Integer&gt; owner = new HashMap&lt;&gt;();
+    for (int i = 0; i &lt; n; i++)
+        for (int j = 1; j &lt; accounts.get(i).size(); j++) {
+            String e = accounts.get(i).get(j);
+            if (owner.containsKey(e)) p[find(p, i)] = find(p, owner.get(e)); else owner.put(e, i);
+        }
+    Map&lt;Integer, TreeSet&lt;String&gt;&gt; groups = new HashMap&lt;&gt;();
+    for (Map.Entry&lt;String, Integer&gt; en : owner.entrySet())
+        groups.computeIfAbsent(find(p, en.getValue()), k -&gt; new TreeSet&lt;&gt;()).add(en.getKey());
+    List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();
+    for (Map.Entry&lt;Integer, TreeSet&lt;String&gt;&gt; g : groups.entrySet()) {
+        List&lt;String&gt; l = new ArrayList&lt;&gt;();
+        l.add(accounts.get(g.getKey()).get(0));
+        l.addAll(g.getValue());
+        res.add(l);
+    }
+    return res;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Map each email to the first account index that has it</li><li>Union accounts sharing an email</li><li>Group emails by root and sort them</li></ol></div></div>
+</div></section><section class="problem" id="p385">
+<h2>Problem 385: Number of Islands II (Online Queries)<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Island count after each addLand.</p><div class="ex">Input: m=3, n=3, positions=[[0,0],[0,1],[1,2],[2,1]]<br>Output:<pre class="out">[1,1,2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recount islands with DFS after each addition.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DSU that merges the new cell with adjacent land.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each addition changes the count by 1 minus the number of distinct merges.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; numOfIslandsII(int m, int n, int[][] positions) {
+    int[] p = new int[m * n];
+    Arrays.fill(p, -1);
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int count = 0;
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    for (int[] pos : positions) {
+        int id = pos[0] * n + pos[1];
+        if (p[id] == -1) {
+            p[id] = id;
+            count++;
+            for (int d = 0; d &lt; 4; d++) {
+                int x = pos[0] + dx[d], y = pos[1] + dy[d];
+                if (x &lt; 0 || y &lt; 0 || x &gt;= m || y &gt;= n || p[x * n + y] == -1) continue;
+                int a = find(p, id), b = find(p, x * n + y);
+                if (a != b) { p[a] = b; count--; }
+            }
+        }
+        res.add(count);
+    }
+    return res;
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Skip duplicates</li><li>count++ for new land</li><li>Union with each land neighbour and decrement when roots differ</li><li>Record the count</li></ol></div></div>
+</div></section><section class="problem" id="p386">
+<h2>Problem 386: Making a Large Island<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max island after flipping one 0.</p><div class="ex">Input: grid=[[1,0],[0,1]]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Flip each 0 and run DFS, O(n^4).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Label islands and store sizes, then evaluate each 0 using distinct neighbouring labels.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A flipped cell joins distinct neighbouring islands plus itself.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int largestIsland(int[][] grid) {
+    int n = grid.length, label = 2, best = 0;
+    Map&lt;Integer, Integer&gt; size = new HashMap&lt;&gt;();
+    for (int i = 0; i &lt; n; i++)
+        for (int j = 0; j &lt; n; j++)
+            if (grid[i][j] == 1) {
+                int s = paint(grid, i, j, label);
+                size.put(label++, s);
+                best = Math.max(best, s);
+            }
+    int[] dx = {1, -1, 0, 0}, dy = {0, 0, 1, -1};
+    for (int i = 0; i &lt; n; i++)
+        for (int j = 0; j &lt; n; j++)
+            if (grid[i][j] == 0) {
+                Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+                int total = 1;
+                for (int d = 0; d &lt; 4; d++) {
+                    int x = i + dx[d], y = j + dy[d];
+                    if (x &gt;= 0 &amp;&amp; y &gt;= 0 &amp;&amp; x &lt; n &amp;&amp; y &lt; n &amp;&amp; grid[x][y] &gt; 1 &amp;&amp; seen.add(grid[x][y])) total += size.get(grid[x][y]);
+                }
+                best = Math.max(best, total);
+            }
+    return best;
+}
+
+private static int paint(int[][] g, int i, int j, int c) {
+    if (i &lt; 0 || j &lt; 0 || i &gt;= g.length || j &gt;= g.length || g[i][j] != 1) return 0;
+    g[i][j] = c;
+    return 1 + paint(g, i + 1, j, c) + paint(g, i - 1, j, c) + paint(g, i, j + 1, c) + paint(g, i, j - 1, c);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS labels each island with its size</li><li>For each 0 sum sizes of distinct neighbour labels + 1</li><li>Return the max (or the whole grid if no zeros)</li></ol></div></div>
+</div></section><section class="problem" id="p387">
+<h2>Problem 387: Most Stones Removed with Same Row or Column<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max stones removed.</p><div class="ex">Input: stones=[[0,0],[0,1],[1,0],[1,2],[2,1],[2,2]]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all removal orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DSU joining a stone&#x27;s row and column; removable = stones - components.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each connected group can be reduced to a single stone.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int removeStones(int[][] stones) {
+    int[] p = new int[20002];
+    for (int i = 0; i &lt; p.length; i++) p[i] = i;
+    for (int[] s : stones) p[find(p, s[0])] = find(p, s[1] + 10001);
+    Set&lt;Integer&gt; roots = new HashSet&lt;&gt;();
+    for (int[] s : stones) roots.add(find(p, s[0]));
+    return stones.length - roots.size();
+}
+
+private static int find(int[] p, int x) {
+    return p[x] == x ? x : (p[x] = find(p, p[x]));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Union row r with column c + 10001</li><li>Count distinct roots among stones</li><li>Answer = stones - components</li></ol></div></div>
+</div></section><section class="problem" id="p388">
+<h2>Problem 388: Strongly Connected Components (Kosaraju)<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count SCCs.</p><div class="ex">Input: adj=[[1],[2],[0,3],[4],[5],[3]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check mutual reachability for every pair.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Kosaraju: DFS order, reverse graph, DFS in reverse finish order.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A DFS in the transposed graph from the latest finisher exactly covers one SCC.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int kosaraju(int v, List&lt;List&lt;Integer&gt;&gt; adj) {
+    boolean[] vis = new boolean[v];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; v; i++) if (!vis[i]) dfs1(i, adj, vis, st);
+    List&lt;List&lt;Integer&gt;&gt; rev = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; v; i++) rev.add(new ArrayList&lt;&gt;());
+    for (int u = 0; u &lt; v; u++) for (int w : adj.get(u)) rev.get(w).add(u);
+    Arrays.fill(vis, false);
+    int scc = 0;
+    while (!st.isEmpty()) {
+        int u = st.pop();
+        if (!vis[u]) { scc++; dfs2(u, rev, vis); }
+    }
+    return scc;
+}
+
+private static void dfs1(int u, List&lt;List&lt;Integer&gt;&gt; adj, boolean[] vis, Deque&lt;Integer&gt; st) {
+    vis[u] = true;
+    for (int w : adj.get(u)) if (!vis[w]) dfs1(w, adj, vis, st);
+    st.push(u);
+}
+
+private static void dfs2(int u, List&lt;List&lt;Integer&gt;&gt; g, boolean[] vis) {
+    vis[u] = true;
+    for (int w : g.get(u)) if (!vis[w]) dfs2(w, g, vis);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS and push by finish time</li><li>Transpose edges</li><li>Pop nodes and DFS on the transposed graph counting starts</li></ol></div></div>
+</div></section><section class="problem" id="p389">
+<h2>Problem 389: Bridges in Graph<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Find all bridges.</p><div class="ex">Input: n=4, connections=[[0,1],[1,2],[2,0],[1,3]]<br>Output:<pre class="out">[[1,3]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Remove each edge and test connectivity.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Tarjan: discovery time and low-link values.</p></div>
+<div class="card w"><h3>Why it works</h3><p>An edge (u, v) is a bridge if low[v] &gt; tin[u].</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; criticalConnections(int n, List&lt;List&lt;Integer&gt;&gt; connections) {
+    List&lt;List&lt;Integer&gt;&gt; adj = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) adj.add(new ArrayList&lt;&gt;());
+    for (List&lt;Integer&gt; c : connections) { adj.get(c.get(0)).add(c.get(1)); adj.get(c.get(1)).add(c.get(0)); }
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    dfs(0, -1, adj, new int[n], new int[n], new boolean[n], new int[]{0}, res);
+    return res;
+}
+
+private static void dfs(int u, int p, List&lt;List&lt;Integer&gt;&gt; adj, int[] tin, int[] low, boolean[] vis, int[] timer, List&lt;List&lt;Integer&gt;&gt; res) {
+    vis[u] = true;
+    tin[u] = low[u] = timer[0]++;
+    for (int v : adj.get(u)) {
+        if (v == p) continue;
+        if (vis[v]) low[u] = Math.min(low[u], tin[v]);
+        else {
+            dfs(v, u, adj, tin, low, vis, timer, res);
+            low[u] = Math.min(low[u], low[v]);
+            if (low[v] &gt; tin[u]) res.add(Arrays.asList(u, v));
+        }
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>tin and low arrays</li><li>DFS updating low from back edges</li><li>If low[child] &gt; tin[node] record the edge</li></ol></div></div>
+</div></section><section class="problem" id="p390">
+<h2>Problem 390: Articulation Points in Graph<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Find cut vertices.</p><div class="ex">Input: n=5, adj=[[1,2],[0,2],[0,1,3,4],[2],[2]]<br>Output:<pre class="out">[2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Remove each vertex and test connectivity.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Tarjan with low-link and a child count for the root.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A non-root vertex u is a cut vertex if some child has low[v] &gt;= tin[u]; the root needs 2+ children.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; articulationPoints(int n, List&lt;List&lt;Integer&gt;&gt; adj) {
+    boolean[] vis = new boolean[n], mark = new boolean[n];
+    int[] tin = new int[n], low = new int[n];
+    for (int i = 0; i &lt; n; i++) if (!vis[i]) dfs(i, -1, adj, tin, low, vis, mark, new int[]{0});
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) if (mark[i]) res.add(i);
+    if (res.isEmpty()) res.add(-1);
+    return res;
+}
+
+private static void dfs(int u, int p, List&lt;List&lt;Integer&gt;&gt; adj, int[] tin, int[] low, boolean[] vis, boolean[] mark, int[] timer) {
+    vis[u] = true;
+    tin[u] = low[u] = timer[0]++;
+    int children = 0;
+    for (int v : adj.get(u)) {
+        if (v == p) continue;
+        if (vis[v]) low[u] = Math.min(low[u], tin[v]);
+        else {
+            dfs(v, u, adj, tin, low, vis, mark, timer);
+            low[u] = Math.min(low[u], low[v]);
+            if (low[v] &gt;= tin[u] &amp;&amp; p != -1) mark[u] = true;
+            children++;
+        }
+    }
+    if (p == -1 &amp;&amp; children &gt; 1) mark[u] = true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS computing tin and low</li><li>Non-root: low[v] &gt;= tin[u] marks u</li><li>Root: more than one DFS child marks it</li><li>Return sorted points (or -1 if none)</li></ol></div></div>
+</div></section></main></body></html>

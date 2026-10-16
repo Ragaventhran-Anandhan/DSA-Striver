@@ -1,0 +1,429 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>11 - Heaps</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>11 - Heaps</h1></header><main><nav class="toc"><a href="#p259">259. Introduction: Implement Min Heap</a><a href="#p260">260. Implement Max Heap</a><a href="#p261">261. Heapify and Build Heap</a><a href="#p262">262. Heap Sort</a><a href="#p263">263. Check if Array Represents Min Heap</a><a href="#p264">264. Kth Largest Element in Array</a><a href="#p265">265. Kth Smallest Element in Array</a><a href="#p266">266. Sort a K-Sorted Array</a><a href="#p267">267. Merge K Sorted Lists</a><a href="#p268">268. Replace Elements by Rank</a><a href="#p269">269. Task Scheduler</a><a href="#p270">270. Hands of Straights</a><a href="#p271">271. Design Twitter</a><a href="#p272">272. Connect N Ropes with Minimum Cost</a><a href="#p273">273. Kth Largest Element in a Stream</a><a href="#p274">274. Maximum Sum Combination</a><a href="#p275">275. Find Median from Data Stream</a><a href="#p276">276. K Most Frequent Elements</a></nav><section class="problem" id="p259">
+<h2>Problem 259: Introduction: Implement Min Heap<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Implement insert, extractMin, peek.</p><div class="ex">Input: insert 3,1,2 extractMin<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Keep an unsorted list and scan for the minimum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Array-based binary heap with sift up and sift down.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The parent of i is (i-1)/2, so insert and extract are O(log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void minHeap() {
+    class MinHeap {
+        List&lt;Integer&gt; a = new ArrayList&lt;&gt;();
+        void insert(int x) {
+            a.add(x);
+            int i = a.size() - 1;
+            while (i &gt; 0 &amp;&amp; a.get((i - 1) / 2) &gt; a.get(i)) { Collections.swap(a, i, (i - 1) / 2); i = (i - 1) / 2; }
+        }
+        int peek() { return a.get(0); }
+        int extractMin() {
+            int top = a.get(0);
+            a.set(0, a.get(a.size() - 1));
+            a.remove(a.size() - 1);
+            int i = 0, n = a.size();
+            while (true) {
+                int l = 2 * i + 1, r = l + 1, m = i;
+                if (l &lt; n &amp;&amp; a.get(l) &lt; a.get(m)) m = l;
+                if (r &lt; n &amp;&amp; a.get(r) &lt; a.get(m)) m = r;
+                if (m == i) break;
+                Collections.swap(a, i, m);
+                i = m;
+            }
+            return top;
+        }
+    }
+    MinHeap h = new MinHeap();
+    h.insert(3); h.insert(1); h.insert(2);
+    System.out.println(h.extractMin());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>insert: append then sift up</li><li>extractMin: swap root with last, remove, sift down</li><li>peek returns a[0]</li></ol></div></div>
+</div></section><section class="problem" id="p260">
+<h2>Problem 260: Implement Max Heap<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Implement insert, extractMax.</p><div class="ex">Input: insert 3,1,2 extractMax<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan for the maximum each time.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Same heap with the comparison reversed.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The largest element stays at the root.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void maxHeap() {
+    class MaxHeap {
+        List&lt;Integer&gt; a = new ArrayList&lt;&gt;();
+        void insert(int x) {
+            a.add(x);
+            int i = a.size() - 1;
+            while (i &gt; 0 &amp;&amp; a.get((i - 1) / 2) &lt; a.get(i)) { Collections.swap(a, i, (i - 1) / 2); i = (i - 1) / 2; }
+        }
+        int extractMax() {
+            int top = a.get(0);
+            a.set(0, a.get(a.size() - 1));
+            a.remove(a.size() - 1);
+            int i = 0, n = a.size();
+            while (true) {
+                int l = 2 * i + 1, r = l + 1, m = i;
+                if (l &lt; n &amp;&amp; a.get(l) &gt; a.get(m)) m = l;
+                if (r &lt; n &amp;&amp; a.get(r) &gt; a.get(m)) m = r;
+                if (m == i) break;
+                Collections.swap(a, i, m);
+                i = m;
+            }
+            return top;
+        }
+    }
+    MaxHeap h = new MaxHeap();
+    h.insert(3); h.insert(1); h.insert(2);
+    System.out.println(h.extractMax());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>insert: append then sift up while parent &lt; child</li><li>extractMax: swap root with last, sift down</li></ol></div></div>
+</div></section><section class="problem" id="p261">
+<h2>Problem 261: Heapify and Build Heap<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert array into min heap.</p><div class="ex">Input: arr=[4,10,3,5,1]<br>Output:<pre class="out">[1,4,3,5,10]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Insert elements one by one in O(n log n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sift down every internal node from n/2-1 to 0.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Most nodes are near the bottom so the total work is O(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void buildHeap(int[] arr) {
+    int n = arr.length;
+    for (int i = n / 2 - 1; i &gt;= 0; i--) {
+        int j = i;
+        while (true) {
+            int l = 2 * j + 1, r = l + 1, m = j;
+            if (l &lt; n &amp;&amp; arr[l] &lt; arr[m]) m = l;
+            if (r &lt; n &amp;&amp; arr[r] &lt; arr[m]) m = r;
+            if (m == j) break;
+            int t = arr[j]; arr[j] = arr[m]; arr[m] = t;
+            j = m;
+        }
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start from the last parent</li><li>Sift each node down</li><li>Repeat up to the root</li></ol></div></div>
+</div></section><section class="problem" id="p262">
+<h2>Problem 262: Heap Sort<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort using heap.</p><div class="ex">Input: arr=[4,1,3,9,7]<br>Output:<pre class="out">[1,3,4,7,9]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Selection sort.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Build a max heap then repeatedly move the max to the end.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each extraction costs O(log n), giving O(n log n) in place.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void heapSort(int[] arr) {
+    int n = arr.length;
+    for (int i = n / 2 - 1; i &gt;= 0; i--) sift(arr, i, n);
+    for (int end = n - 1; end &gt; 0; end--) {
+        int t = arr[0]; arr[0] = arr[end]; arr[end] = t;
+        sift(arr, 0, end);
+    }
+}
+
+private static void sift(int[] a, int i, int n) {
+    while (true) {
+        int l = 2 * i + 1, r = l + 1, m = i;
+        if (l &lt; n &amp;&amp; a[l] &gt; a[m]) m = l;
+        if (r &lt; n &amp;&amp; a[r] &gt; a[m]) m = r;
+        if (m == i) return;
+        int t = a[i]; a[i] = a[m]; a[m] = t;
+        i = m;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build a max heap</li><li>Swap root with the last unsorted item</li><li>Sift down within the shrunken range</li></ol></div></div>
+</div></section><section class="problem" id="p263">
+<h2>Problem 263: Check if Array Represents Min Heap<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Verify heap property.</p><div class="ex">Input: arr=[10,20,30,21,23]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build a heap and compare.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Check each internal node against its children.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Min-heap property: parent &lt;= both children.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isMinHeap(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i &lt;= (n - 2) / 2; i++) {
+        if (2 * i + 1 &lt; n &amp;&amp; arr[i] &gt; arr[2 * i + 1]) return false;
+        if (2 * i + 2 &lt; n &amp;&amp; arr[i] &gt; arr[2 * i + 2]) return false;
+    }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For i in 0..n/2-1</li><li>Compare with 2i+1 and 2i+2</li><li>Return false on violation</li></ol></div></div>
+</div></section><section class="problem" id="p264">
+<h2>Problem 264: Kth Largest Element in Array<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>K-th largest element.</p><div class="ex">Input: arr=[3,2,1,5,6,4], k=2<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort and take the k-th from the end.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Min heap of size k.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The heap keeps the k largest, and its root is the k-th largest.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findKthLargest(int[] arr, int k) {
+    PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();
+    for (int x : arr) {
+        pq.add(x);
+        if (pq.size() &gt; k) pq.poll();
+    }
+    return pq.peek();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push each element</li><li>If size &gt; k pop the smallest</li><li>Return the root</li></ol></div></div>
+</div></section><section class="problem" id="p265">
+<h2>Problem 265: Kth Smallest Element in Array<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>K-th smallest element.</p><div class="ex">Input: arr=[7,10,4,3,20,15], k=3<br>Output:<pre class="out">7</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort and take the k-th.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Max heap of size k.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The heap keeps the k smallest, so the root is the k-th smallest.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findKthSmallest(int[] arr, int k) {
+    PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;(Collections.reverseOrder());
+    for (int x : arr) {
+        pq.add(x);
+        if (pq.size() &gt; k) pq.poll();
+    }
+    return pq.peek();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push each element</li><li>If size &gt; k pop the largest</li><li>Return the root</li></ol></div></div>
+</div></section><section class="problem" id="p266">
+<h2>Problem 266: Sort a K-Sorted Array<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Each element at most k away from final position.</p><div class="ex">Input: arr=[6,5,3,2,8,10,9], k=3<br>Output:<pre class="out">[2,3,5,6,8,9,10]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort the whole array in O(n log n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Min heap of size k+1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The smallest of the next k+1 elements is always the next output.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] sortKSorted(int[] arr, int k) {
+    PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();
+    int[] res = new int[arr.length];
+    int idx = 0;
+    for (int x : arr) {
+        pq.add(x);
+        if (pq.size() &gt; k) res[idx++] = pq.poll();
+    }
+    while (!pq.isEmpty()) res[idx++] = pq.poll();
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push the first k+1</li><li>Poll the min and push the next element</li><li>Drain at the end</li></ol></div></div>
+</div></section><section class="problem" id="p267">
+<h2>Problem 267: Merge K Sorted Lists<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Merge k sorted lists.</p><div class="ex">Input: lists=[1-&gt;4-&gt;5,1-&gt;3-&gt;4,2-&gt;6]<br>Output:<pre class="out">1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Collect all values, sort, rebuild.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Min heap of the current heads of all lists.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The smallest head is always the next node of the result.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static Node mergeKLists(Node[] lists) {
+    PriorityQueue&lt;Node&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; a.val - b.val);
+    for (Node n : lists) if (n != null) pq.add(n);
+    Node d = new Node(0), t = d;
+    while (!pq.isEmpty()) {
+        Node n = pq.poll();
+        t.next = n;
+        t = n;
+        if (n.next != null) pq.add(n.next);
+    }
+    return d.next;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push all non-null heads</li><li>Poll the smallest and attach</li><li>Push its next</li></ol></div></div>
+</div></section><section class="problem" id="p268">
+<h2>Problem 268: Replace Elements by Rank<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Replace each element with its rank.</p><div class="ex">Input: arr=[20,15,26,2,98,6]<br>Output:<pre class="out">[4,3,5,1,6,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each element count smaller distinct values.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort a copy, assign ranks to distinct values, look up.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Rank is the position among sorted distinct values.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] replaceByRank(int[] arr) {
+    int[] s = arr.clone();
+    Arrays.sort(s);
+    Map&lt;Integer, Integer&gt; rank = new HashMap&lt;&gt;();
+    for (int x : s) rank.putIfAbsent(x, rank.size() + 1);
+    int[] res = new int[arr.length];
+    for (int i = 0; i &lt; arr.length; i++) res[i] = rank.get(arr[i]);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort a copy</li><li>Map each value to its rank</li><li>Replace each element</li></ol></div></div>
+</div></section><section class="problem" id="p269">
+<h2>Problem 269: Task Scheduler<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min time with cooldown n.</p><div class="ex">Input: tasks=[A,A,A,B,B,B], n=2<br>Output:<pre class="out">8</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Simulate time step by step with a heap.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Formula based on the maximum frequency.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The most frequent task forces (maxF-1) gaps of size n+1; ties fill the last row.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int leastInterval(char[] tasks, int n) {
+    int[] f = new int[26];
+    for (char c : tasks) f[c - &#x27;A&#x27;]++;
+    int maxF = 0, cnt = 0;
+    for (int x : f) maxF = Math.max(maxF, x);
+    for (int x : f) if (x == maxF) cnt++;
+    return Math.max(tasks.length, (maxF - 1) * (n + 1) + cnt);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count frequencies</li><li>maxF and how many tasks have it</li><li>(maxF-1)*(n+1)+countMax</li><li>At least tasks.length</li></ol></div></div>
+</div></section><section class="problem" id="p270">
+<h2>Problem 270: Hands of Straights<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rearrange into consecutive groups.</p><div class="ex">Input: hand=[1,2,3,6,2,3,4,7,8], groupSize=3<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every grouping.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Greedy from the smallest card using a TreeMap.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The smallest remaining card must start a group.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isNStraightHand(int[] hand, int groupSize) {
+    if (hand.length % groupSize != 0) return false;
+    TreeMap&lt;Integer, Integer&gt; m = new TreeMap&lt;&gt;();
+    for (int x : hand) m.merge(x, 1, Integer::sum);
+    while (!m.isEmpty()) {
+        int first = m.firstKey();
+        for (int i = 0; i &lt; groupSize; i++) {
+            Integer c = m.get(first + i);
+            if (c == null) return false;
+            if (c == 1) m.remove(first + i); else m.put(first + i, c - 1);
+        }
+    }
+    return true;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If size % groupSize != 0 return false</li><li>Count cards in a TreeMap</li><li>Take the smallest card and remove a run of groupSize</li></ol></div></div>
+</div></section><section class="problem" id="p271">
+<h2>Problem 271: Design Twitter<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>postTweet, follow, unfollow, getNewsFeed.</p><div class="ex">Input: postTweet(1,5) getNewsFeed(1)<br>Output:<pre class="out">[5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store all tweets in one list and sort each time.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Per-user tweet lists merged with a max heap by timestamp.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The feed needs the 10 most recent from followees, a k-way merge.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void designTwitter() {
+    class Twitter {
+        int time = 0;
+        Map&lt;Integer, List&lt;int[]&gt;&gt; tweets = new HashMap&lt;&gt;();
+        Map&lt;Integer, Set&lt;Integer&gt;&gt; follows = new HashMap&lt;&gt;();
+        void postTweet(int u, int id) { tweets.computeIfAbsent(u, x -&gt; new ArrayList&lt;&gt;()).add(new int[]{time++, id}); }
+        void follow(int a, int b) { follows.computeIfAbsent(a, x -&gt; new HashSet&lt;&gt;()).add(b); }
+        void unfollow(int a, int b) { if (follows.containsKey(a)) follows.get(a).remove(b); }
+        List&lt;Integer&gt; getNewsFeed(int u) {
+            PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((x, y) -&gt; y[0] - x[0]);
+            Set&lt;Integer&gt; users = new HashSet&lt;&gt;(follows.getOrDefault(u, new HashSet&lt;&gt;()));
+            users.add(u);
+            for (int v : users) for (int[] t : tweets.getOrDefault(v, new ArrayList&lt;&gt;())) pq.add(t);
+            List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+            while (!pq.isEmpty() &amp;&amp; res.size() &lt; 10) res.add(pq.poll()[1]);
+            return res;
+        }
+    }
+    Twitter t = new Twitter();
+    t.postTweet(1, 5);
+    System.out.println(t.getNewsFeed(1));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>postTweet stores (time, id)</li><li>follow/unfollow modify sets</li><li>getNewsFeed pushes latest of each followee into a heap and pops 10</li></ol></div></div>
+</div></section><section class="problem" id="p272">
+<h2>Problem 272: Connect N Ropes with Minimum Cost<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min cost to connect ropes.</p><div class="ex">Input: ropes=[4,3,2,6]<br>Output:<pre class="out">29</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all merge orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Greedy: always merge the two shortest ropes with a min heap.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Smaller ropes are paid for more times if merged late, so merge them first.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minCostRopes(int[] ropes) {
+    PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();
+    for (int r : ropes) pq.add(r);
+    int cost = 0;
+    while (pq.size() &gt; 1) {
+        int s = pq.poll() + pq.poll();
+        cost += s;
+        pq.add(s);
+    }
+    return cost;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push all ropes</li><li>Pop two and add their sum to cost</li><li>Push the sum back until one rope remains</li></ol></div></div>
+</div></section><section class="problem" id="p273">
+<h2>Problem 273: Kth Largest Element in a Stream<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Maintain k-th largest as stream.</p><div class="ex">Input: k=3, add(4) add(5) add(8) add(2)<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort after every add.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Min heap of size k.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The root is always the k-th largest seen so far.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void kthLargestStream() {
+    class KthLargest {
+        int k;
+        PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;();
+        KthLargest(int k) { this.k = k; }
+        int add(int x) {
+            pq.add(x);
+            if (pq.size() &gt; k) pq.poll();
+            return pq.peek();
+        }
+    }
+    KthLargest s = new KthLargest(3);
+    for (int x : new int[]{4, 5, 8, 2}) System.out.println(s.add(x));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Keep the k largest values</li><li>add: push and pop if size &gt; k</li><li>Return the root</li></ol></div></div>
+</div></section><section class="problem" id="p274">
+<h2>Problem 274: Maximum Sum Combination<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Top k sums a[i]+b[j].</p><div class="ex">Input: a=[1,4,2,3], b=[2,5,1,6], k=4<br>Output:<pre class="out">[10,9,9,8]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute all n*n sums and sort.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort both descending and use a max heap with a visited set.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The next largest sum is always adjacent to a previously chosen pair.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] maxSumCombination(int[] a, int[] b, int k) {
+    int n = a.length;
+    Integer[] x = new Integer[n], y = new Integer[n];
+    for (int i = 0; i &lt; n; i++) { x[i] = a[i]; y[i] = b[i]; }
+    Arrays.sort(x, Collections.reverseOrder());
+    Arrays.sort(y, Collections.reverseOrder());
+    PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((p, q) -&gt; q[0] - p[0]);
+    Set&lt;Long&gt; seen = new HashSet&lt;&gt;();
+    pq.add(new int[]{x[0] + y[0], 0, 0});
+    seen.add(0L);
+    int[] res = new int[k];
+    for (int t = 0; t &lt; k; t++) {
+        int[] cur = pq.poll();
+        res[t] = cur[0];
+        int i = cur[1], j = cur[2];
+        if (i + 1 &lt; n &amp;&amp; seen.add((long) (i + 1) * n + j)) pq.add(new int[]{x[i + 1] + y[j], i + 1, j});
+        if (j + 1 &lt; n &amp;&amp; seen.add((long) i * n + j + 1)) pq.add(new int[]{x[i] + y[j + 1], i, j + 1});
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort descending</li><li>Push (a[0]+b[0], 0, 0)</li><li>Pop and push (i+1,j) and (i,j+1) if unseen</li><li>Repeat k times</li></ol></div></div>
+</div></section><section class="problem" id="p275">
+<h2>Problem 275: Find Median from Data Stream<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>addNum, findMedian.</p><div class="ex">Input: add(1) add(2) findMedian() add(3) findMedian()<br>Output:<pre class="out">1.5, 2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort after every insertion and take the middle.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two heaps: max heap for the lower half, min heap for the upper half.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Heap tops are the middle elements; sizes differ by at most one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void medianFinder() {
+    class MedianFinder {
+        PriorityQueue&lt;Integer&gt; lo = new PriorityQueue&lt;&gt;(Collections.reverseOrder()), hi = new PriorityQueue&lt;&gt;();
+        void addNum(int x) {
+            lo.add(x);
+            hi.add(lo.poll());
+            if (hi.size() &gt; lo.size()) lo.add(hi.poll());
+        }
+        double findMedian() {
+            return lo.size() &gt; hi.size() ? lo.peek() : (lo.peek() + hi.peek()) / 2.0;
+        }
+    }
+    MedianFinder m = new MedianFinder();
+    m.addNum(1); m.addNum(2);
+    System.out.println(m.findMedian());
+    m.addNum(3);
+    System.out.println(m.findMedian());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add to the max heap then move its top to the min heap</li><li>Rebalance so low has &gt;= high</li><li>Median is the top or the average of both tops</li></ol></div></div>
+</div></section><section class="problem" id="p276">
+<h2>Problem 276: K Most Frequent Elements<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Top k frequent elements.</p><div class="ex">Input: arr=[1,1,1,2,2,3], k=2<br>Output:<pre class="out">[1,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count frequencies and sort all entries.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Frequency map plus a min heap of size k.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The heap keeps the k highest frequencies in O(n log k).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] topKFrequent(int[] arr, int k) {
+    Map&lt;Integer, Integer&gt; m = new HashMap&lt;&gt;();
+    for (int x : arr) m.merge(x, 1, Integer::sum);
+    PriorityQueue&lt;Integer&gt; pq = new PriorityQueue&lt;&gt;((a, b) -&gt; m.get(a) - m.get(b));
+    for (int key : m.keySet()) {
+        pq.add(key);
+        if (pq.size() &gt; k) pq.poll();
+    }
+    int[] res = new int[k];
+    for (int i = k - 1; i &gt;= 0; i--) res[i] = pq.poll();
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count frequencies</li><li>Push entries into a min heap by count</li><li>Pop when size &gt; k</li><li>Collect the heap</li></ol></div></div>
+</div></section></main></body></html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02 - Sorting</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>02 - Sorting</h1></header><main><nav class="toc"><a href="#p44">44. Selection Sort</a><a href="#p45">45. Bubble Sort</a><a href="#p46">46. Insertion Sort</a><a href="#p47">47. Recursive Bubble Sort</a><a href="#p48">48. Recursive Insertion Sort</a><a href="#p49">49. Merge Sort</a><a href="#p50">50. Quick Sort</a></nav><section class="problem" id="p44">
+<h2>Problem 44: Selection Sort<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort ascending using selection sort.</p><div class="ex">Input: arr=[13,46,24,52,20,9]<br>Output:<pre class="out">[9,13,20,24,46,52]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Repeatedly find the minimum with a full scan and copy into a new array.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Selection sort: swap the minimum of the unsorted part into position i.</p></div>
+<div class="card w"><h3>Why it works</h3><p>After pass i, the first i+1 positions hold the i+1 smallest values in order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void selectionSort(int[] arr) {
+    for (int i = 0; i &lt; arr.length - 1; i++) {
+        int min = i;
+        for (int j = i + 1; j &lt; arr.length; j++) if (arr[j] &lt; arr[min]) min = j;
+        int t = arr[i]; arr[i] = arr[min]; arr[min] = t;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For i from 0 to n-2</li><li>Find index of the minimum in [i, n-1]</li><li>Swap it with arr[i]</li></ol></div></div>
+</div></section><section class="problem" id="p45">
+<h2>Problem 45: Bubble Sort<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort ascending using bubble sort.</p><div class="ex">Input: arr=[13,46,24,52,20,9]<br>Output:<pre class="out">[9,13,20,24,46,52]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare every pair and swap if out of order.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Bubble adjacent pairs; stop early if a pass makes no swap.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each pass pushes the largest remaining element to the end.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void bubbleSort(int[] arr) {
+    for (int i = arr.length - 1; i &gt; 0; i--) {
+        boolean swapped = false;
+        for (int j = 0; j &lt; i; j++) {
+            if (arr[j] &gt; arr[j + 1]) {
+                int t = arr[j]; arr[j] = arr[j + 1]; arr[j + 1] = t;
+                swapped = true;
+            }
+        }
+        if (!swapped) break;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For i from n-1 down to 1</li><li>Swap adjacent out-of-order pairs in [0, i]</li><li>Break if nothing swapped</li></ol></div></div>
+</div></section><section class="problem" id="p46">
+<h2>Problem 46: Insertion Sort<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort ascending using insertion sort.</p><div class="ex">Input: arr=[13,46,24,52,20,9]<br>Output:<pre class="out">[9,13,20,24,46,52]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Insert each element into a new sorted list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Insertion sort in place: shift larger elements right then drop the key.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Prefix [0, i-1] is always sorted, so inserting arr[i] keeps it sorted.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void insertionSort(int[] arr) {
+    for (int i = 1; i &lt; arr.length; i++) {
+        int key = arr[i], j = i - 1;
+        while (j &gt;= 0 &amp;&amp; arr[j] &gt; key) { arr[j + 1] = arr[j]; j--; }
+        arr[j + 1] = key;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For i from 1</li><li>key = arr[i]</li><li>Shift greater elements one step right</li><li>Place key in the gap</li></ol></div></div>
+</div></section><section class="problem" id="p47">
+<h2>Problem 47: Recursive Bubble Sort<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Bubble sort using recursion.</p><div class="ex">Input: arr=[5,3,1]<br>Output:<pre class="out">[1,3,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Iterative bubble sort.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion: one bubble pass for size n, then recurse on n-1.</p></div>
+<div class="card w"><h3>Why it works</h3><p>After one pass the maximum is fixed at the end, reducing the problem by one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void recursiveBubbleSort(int[] arr) {
+    bubble(arr, arr.length);
+}
+
+private static void bubble(int[] a, int n) {
+    if (n &lt;= 1) return;
+    for (int j = 0; j &lt; n - 1; j++)
+        if (a[j] &gt; a[j + 1]) { int t = a[j]; a[j] = a[j + 1]; a[j + 1] = t; }
+    bubble(a, n - 1);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n == 1 return</li><li>Bubble the largest to index n-1</li><li>Recurse with n-1</li></ol></div></div>
+</div></section><section class="problem" id="p48">
+<h2>Problem 48: Recursive Insertion Sort<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insertion sort using recursion.</p><div class="ex">Input: arr=[5,3,1]<br>Output:<pre class="out">[1,3,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Iterative insertion sort.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursively sort the first n-1 elements then insert the n-th.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Induction: sorted prefix plus one insertion gives a sorted prefix.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void recursiveInsertionSort(int[] arr) {
+    insertion(arr, arr.length);
+}
+
+private static void insertion(int[] a, int n) {
+    if (n &lt;= 1) return;
+    insertion(a, n - 1);
+    int key = a[n - 1], j = n - 2;
+    while (j &gt;= 0 &amp;&amp; a[j] &gt; key) { a[j + 1] = a[j]; j--; }
+    a[j + 1] = key;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n &lt;= 1 return</li><li>Recurse on n-1</li><li>Insert a[n-1] into the sorted prefix</li></ol></div></div>
+</div></section><section class="problem" id="p49">
+<h2>Problem 49: Merge Sort<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort ascending using merge sort.</p><div class="ex">Input: arr=[9,4,7,6,3,1,5]<br>Output:<pre class="out">[1,3,4,5,6,7,9]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>O(n^2) sorts.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Divide and conquer: split, sort halves, merge.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Merging two sorted halves is linear and the depth is log n, giving O(n log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void mergeSort(int[] arr) {
+    sort(arr, 0, arr.length - 1);
+}
+
+private static void sort(int[] a, int lo, int hi) {
+    if (lo &gt;= hi) return;
+    int mid = (lo + hi) / 2;
+    sort(a, lo, mid);
+    sort(a, mid + 1, hi);
+    int[] tmp = new int[hi - lo + 1];
+    int i = lo, j = mid + 1, k = 0;
+    while (i &lt;= mid &amp;&amp; j &lt;= hi) tmp[k++] = a[i] &lt;= a[j] ? a[i++] : a[j++];
+    while (i &lt;= mid) tmp[k++] = a[i++];
+    while (j &lt;= hi) tmp[k++] = a[j++];
+    System.arraycopy(tmp, 0, a, lo, tmp.length);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Split at mid</li><li>Sort left and right</li><li>Merge using a temp array</li><li>Copy back</li></ol></div></div>
+</div></section><section class="problem" id="p50">
+<h2>Problem 50: Quick Sort<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sort ascending using quick sort.</p><div class="ex">Input: arr=[4,6,2,5,7,9,1,3]<br>Output:<pre class="out">[1,2,3,4,5,6,7,9]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>O(n^2) sorts.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Quick sort: partition around a pivot then sort both sides.</p></div>
+<div class="card w"><h3>Why it works</h3><p>After partitioning, the pivot is in its final place; average depth is log n.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void quickSort(int[] arr) {
+    qs(arr, 0, arr.length - 1);
+}
+
+private static void qs(int[] a, int lo, int hi) {
+    if (lo &gt;= hi) return;
+    int pivot = a[hi], i = lo;
+    for (int j = lo; j &lt; hi; j++)
+        if (a[j] &lt; pivot) { int t = a[i]; a[i] = a[j]; a[j] = t; i++; }
+    int t = a[i]; a[i] = a[hi]; a[hi] = t;
+    qs(a, lo, i - 1);
+    qs(a, i + 1, hi);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Choose pivot as the last element</li><li>Move smaller elements before it</li><li>Place pivot</li><li>Recurse on both sides</li></ol></div></div>
+</div></section></main></body></html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>09 - Stack Queue</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>09 - Stack Queue</h1></header><main><nav class="toc"><a href="#p217">217. Implement Stack using Arrays</a><a href="#p218">218. Implement Queue using Arrays</a><a href="#p219">219. Implement Stack using Queues</a><a href="#p220">220. Implement Queue using Stacks</a><a href="#p221">221. Implement Stack using Linked List</a><a href="#p222">222. Implement Queue using Linked List</a><a href="#p223">223. Valid Parentheses</a><a href="#p224">224. Min Stack</a><a href="#p225">225. Infix to Postfix</a><a href="#p226">226. Prefix to Infix</a><a href="#p227">227. Prefix to Postfix</a><a href="#p228">228. Postfix to Prefix</a><a href="#p229">229. Postfix to Infix</a><a href="#p230">230. Infix to Prefix</a><a href="#p231">231. Next Greater Element I</a><a href="#p232">232. Next Greater Element II (Circular)</a><a href="#p233">233. Next Smaller Element</a><a href="#p234">234. Number of Greater Elements to the Right</a><a href="#p235">235. Trapping Rain Water</a><a href="#p236">236. Sum of Subarray Minimums</a><a href="#p237">237. Asteroid Collision</a><a href="#p238">238. Stock Span Problem</a><a href="#p239">239. The Celebrity Problem</a><a href="#p240">240. Sum of Subarray Ranges</a><a href="#p241">241. Remove K Digits</a><a href="#p242">242. Largest Rectangle in Histogram</a><a href="#p243">243. Maximal Rectangle</a><a href="#p244">244. LRU Cache</a><a href="#p245">245. LFU Cache</a></nav><section class="problem" id="p217">
+<h2>Problem 217: Implement Stack using Arrays<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Implement push, pop, top, isEmpty using array.</p><div class="ex">Input: push(1) push(2) top()<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use java.util.Stack.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Fixed array with a top index.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Push and pop touch only the top index, so each is O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void implementStackArray() {
+    class ArrStack {
+        int[] a = new int[100]; int top = -1;
+        void push(int x) { a[++top] = x; }
+        int pop() { return a[top--]; }
+        int top() { return a[top]; }
+        boolean isEmpty() { return top == -1; }
+    }
+    ArrStack s = new ArrStack();
+    s.push(1); s.push(2);
+    System.out.println(s.top());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>top = -1</li><li>push: arr[++top] = x</li><li>pop: return arr[top--]</li><li>top: arr[top]</li></ol></div></div>
+</div></section><section class="problem" id="p218">
+<h2>Problem 218: Implement Queue using Arrays<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Implement enqueue, dequeue, front.</p><div class="ex">Input: enqueue(1) enqueue(2) front()<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use java.util.Queue.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Circular array with front, rear and size.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Modulo wrap-around reuses freed slots.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void implementQueueArray() {
+    class ArrQueue {
+        int[] a = new int[100]; int front = 0, rear = 0, size = 0;
+        void enqueue(int x) { a[rear] = x; rear = (rear + 1) % a.length; size++; }
+        int dequeue() { int v = a[front]; front = (front + 1) % a.length; size--; return v; }
+        int front() { return a[front]; }
+    }
+    ArrQueue q = new ArrQueue();
+    q.enqueue(1); q.enqueue(2);
+    System.out.println(q.front());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>enqueue: a[rear] = x, rear = (rear+1)%cap</li><li>dequeue: front = (front+1)%cap</li><li>front: a[front]</li></ol></div></div>
+</div></section><section class="problem" id="p219">
+<h2>Problem 219: Implement Stack using Queues<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Stack via two queues.</p><div class="ex">Input: push(1) push(2) pop()<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use two queues and move all elements each push.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Single queue; after push rotate the queue so the new item is at the front.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Rotating size-1 elements puts the newest element in front, making pop O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void implementStackUsingQueues() {
+    class QStack {
+        Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+        void push(int x) {
+            q.add(x);
+            for (int i = 0; i &lt; q.size() - 1; i++) q.add(q.poll());
+        }
+        int pop() { return q.poll(); }
+    }
+    QStack s = new QStack();
+    s.push(1); s.push(2);
+    System.out.println(s.pop());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add x</li><li>Rotate n-1 items from front to back</li><li>pop removes from the front</li></ol></div></div>
+</div></section><section class="problem" id="p220">
+<h2>Problem 220: Implement Queue using Stacks<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Queue via two stacks.</p><div class="ex">Input: push(1) push(2) pop()<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Move all elements between stacks on every operation.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Input and output stacks; transfer only when the output is empty.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each element moves at most twice, so operations are amortized O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void implementQueueUsingStacks() {
+    class SQueue {
+        Deque&lt;Integer&gt; in = new ArrayDeque&lt;&gt;(), out = new ArrayDeque&lt;&gt;();
+        void push(int x) { in.push(x); }
+        int pop() {
+            if (out.isEmpty()) while (!in.isEmpty()) out.push(in.pop());
+            return out.pop();
+        }
+    }
+    SQueue q = new SQueue();
+    q.push(1); q.push(2);
+    System.out.println(q.pop());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>push to the input stack</li><li>pop: if output empty move all from input</li><li>pop from output</li></ol></div></div>
+</div></section><section class="problem" id="p221">
+<h2>Problem 221: Implement Stack using Linked List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Stack via linked list.</p><div class="ex">Input: push(1) push(2) pop()<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use an array stack.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Linked list where the head is the top.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Insert and delete at the head are O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void implementStackLL() {
+    class N { int v; N next; N(int v) { this.v = v; } }
+    class LLStack {
+        N head;
+        void push(int x) { N n = new N(x); n.next = head; head = n; }
+        int pop() { int v = head.v; head = head.next; return v; }
+    }
+    LLStack s = new LLStack();
+    s.push(1); s.push(2);
+    System.out.println(s.pop());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>push: new node points to head, head = node</li><li>pop: head = head.next</li></ol></div></div>
+</div></section><section class="problem" id="p222">
+<h2>Problem 222: Implement Queue using Linked List<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Queue via linked list.</p><div class="ex">Input: enqueue(1) enqueue(2) dequeue()<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use an array queue.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Linked list with head and tail pointers.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Enqueue at tail and dequeue at head are both O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void implementQueueLL() {
+    class N { int v; N next; N(int v) { this.v = v; } }
+    class LLQueue {
+        N head, tail;
+        void enqueue(int x) {
+            N n = new N(x);
+            if (tail == null) head = tail = n; else { tail.next = n; tail = n; }
+        }
+        int dequeue() {
+            int v = head.v;
+            head = head.next;
+            if (head == null) tail = null;
+            return v;
+        }
+    }
+    LLQueue q = new LLQueue();
+    q.enqueue(1); q.enqueue(2);
+    System.out.println(q.dequeue());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>enqueue: link tail.next</li><li>dequeue: advance head</li><li>Reset tail if empty</li></ol></div></div>
+</div></section><section class="problem" id="p223">
+<h2>Problem 223: Valid Parentheses<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Brackets properly matched.</p><div class="ex">Input: s=&quot;()[]{}&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Repeatedly remove &quot;()&quot;, &quot;[]&quot;, &quot;{}&quot; until none remain.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Stack of opening brackets.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The latest unmatched opening bracket must match the next closing one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isValid(String s) {
+    Deque&lt;Character&gt; st = new ArrayDeque&lt;&gt;();
+    for (char c : s.toCharArray()) {
+        if (c == &#x27;(&#x27; || c == &#x27;[&#x27; || c == &#x27;{&#x27;) st.push(c);
+        else {
+            if (st.isEmpty()) return false;
+            char o = st.pop();
+            if ((c == &#x27;)&#x27; &amp;&amp; o != &#x27;(&#x27;) || (c == &#x27;]&#x27; &amp;&amp; o != &#x27;[&#x27;) || (c == &#x27;}&#x27; &amp;&amp; o != &#x27;{&#x27;)) return false;
+        }
+    }
+    return st.isEmpty();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push openings</li><li>On closing pop and compare</li><li>Stack must be empty at the end</li></ol></div></div>
+</div></section><section class="problem" id="p224">
+<h2>Problem 224: Min Stack<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>push, pop, top, getMin in O(1).</p><div class="ex">Input: push(-2) push(0) push(-3) getMin()<br>Output:<pre class="out">-3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan the stack for the minimum on getMin, O(n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Store (value, min so far) pairs.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each entry remembers the minimum at that depth.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void minStack() {
+    class MinStack {
+        Deque&lt;int[]&gt; st = new ArrayDeque&lt;&gt;();
+        void push(int x) { st.push(new int[]{x, st.isEmpty() ? x : Math.min(x, st.peek()[1])}); }
+        void pop() { st.pop(); }
+        int top() { return st.peek()[0]; }
+        int getMin() { return st.peek()[1]; }
+    }
+    MinStack m = new MinStack();
+    m.push(-2); m.push(0); m.push(-3);
+    System.out.println(m.getMin());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>push: min = min(x, current min)</li><li>pop removes the pair</li><li>getMin reads the top pair</li></ol></div></div>
+</div></section><section class="problem" id="p225">
+<h2>Problem 225: Infix to Postfix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert infix.</p><div class="ex">Input: s=&quot;a+b*c&quot;<br>Output:<pre class="out">&quot;abc*+&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Fully parenthesize then convert.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Shunting yard with an operator stack and precedence.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Higher precedence operators are emitted before lower ones.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String infixToPostfix(String s) {
+    StringBuilder out = new StringBuilder();
+    Deque&lt;Character&gt; st = new ArrayDeque&lt;&gt;();
+    for (char c : s.toCharArray()) {
+        if (Character.isLetterOrDigit(c)) out.append(c);
+        else if (c == &#x27;(&#x27;) st.push(c);
+        else if (c == &#x27;)&#x27;) {
+            while (!st.isEmpty() &amp;&amp; st.peek() != &#x27;(&#x27;) out.append(st.pop());
+            st.pop();
+        } else {
+            while (!st.isEmpty() &amp;&amp; st.peek() != &#x27;(&#x27; &amp;&amp; prec(st.peek()) &gt;= prec(c) &amp;&amp; c != &#x27;^&#x27;) out.append(st.pop());
+            st.push(c);
+        }
+    }
+    while (!st.isEmpty()) out.append(st.pop());
+    return out.toString();
+}
+
+private static int prec(char c) {
+    if (c == &#x27;^&#x27;) return 3;
+    if (c == &#x27;*&#x27; || c == &#x27;/&#x27;) return 2;
+    if (c == &#x27;+&#x27; || c == &#x27;-&#x27;) return 1;
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Operands go to output</li><li>Pop operators with &gt;= precedence before pushing</li><li>&#x27;(&#x27; and &#x27;)&#x27; control grouping</li></ol></div></div>
+</div></section><section class="problem" id="p226">
+<h2>Problem 226: Prefix to Infix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert prefix.</p><div class="ex">Input: s=&quot;*+PQ-MN&quot;<br>Output:<pre class="out">&quot;((P+Q)*(M-N))&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild the expression tree and print.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan from the right with a stack.</p></div>
+<div class="card w"><h3>Why it works</h3><p>In prefix the operator precedes its two operands, so from the right operands are on the stack.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String prefixToInfix(String s) {
+    Deque&lt;String&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = s.length() - 1; i &gt;= 0; i--) {
+        char c = s.charAt(i);
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String a = st.pop(), b = st.pop();
+            st.push(&quot;(&quot; + a + c + b + &quot;)&quot;);
+        }
+    }
+    return st.pop();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For operand push</li><li>For operator pop a then b</li><li>Push &quot;(a op b)&quot;</li></ol></div></div>
+</div></section><section class="problem" id="p227">
+<h2>Problem 227: Prefix to Postfix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert prefix.</p><div class="ex">Input: s=&quot;/-AB*+DEF&quot;<br>Output:<pre class="out">&quot;AB-DE+F*/&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to infix then postfix.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan from the right; combine a b op.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The same stack approach yields postfix directly.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String prefixToPostfix(String s) {
+    Deque&lt;String&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = s.length() - 1; i &gt;= 0; i--) {
+        char c = s.charAt(i);
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String a = st.pop(), b = st.pop();
+            st.push(a + b + c);
+        }
+    }
+    return st.pop();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Operand push</li><li>Operator pop a, b</li><li>Push a + b + op</li></ol></div></div>
+</div></section><section class="problem" id="p228">
+<h2>Problem 228: Postfix to Prefix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert postfix.</p><div class="ex">Input: s=&quot;AB+CD-*&quot;<br>Output:<pre class="out">&quot;*+AB-CD&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Convert to infix then prefix.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan from the left; combine op a b.</p></div>
+<div class="card w"><h3>Why it works</h3><p>In postfix the operands come first, so the stack holds them in order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String postfixToPrefix(String s) {
+    Deque&lt;String&gt; st = new ArrayDeque&lt;&gt;();
+    for (char c : s.toCharArray()) {
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String b = st.pop(), a = st.pop();
+            st.push(c + a + b);
+        }
+    }
+    return st.pop();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Operand push</li><li>Operator pop b then a</li><li>Push op + a + b</li></ol></div></div>
+</div></section><section class="problem" id="p229">
+<h2>Problem 229: Postfix to Infix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert postfix.</p><div class="ex">Input: s=&quot;ab*c+&quot;<br>Output:<pre class="out">&quot;((a*b)+c)&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Build the expression tree.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Scan from the left using a stack of sub-expressions.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each operator applies to the top two stack items.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String postfixToInfix(String s) {
+    Deque&lt;String&gt; st = new ArrayDeque&lt;&gt;();
+    for (char c : s.toCharArray()) {
+        if (Character.isLetterOrDigit(c)) st.push(String.valueOf(c));
+        else {
+            String b = st.pop(), a = st.pop();
+            st.push(&quot;(&quot; + a + c + b + &quot;)&quot;);
+        }
+    }
+    return st.pop();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Operand push</li><li>Operator pop b then a</li><li>Push &quot;(a op b)&quot;</li></ol></div></div>
+</div></section><section class="problem" id="p230">
+<h2>Problem 230: Infix to Prefix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert infix.</p><div class="ex">Input: s=&quot;(a+b)*c&quot;<br>Output:<pre class="out">&quot;*+abc&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Parse into a tree and print prefix.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reverse, swap brackets, convert to postfix, reverse again.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Reversing turns prefix into postfix; operator associativity needs the strict-precedence rule.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String infixToPrefix(String s) {
+    StringBuilder r = new StringBuilder();
+    for (int i = s.length() - 1; i &gt;= 0; i--) {
+        char c = s.charAt(i);
+        r.append(c == &#x27;(&#x27; ? &#x27;)&#x27; : c == &#x27;)&#x27; ? &#x27;(&#x27; : c);
+    }
+    StringBuilder out = new StringBuilder();
+    Deque&lt;Character&gt; st = new ArrayDeque&lt;&gt;();
+    for (char c : r.toString().toCharArray()) {
+        if (Character.isLetterOrDigit(c)) out.append(c);
+        else if (c == &#x27;(&#x27;) st.push(c);
+        else if (c == &#x27;)&#x27;) {
+            while (!st.isEmpty() &amp;&amp; st.peek() != &#x27;(&#x27;) out.append(st.pop());
+            st.pop();
+        } else {
+            while (!st.isEmpty() &amp;&amp; st.peek() != &#x27;(&#x27; &amp;&amp; prec(st.peek()) &gt; prec(c)) out.append(st.pop());
+            st.push(c);
+        }
+    }
+    while (!st.isEmpty()) out.append(st.pop());
+    return out.reverse().toString();
+}
+
+private static int prec(char c) {
+    if (c == &#x27;^&#x27;) return 3;
+    if (c == &#x27;*&#x27; || c == &#x27;/&#x27;) return 2;
+    if (c == &#x27;+&#x27; || c == &#x27;-&#x27;) return 1;
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Reverse the infix string and swap ( with )</li><li>Convert to postfix (pop only higher precedence)</li><li>Reverse the result</li></ol></div></div>
+</div></section><section class="problem" id="p231">
+<h2>Problem 231: Next Greater Element I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Next greater to the right, -1 if none.</p><div class="ex">Input: arr=[4,5,2,25]<br>Output:<pre class="out">[5,25,25,-1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each element scan to the right.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic decreasing stack from the right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Elements popped for being smaller can never be the answer for items to the left.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] nextGreaterElement(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = n - 1; i &gt;= 0; i--) {
+        while (!st.isEmpty() &amp;&amp; st.peek() &lt;= arr[i]) st.pop();
+        res[i] = st.isEmpty() ? -1 : st.peek();
+        st.push(arr[i]);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Traverse from the right</li><li>Pop while stack top &lt;= current</li><li>Answer is the top or -1</li><li>Push current</li></ol></div></div>
+</div></section><section class="problem" id="p232">
+<h2>Problem 232: Next Greater Element II (Circular)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Circular array.</p><div class="ex">Input: arr=[1,2,1]<br>Output:<pre class="out">[2,-1,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each element scan the circular array.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic stack over 2n elements.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Looping twice simulates the wrap-around.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] nextGreaterCircular(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 2 * n - 1; i &gt;= 0; i--) {
+        while (!st.isEmpty() &amp;&amp; st.peek() &lt;= arr[i % n]) st.pop();
+        if (i &lt; n) res[i] = st.isEmpty() ? -1 : st.peek();
+        st.push(arr[i % n]);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Iterate i from 2n-1 to 0</li><li>Use i % n as the index</li><li>Only record answers for i &lt; n</li></ol></div></div>
+</div></section><section class="problem" id="p233">
+<h2>Problem 233: Next Smaller Element<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Next smaller to the right.</p><div class="ex">Input: arr=[4,8,5,2,25]<br>Output:<pre class="out">[2,5,2,-1,-1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each element scan right.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic increasing stack from the right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Larger-or-equal elements on top cannot be answers for earlier items.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] nextSmallerElement(int[] arr) {
+    int n = arr.length;
+    int[] res = new int[n];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = n - 1; i &gt;= 0; i--) {
+        while (!st.isEmpty() &amp;&amp; st.peek() &gt;= arr[i]) st.pop();
+        res[i] = st.isEmpty() ? -1 : st.peek();
+        st.push(arr[i]);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Traverse from the right</li><li>Pop while top &gt;= current</li><li>Answer top or -1</li><li>Push current</li></ol></div></div>
+</div></section><section class="problem" id="p234">
+<h2>Problem 234: Number of Greater Elements to the Right<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count greater elements right of index.</p><div class="ex">Input: arr=[3,4,2,7,5,8,10,6], queries=[0,5]<br>Output:<pre class="out">[6,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each query count elements to the right directly.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Same count per query; scanning the suffix is O(n) per query.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Queries are few, so a direct count is simple and accurate (BIT/merge sort if many).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] countGreaterRight(int[] arr, int[] queries) {
+    int[] res = new int[queries.length];
+    for (int q = 0; q &lt; queries.length; q++) {
+        int i = queries[q], c = 0;
+        for (int j = i + 1; j &lt; arr.length; j++) if (arr[j] &gt; arr[i]) c++;
+        res[q] = c;
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each query index i</li><li>Count j &gt; i with arr[j] &gt; arr[i]</li><li>Store the count</li></ol></div></div>
+</div></section><section class="problem" id="p235">
+<h2>Problem 235: Trapping Rain Water<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Total trapped water.</p><div class="ex">Input: height=[0,1,0,2,1,0,1,3,2,1,2,1]<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each index water = min(maxLeft, maxRight) - height.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers tracking left and right maximums.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The smaller side&#x27;s max determines the water level at that side.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int trap(int[] height) {
+    int l = 0, r = height.length - 1, lm = 0, rm = 0, water = 0;
+    while (l &lt; r) {
+        if (height[l] &lt; height[r]) {
+            lm = Math.max(lm, height[l]);
+            water += lm - height[l++];
+        } else {
+            rm = Math.max(rm, height[r]);
+            water += rm - height[r--];
+        }
+    }
+    return water;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>l, r, leftMax, rightMax</li><li>Move the smaller side</li><li>Add max - height</li><li>Continue until pointers meet</li></ol></div></div>
+</div></section><section class="problem" id="p236">
+<h2>Problem 236: Sum of Subarray Minimums<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sum of minimums of all subarrays mod 1e9+7.</p><div class="ex">Input: arr=[3,1,2,4]<br>Output:<pre class="out">17</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all subarrays and take their minimum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic stack: contribution of each element as minimum.</p></div>
+<div class="card w"><h3>Why it works</h3><p>arr[i] is the minimum of (i - left) * (right - i) subarrays.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int sumSubarrayMins(int[] arr) {
+    int n = arr.length, MOD = 1_000_000_007;
+    int[] left = new int[n], right = new int[n];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) {
+        while (!st.isEmpty() &amp;&amp; arr[st.peek()] &gt; arr[i]) st.pop();
+        left[i] = st.isEmpty() ? i + 1 : i - st.peek();
+        st.push(i);
+    }
+    st.clear();
+    for (int i = n - 1; i &gt;= 0; i--) {
+        while (!st.isEmpty() &amp;&amp; arr[st.peek()] &gt;= arr[i]) st.pop();
+        right[i] = st.isEmpty() ? n - i : st.peek() - i;
+        st.push(i);
+    }
+    long sum = 0;
+    for (int i = 0; i &lt; n; i++) sum = (sum + (long) arr[i] * left[i] % MOD * right[i]) % MOD;
+    return (int) sum;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find previous less index</li><li>Find next less-or-equal index</li><li>Add arr[i] * left * right</li><li>Take mod 1e9+7</li></ol></div></div>
+</div></section><section class="problem" id="p237">
+<h2>Problem 237: Asteroid Collision<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Simulate collisions.</p><div class="ex">Input: asteroids=[5,10,-5]<br>Output:<pre class="out">[5,10]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Repeat passes until no collisions remain.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Stack: collide only when top is positive and the current is negative.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Same-direction or diverging asteroids never meet.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] asteroidCollision(int[] asteroids) {
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int a : asteroids) {
+        boolean alive = true;
+        while (alive &amp;&amp; a &lt; 0 &amp;&amp; !st.isEmpty() &amp;&amp; st.peek() &gt; 0) {
+            int top = st.peek();
+            if (top &lt; -a) st.pop();
+            else { if (top == -a) st.pop(); alive = false; }
+        }
+        if (alive) st.push(a);
+    }
+    int[] res = new int[st.size()];
+    for (int i = res.length - 1; i &gt;= 0; i--) res[i] = st.pop();
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each asteroid</li><li>While collision possible compare sizes</li><li>Pop smaller / both on tie</li><li>Push if it survives</li></ol></div></div>
+</div></section><section class="problem" id="p238">
+<h2>Problem 238: Stock Span Problem<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Consecutive days with price &lt;= today.</p><div class="ex">Input: prices=[100,80,60,70,60,75,85]<br>Output:<pre class="out">[1,1,1,2,1,4,6]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For each day count backwards.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic stack of indices of previous greater prices.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Span = i - index of previous strictly greater price.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] stockSpan(int[] prices) {
+    int[] res = new int[prices.length];
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; prices.length; i++) {
+        while (!st.isEmpty() &amp;&amp; prices[st.peek()] &lt;= prices[i]) st.pop();
+        res[i] = st.isEmpty() ? i + 1 : i - st.peek();
+        st.push(i);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Pop while price[top] &lt;= price[i]</li><li>span = i - top (or i+1 if empty)</li><li>Push i</li></ol></div></div>
+</div></section><section class="problem" id="p239">
+<h2>Problem 239: The Celebrity Problem<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Celebrity known by all, knows none.</p><div class="ex">Input: knows=[[0,1,0],[0,0,0],[0,1,0]]<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every person for the celebrity conditions, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two pointers eliminating one candidate per query.</p></div>
+<div class="card w"><h3>Why it works</h3><p>If a knows b, a is not a celebrity; otherwise b is not.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findCelebrity(int[][] knows) {
+    int n = knows.length, a = 0, b = n - 1;
+    while (a &lt; b) { if (knows[a][b] == 1) a++; else b--; }
+    for (int i = 0; i &lt; n; i++) {
+        if (i == a) continue;
+        if (knows[a][i] == 1 || knows[i][a] == 0) return -1;
+    }
+    return a;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>a = 0, b = n-1</li><li>If knows[a][b] then a++ else b--</li><li>Verify the remaining candidate</li></ol></div></div>
+</div></section><section class="problem" id="p240">
+<h2>Problem 240: Sum of Subarray Ranges<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Sum of (max-min) over subarrays.</p><div class="ex">Input: arr=[1,2,3]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute max and min of every subarray, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sum of subarray maxes minus sum of subarray mins with monotonic stacks.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Range = max - min, and sums split linearly.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static long subArrayRanges(int[] arr) {
+    return sumMax(arr) - sumMin(arr);
+}
+
+private static long sumMax(int[] a) {
+    int n = a.length;
+    long s = 0;
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt;= n; i++) {
+        while (!st.isEmpty() &amp;&amp; (i == n || a[st.peek()] &lt; a[i])) {
+            int m = st.pop();
+            int l = st.isEmpty() ? -1 : st.peek();
+            s += (long) a[m] * (m - l) * (i - m);
+        }
+        st.push(i);
+    }
+    return s;
+}
+
+private static long sumMin(int[] a) {
+    int n = a.length;
+    long s = 0;
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt;= n; i++) {
+        while (!st.isEmpty() &amp;&amp; (i == n || a[st.peek()] &gt; a[i])) {
+            int m = st.pop();
+            int l = st.isEmpty() ? -1 : st.peek();
+            s += (long) a[m] * (m - l) * (i - m);
+        }
+        st.push(i);
+    }
+    return s;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute sum of maxes by contribution</li><li>Compute sum of mins by contribution</li><li>Return the difference</li></ol></div></div>
+</div></section><section class="problem" id="p241">
+<h2>Problem 241: Remove K Digits<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest number after removing k digits.</p><div class="ex">Input: num=&quot;1432219&quot;, k=3<br>Output:<pre class="out">&quot;1219&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all ways to remove k digits.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic increasing stack.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Removing a larger digit before a smaller one yields a smaller number.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String removeKdigits(String num, int k) {
+    StringBuilder sb = new StringBuilder();
+    for (char c : num.toCharArray()) {
+        while (k &gt; 0 &amp;&amp; sb.length() &gt; 0 &amp;&amp; sb.charAt(sb.length() - 1) &gt; c) { sb.deleteCharAt(sb.length() - 1); k--; }
+        sb.append(c);
+    }
+    sb.setLength(Math.max(0, sb.length() - k));
+    int i = 0;
+    while (i &lt; sb.length() &amp;&amp; sb.charAt(i) == &#x27;0&#x27;) i++;
+    String r = sb.substring(i);
+    return r.isEmpty() ? &quot;0&quot; : r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each digit pop while top &gt; digit and k &gt; 0</li><li>Push the digit</li><li>Trim leftover k from the end</li><li>Strip leading zeros</li></ol></div></div>
+</div></section><section class="problem" id="p242">
+<h2>Problem 242: Largest Rectangle in Histogram<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest rectangle area.</p><div class="ex">Input: heights=[2,1,5,6,2,3]<br>Output:<pre class="out">10</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For every pair of bars compute min height * width.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic stack of increasing heights.</p></div>
+<div class="card w"><h3>Why it works</h3><p>When a bar is popped, the rectangle spans between neighbours that are smaller.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int largestRectangleArea(int[] heights) {
+    Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+    int best = 0, n = heights.length;
+    for (int i = 0; i &lt;= n; i++) {
+        int h = i == n ? 0 : heights[i];
+        while (!st.isEmpty() &amp;&amp; heights[st.peek()] &gt; h) {
+            int height = heights[st.pop()];
+            int w = st.isEmpty() ? i : i - st.peek() - 1;
+            best = Math.max(best, height * w);
+        }
+        st.push(i);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Iterate with a sentinel 0 at the end</li><li>Pop while top &gt; current</li><li>width = i - prev - 1</li><li>Track max area</li></ol></div></div>
+</div></section><section class="problem" id="p243">
+<h2>Problem 243: Maximal Rectangle<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest rectangle of 1s.</p><div class="ex">Input: matrix=[[1,0,1,0,0],[1,0,1,1,1],[1,1,1,1,1],[1,0,0,1,0]]<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every rectangle in the matrix.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Build histogram heights per row and reuse largest rectangle.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each row is the base of a histogram of consecutive ones.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maximalRectangle(char[][] matrix) {
+    if (matrix.length == 0) return 0;
+    int[] h = new int[matrix[0].length];
+    int best = 0;
+    for (char[] row : matrix) {
+        for (int j = 0; j &lt; h.length; j++) h[j] = row[j] == &#x27;1&#x27; ? h[j] + 1 : 0;
+        best = Math.max(best, largestRectangleArea(h));
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>heights[j] += 1 if &#x27;1&#x27; else reset</li><li>Run histogram solution per row</li><li>Keep the max</li></ol></div></div>
+</div></section><section class="problem" id="p244">
+<h2>Problem 244: LRU Cache<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>get and put in O(1) with capacity.</p><div class="ex">Input: capacity=2, put(1,1) put(2,2) get(1) put(3,3) get(2)<br>Output:<pre class="out">1, -1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use a list and move the accessed item to the end, O(n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>HashMap plus doubly linked list; LinkedHashMap does this internally.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Both lookup and recency update are O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void lruCache() {
+    class LRU extends LinkedHashMap&lt;Integer, Integer&gt; {
+        int cap;
+        LRU(int cap) { super(cap, 0.75f, true); this.cap = cap; }
+        protected boolean removeEldestEntry(Map.Entry&lt;Integer, Integer&gt; e) { return size() &gt; cap; }
+        int getOrNeg(int k) { return getOrDefault(k, -1); }
+    }
+    LRU c = new LRU(2);
+    c.put(1, 1); c.put(2, 2);
+    System.out.println(c.getOrNeg(1));
+    c.put(3, 3);
+    System.out.println(c.getOrNeg(2));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>get: move to most recent</li><li>put: insert or update and mark recent</li><li>If over capacity evict the least recent</li></ol></div></div>
+</div></section><section class="problem" id="p245">
+<h2>Problem 245: LFU Cache<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Evict least frequently used.</p><div class="ex">Input: capacity=2, put(1,1) put(2,2) get(1) put(3,3) get(2)<br>Output:<pre class="out">1, -1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan all keys for the lowest frequency.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Maps for values, frequencies, and a LinkedHashSet per frequency with a min-frequency tracker.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Eviction takes the oldest key of the min-frequency bucket in O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void lfuCache() {
+    class LFU {
+        int cap, min = 0;
+        Map&lt;Integer, Integer&gt; val = new HashMap&lt;&gt;(), freq = new HashMap&lt;&gt;();
+        Map&lt;Integer, LinkedHashSet&lt;Integer&gt;&gt; buckets = new HashMap&lt;&gt;();
+        LFU(int cap) { this.cap = cap; }
+        void touch(int k) {
+            int f = freq.get(k);
+            buckets.get(f).remove(k);
+            if (f == min &amp;&amp; buckets.get(f).isEmpty()) min++;
+            freq.put(k, f + 1);
+            buckets.computeIfAbsent(f + 1, x -&gt; new LinkedHashSet&lt;&gt;()).add(k);
+        }
+        int get(int k) {
+            if (!val.containsKey(k)) return -1;
+            touch(k);
+            return val.get(k);
+        }
+        void put(int k, int v) {
+            if (cap == 0) return;
+            if (val.containsKey(k)) { val.put(k, v); touch(k); return; }
+            if (val.size() == cap) {
+                int old = buckets.get(min).iterator().next();
+                buckets.get(min).remove(old);
+                val.remove(old); freq.remove(old);
+            }
+            val.put(k, v); freq.put(k, 1);
+            buckets.computeIfAbsent(1, x -&gt; new LinkedHashSet&lt;&gt;()).add(k);
+            min = 1;
+        }
+    }
+    LFU c = new LFU(2);
+    c.put(1, 1); c.put(2, 2);
+    System.out.println(c.get(1));
+    c.put(3, 3);
+    System.out.println(c.get(2));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>get: bump the key frequency</li><li>put: insert, evict from the min-frequency bucket if full</li><li>Update minFreq</li></ol></div></div>
+</div></section></main></body></html>

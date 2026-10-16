@@ -1,0 +1,255 @@
+=== 277
+brute: Try all child-cookie assignments.
+opt: Sort both and match greedily.
+why: Giving the smallest sufficient cookie to the least greedy child wastes nothing.
+expl: Sort greed and cookies | Two pointers | If cookie >= greed assign and move child | Always move cookie
+code:
+public static int findContentChildren(int[] greed, int[] cookies) {
+    Arrays.sort(greed);
+    Arrays.sort(cookies);
+    int i = 0;
+    for (int c : cookies) if (i < greed.length && c >= greed[i]) i++;
+    return i;
+}
+=== 278
+brute: Try all combinations of fractions.
+opt: Sort by value/weight descending and take greedily.
+why: The best ratio item always gives the most value per unit.
+expl: Sort items by ratio | Take whole items while capacity remains | Take a fraction of the last item
+code:
+public static double fractionalKnapsack(int[] val, int[] wt, int cap) {
+    int n = val.length;
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i < n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -> Double.compare((double) val[b] / wt[b], (double) val[a] / wt[a]));
+    double total = 0;
+    for (int i : idx) {
+        if (cap >= wt[i]) { total += val[i]; cap -= wt[i]; }
+        else { total += (double) val[i] * cap / wt[i]; break; }
+    }
+    return total;
+}
+=== 279
+brute: DP over all coin counts.
+opt: Greedy with the largest denomination first.
+why: For this canonical coin system greedy is optimal.
+expl: Denominations in descending order | Use as many of each as possible | Count coins
+code:
+public static int minCoins(int amount) {
+    int[] d = {1000, 500, 100, 50, 20, 10, 5, 2, 1};
+    int c = 0;
+    for (int x : d) { c += amount / x; amount %= x; }
+    return c;
+}
+=== 280
+brute: Try all ways to give change.
+opt: Track the counts of 5s and 10s greedily.
+why: Giving the largest bill possible keeps the small bills for later.
+expl: 5: five++ | 10: need a 5 | 20: prefer 10+5 else 5+5+5
+code:
+public static boolean lemonadeChange(int[] bills) {
+    int five = 0, ten = 0;
+    for (int b : bills) {
+        if (b == 5) five++;
+        else if (b == 10) { if (five == 0) return false; five--; ten++; }
+        else {
+            if (ten > 0 && five > 0) { ten--; five--; }
+            else if (five >= 3) five -= 3;
+            else return false;
+        }
+    }
+    return true;
+}
+=== 281
+brute: Try every assignment for '*'.
+opt: Track a range [lo, hi] of possible open counts.
+why: '*' widens the range; the string is valid if 0 stays in the range at the end.
+expl: '(' increments both | ')' decrements both | '*' lo-- and hi++ | If hi < 0 return false | lo is kept >= 0
+code:
+public static boolean checkValidString(String s) {
+    int lo = 0, hi = 0;
+    for (char c : s.toCharArray()) {
+        if (c == '(') { lo++; hi++; }
+        else if (c == ')') { lo--; hi--; }
+        else { lo--; hi++; }
+        if (hi < 0) return false;
+        lo = Math.max(lo, 0);
+    }
+    return lo == 0;
+}
+=== 283
+brute: Try all jump sequences.
+opt: Track the farthest reachable index.
+why: If you reach index i, every index below the farthest is reachable.
+expl: reach = 0 | If i > reach return false | reach = max(reach, i + arr[i])
+code:
+public static boolean canJump(int[] arr) {
+    int reach = 0;
+    for (int i = 0; i < arr.length; i++) {
+        if (i > reach) return false;
+        reach = Math.max(reach, i + arr[i]);
+    }
+    return true;
+}
+=== 282
+brute: Try all subsets of meetings.
+opt: Sort by end time and pick non-overlapping meetings.
+why: Finishing earliest leaves the most time for the rest.
+expl: Sort meetings by end | Pick if start > last end | Update last end
+code:
+public static int maxMeetings(int[] start, int[] end) {
+    int n = start.length;
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i < n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -> end[a] - end[b]);
+    int count = 0, last = -1;
+    for (int i : idx) if (start[i] > last) { count++; last = end[i]; }
+    return count;
+}
+=== 284
+brute: BFS or DP over all jumps.
+opt: Greedy with the current range end and farthest reach.
+why: Each time the current range is exhausted we need one more jump to the farthest point.
+expl: jumps = 0, end = 0, far = 0 | Update far | When i == end jumps++ and end = far
+code:
+public static int jump(int[] arr) {
+    int jumps = 0, end = 0, far = 0;
+    for (int i = 0; i < arr.length - 1; i++) {
+        far = Math.max(far, i + arr[i]);
+        if (i == end) { jumps++; end = far; }
+    }
+    return jumps;
+}
+=== 285
+brute: Check the overlap count at each time.
+opt: Sort arrivals and departures, two pointers.
+why: A platform is needed when the next arrival precedes the earliest departure.
+expl: Sort both | Move through arrivals | If arr <= dep[j] platforms++ else j++ | Track the max
+code:
+public static int findPlatform(int[] arr, int[] dep) {
+    Arrays.sort(arr);
+    Arrays.sort(dep);
+    int i = 0, j = 0, cur = 0, best = 0;
+    while (i < arr.length) {
+        if (arr[i] <= dep[j]) { cur++; i++; }
+        else { cur--; j++; }
+        best = Math.max(best, cur);
+    }
+    return best;
+}
+=== 286
+brute: Try all job subsets and orders.
+opt: Sort by profit descending and place each job in the latest free slot.
+why: Placing a high-profit job as late as possible leaves earlier slots for others.
+expl: Sort by profit | Find the last free slot <= deadline | Place the job and add its profit
+code:
+public static int[] jobSequencing(int[] deadline, int[] profit) {
+    int n = deadline.length, maxD = 0;
+    for (int d : deadline) maxD = Math.max(maxD, d);
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i < n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -> profit[b] - profit[a]);
+    boolean[] slot = new boolean[maxD + 1];
+    int jobs = 0, total = 0;
+    for (int i : idx) {
+        for (int d = deadline[i]; d >= 1; d--) {
+            if (!slot[d]) { slot[d] = true; jobs++; total += profit[i]; break; }
+        }
+    }
+    return new int[]{jobs, total};
+}
+=== 287
+brute: Try distributions until all rules hold.
+opt: Two passes: left to right and right to left.
+why: Each neighbour constraint is satisfied by one of the passes, and max combines them.
+expl: Everyone starts with 1 | Left pass: more rating than left gets left+1 | Right pass: more than right gets max(self, right+1) | Sum
+code:
+public static int candy(int[] ratings) {
+    int n = ratings.length;
+    int[] c = new int[n];
+    Arrays.fill(c, 1);
+    for (int i = 1; i < n; i++) if (ratings[i] > ratings[i - 1]) c[i] = c[i - 1] + 1;
+    for (int i = n - 2; i >= 0; i--) if (ratings[i] > ratings[i + 1]) c[i] = Math.max(c[i], c[i + 1] + 1);
+    int sum = 0;
+    for (int x : c) sum += x;
+    return sum;
+}
+=== 288
+brute: Try all process orders.
+opt: Sort by burst time and accumulate waiting time.
+why: Running the shortest jobs first minimizes total waiting.
+expl: Sort bursts | wait of job i = sum of earlier bursts | Average = total wait / n
+code:
+public static double sjfAvgWaitTime(int[] burst) {
+    int[] b = burst.clone();
+    Arrays.sort(b);
+    long wait = 0, t = 0;
+    for (int x : b) { wait += t; t += x; }
+    return (double) wait / b.length;
+}
+=== 289
+brute: Track recency with a list and linear search.
+opt: LinkedHashSet in access order.
+why: The first element is always the least recently used.
+expl: If page is present remove and re-add it | Else count a fault, evict the oldest if full | Add the page
+code:
+public static int pageFaultsLRU(int[] pages, int capacity) {
+    LinkedHashSet<Integer> set = new LinkedHashSet<>();
+    int faults = 0;
+    for (int p : pages) {
+        if (set.remove(p)) { set.add(p); continue; }
+        faults++;
+        if (set.size() == capacity) set.remove(set.iterator().next());
+        set.add(p);
+    }
+    return faults;
+}
+=== 290
+brute: Add the interval and re-sort and merge.
+opt: Three-phase linear pass.
+why: Intervals before, overlapping and after the new one are handled separately.
+expl: Add intervals ending before newInterval | Merge overlapping intervals into newInterval | Add newInterval and the rest
+code:
+public static int[][] insertInterval(int[][] intervals, int[] newInterval) {
+    List<int[]> res = new ArrayList<>();
+    int i = 0, n = intervals.length;
+    while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);
+    while (i < n && intervals[i][0] <= newInterval[1]) {
+        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+        newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+        i++;
+    }
+    res.add(newInterval);
+    while (i < n) res.add(intervals[i++]);
+    return res.toArray(new int[0][]);
+}
+=== 291
+brute: Try all subsets to remove.
+opt: Sort by end and keep the interval that finishes earliest.
+why: This is the same greedy as maximum non-overlapping intervals; removals = total - kept.
+expl: Sort by end | Keep an interval if start >= last end | Count removed otherwise
+code:
+public static int eraseOverlapIntervals(int[][] intervals) {
+    Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
+    int removed = 0, end = Integer.MIN_VALUE;
+    for (int[] in : intervals) {
+        if (in[0] >= end) end = in[1]; else removed++;
+    }
+    return removed;
+}
+=== 292
+brute: Try all subsets of meetings.
+opt: Sort by end time (ties by index) and pick greedily.
+why: Same greedy choice as the count version while recording the indices.
+expl: Sort indices by end | Pick if start > last end | Return 1-based indices
+code:
+public static List<Integer> maxMeetingsIndices(int[] start, int[] end) {
+    int n = start.length;
+    Integer[] idx = new Integer[n];
+    for (int i = 0; i < n; i++) idx[i] = i;
+    Arrays.sort(idx, (a, b) -> end[a] != end[b] ? end[a] - end[b] : a - b);
+    List<Integer> res = new ArrayList<>();
+    int last = -1;
+    for (int i : idx) if (start[i] > last) { res.add(i + 1); last = end[i]; }
+    return res;
+}

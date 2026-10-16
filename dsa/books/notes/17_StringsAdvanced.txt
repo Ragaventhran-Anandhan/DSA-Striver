@@ -1,0 +1,155 @@
+=== 455
+brute: Try adding characters until the string is a palindrome.
+opt: Length minus the longest palindromic prefix, found with the KMP LPS of s + "#" + reverse(s).
+why: The LPS value at the end is the length of the longest prefix that is also a suffix of the reverse, i.e. a palindromic prefix.
+expl: t = s + "#" + reverse(s) | Compute the LPS array | answer = n - lps[last]
+code:
+public static int minCharsForPalindrome(String s) {
+    String t = s + "#" + new StringBuilder(s).reverse();
+    int[] lps = new int[t.length()];
+    for (int i = 1, k = 0; i < t.length(); i++) {
+        while (k > 0 && t.charAt(i) != t.charAt(k)) k = lps[k - 1];
+        if (t.charAt(i) == t.charAt(k)) k++;
+        lps[i] = k;
+    }
+    return s.length() - lps[t.length() - 1];
+}
+=== 456
+brute: Try each prefix to see if it is a palindrome.
+opt: Find the longest palindromic prefix with LPS and prepend the reversed remainder.
+why: Only the part after the palindromic prefix needs to be mirrored.
+expl: Compute the longest palindromic prefix length p | Reverse s[p..] | Prepend it to s
+code:
+public static String shortestPalindrome(String s) {
+    String t = s + "#" + new StringBuilder(s).reverse();
+    int[] lps = new int[t.length()];
+    for (int i = 1, k = 0; i < t.length(); i++) {
+        while (k > 0 && t.charAt(i) != t.charAt(k)) k = lps[k - 1];
+        if (t.charAt(i) == t.charAt(k)) k++;
+        lps[i] = k;
+    }
+    int p = lps[t.length() - 1];
+    return new StringBuilder(s.substring(p)).reverse() + s;
+}
+=== 457
+brute: Compare the pattern at every position, O(nm).
+opt: Rolling hash: update the window hash in O(1) and verify on a hash match.
+why: Equal hashes are candidates; verifying avoids false positives, giving O(n + m) on average.
+expl: Hash the pattern and the first window | Roll: remove the left char and add the right | On equal hash compare the strings | Record the index
+code:
+public static List<Integer> rabinKarp(String text, String pattern) {
+    List<Integer> res = new ArrayList<>();
+    int n = text.length(), m = pattern.length();
+    if (m > n) return res;
+    long B = 256, M = 1_000_000_007L, h = 1, ph = 0, th = 0;
+    for (int i = 0; i < m - 1; i++) h = h * B % M;
+    for (int i = 0; i < m; i++) {
+        ph = (ph * B + pattern.charAt(i)) % M;
+        th = (th * B + text.charAt(i)) % M;
+    }
+    for (int i = 0; i + m <= n; i++) {
+        if (ph == th && text.startsWith(pattern, i)) res.add(i);
+        if (i + m < n) th = ((th - text.charAt(i) * h % M + M) * B + text.charAt(i + m)) % M;
+    }
+    return res;
+}
+=== 458
+brute: Compare each suffix with the string character by character, O(n^2).
+opt: Z-algorithm maintaining a window [l, r] that matches a prefix.
+why: Values inside the window are reused from earlier results, so the total work is O(n).
+expl: z[0] = n | If i <= r start from min(r - i + 1, z[i - l]) | Extend while characters match | Update the window
+code:
+public static int[] zFunction(String s) {
+    int n = s.length();
+    int[] z = new int[n];
+    z[0] = n;
+    for (int i = 1, l = 0, r = 0; i < n; i++) {
+        if (i <= r) z[i] = Math.min(r - i + 1, z[i - l]);
+        while (i + z[i] < n && s.charAt(z[i]) == s.charAt(i + z[i])) z[i]++;
+        if (i + z[i] - 1 > r) { l = i; r = i + z[i] - 1; }
+    }
+    return z;
+}
+=== 459
+brute: For every prefix check all border lengths.
+opt: Build the LPS array incrementally, falling back with lps[k-1] on a mismatch.
+why: A border of a prefix extends from a shorter border, so mismatches reuse earlier values.
+expl: lps[0] = 0, k = 0 | If chars match k++ and store | Else fall back k = lps[k-1] | Store lps[i] = k
+code:
+public static int[] computeLPS(String pattern) {
+    int n = pattern.length();
+    int[] lps = new int[n];
+    for (int i = 1, k = 0; i < n; i++) {
+        while (k > 0 && pattern.charAt(i) != pattern.charAt(k)) k = lps[k - 1];
+        if (pattern.charAt(i) == pattern.charAt(k)) k++;
+        lps[i] = k;
+    }
+    return lps;
+}
+=== 460
+brute: Compare the pattern at each text position.
+opt: KMP: never move backwards in the text, use LPS to shift the pattern.
+why: After a mismatch the LPS tells how much of the pattern still matches, giving O(n + m).
+expl: Compute LPS | Scan text with pattern index k | On a full match record i - m + 1 and set k = lps[k-1]
+code:
+public static List<Integer> kmpSearch(String text, String pattern) {
+    List<Integer> res = new ArrayList<>();
+    int m = pattern.length();
+    int[] lps = new int[m];
+    for (int i = 1, k = 0; i < m; i++) {
+        while (k > 0 && pattern.charAt(i) != pattern.charAt(k)) k = lps[k - 1];
+        if (pattern.charAt(i) == pattern.charAt(k)) k++;
+        lps[i] = k;
+    }
+    for (int i = 0, k = 0; i < text.length(); i++) {
+        while (k > 0 && text.charAt(i) != pattern.charAt(k)) k = lps[k - 1];
+        if (text.charAt(i) == pattern.charAt(k)) k++;
+        if (k == m) { res.add(i - m + 1); k = lps[k - 1]; }
+    }
+    return res;
+}
+=== 461
+brute: Recursion generating each term.
+opt: Iteratively build each term by run-length encoding the previous one.
+why: Each term is derived only from the one before it.
+expl: Start with "1" | For each next term count runs of equal digits | Append count then digit
+code:
+public static String countAndSay(int n) {
+    String s = "1";
+    for (int i = 2; i <= n; i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < s.length(); ) {
+            int k = j;
+            while (k < s.length() && s.charAt(k) == s.charAt(j)) k++;
+            sb.append(k - j).append(s.charAt(j));
+            j = k;
+        }
+        s = sb.toString();
+    }
+    return s;
+}
+=== 462
+brute: Split and parse every revision into a list.
+opt: Walk both strings parsing revision numbers on the fly.
+why: Missing revisions count as 0 and leading zeros vanish when parsed as integers.
+expl: Split on '.' | Compare revision by revision | Treat missing as 0 | Return -1, 0 or 1
+code:
+public static int compareVersion(String v1, String v2) {
+    String[] a = v1.split("\\."), b = v2.split("\\.");
+    for (int i = 0; i < Math.max(a.length, b.length); i++) {
+        int x = i < a.length ? Integer.parseInt(a[i]) : 0;
+        int y = i < b.length ? Integer.parseInt(b[i]) : 0;
+        if (x != y) return x < y ? -1 : 1;
+    }
+    return 0;
+}
+=== 463
+brute: Try every substring length that divides n.
+opt: Check whether s occurs inside (s + s) with the first and last characters removed.
+why: A string made of repeats appears in a non-trivial rotation of itself.
+expl: d = s + s | Remove the first and last character | If s is found it is a repeated pattern
+code:
+public static boolean repeatedSubstringPattern(String s) {
+    String d = s + s;
+    return d.substring(1, d.length() - 1).contains(s);
+}

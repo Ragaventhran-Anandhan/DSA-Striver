@@ -1,0 +1,629 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04 - Binary Search</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>04 - Binary Search</h1></header><main><nav class="toc"><a href="#p96">96. Binary Search</a><a href="#p97">97. Lower Bound</a><a href="#p98">98. Upper Bound</a><a href="#p99">99. Search Insert Position</a><a href="#p100">100. Floor and Ceil in Sorted Array</a><a href="#p101">101. First and Last Occurrence</a><a href="#p102">102. Count Occurrences in Sorted Array</a><a href="#p103">103. Minimum in Rotated Sorted Array</a><a href="#p104">104. Find Rotation Count</a><a href="#p105">105. Single Element in Sorted Array</a><a href="#p106">106. Square Root of N</a><a href="#p107">107. N-th Root of M</a><a href="#p108">108. Search in Rotated Sorted Array I</a><a href="#p109">109. Search in Rotated Sorted Array II</a><a href="#p110">110. Find Peak Element</a><a href="#p111">111. Koko Eating Bananas</a><a href="#p112">112. Minimum Days to Make M Bouquets</a><a href="#p113">113. Smallest Divisor Given a Threshold</a><a href="#p114">114. Capacity to Ship Packages in D Days</a><a href="#p115">115. Kth Missing Positive Number</a><a href="#p116">116. Aggressive Cows</a><a href="#p117">117. Book Allocation Problem</a><a href="#p118">118. Split Array - Largest Sum</a><a href="#p119">119. Row with Maximum Number of 1s</a><a href="#p120">120. Search in 2D Matrix I</a><a href="#p121">121. Search in 2D Matrix II</a><a href="#p122">122. Find Peak Element in 2D Matrix</a><a href="#p123">123. Painter&#x27;s Partition</a><a href="#p124">124. Minimize Max Distance to Gas Station</a><a href="#p125">125. Median of Two Sorted Arrays</a><a href="#p126">126. K-th Element of Two Sorted Arrays</a><a href="#p127">127. Median of Row-wise Sorted Matrix</a></nav><section class="problem" id="p96">
+<h2>Problem 96: Binary Search<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Index of target in sorted array or -1.</p><div class="ex">Input: arr=[-1,0,3,5,9,12], target=9<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Linear scan for the target.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the sorted array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each comparison halves the search range, giving O(log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int binarySearch(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] &lt; target) lo = mid + 1; else hi = mid - 1;
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = 0, hi = n-1</li><li>mid = lo + (hi-lo)/2</li><li>Return mid on match</li><li>Move lo or hi to discard half</li></ol></div></div>
+</div></section><section class="problem" id="p97">
+<h2>Problem 97: Lower Bound<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest index with arr[i] &gt;= x, else n.</p><div class="ex">Input: arr=[1,2,8,10,11,12,19], x=9<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan for the first element &gt;= x.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search keeping the best candidate.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The predicate arr[i] &gt;= x is monotone over a sorted array.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int lowerBound(int[] arr, int x) {
+    int lo = 0, hi = arr.length - 1, ans = arr.length;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &gt;= x) { ans = mid; hi = mid - 1; } else lo = mid + 1;
+    }
+    return ans;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>ans = n</li><li>If arr[mid] &gt;= x record mid and go left</li><li>Else go right</li></ol></div></div>
+</div></section><section class="problem" id="p98">
+<h2>Problem 98: Upper Bound<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest index with arr[i] &gt; x, else n.</p><div class="ex">Input: arr=[1,2,2,3], x=2<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan for the first element &gt; x.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search with predicate arr[i] &gt; x.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The predicate is monotone so the boundary can be found in O(log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int upperBound(int[] arr, int x) {
+    int lo = 0, hi = arr.length - 1, ans = arr.length;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &gt; x) { ans = mid; hi = mid - 1; } else lo = mid + 1;
+    }
+    return ans;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>ans = n</li><li>If arr[mid] &gt; x record mid and go left</li><li>Else go right</li></ol></div></div>
+</div></section><section class="problem" id="p99">
+<h2>Problem 99: Search Insert Position<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Index where x is or would be inserted.</p><div class="ex">Input: arr=[1,3,5,6], x=5<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan until arr[i] &gt;= x.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>The answer is the lower bound.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Lower bound is the first position where x could be placed in order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int searchInsert(int[] arr, int x) {
+    int lo = 0, hi = arr.length;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &gt;= x) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Run lower bound</li><li>Return its index</li></ol></div></div>
+</div></section><section class="problem" id="p100">
+<h2>Problem 100: Floor and Ceil in Sorted Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return {floor, ceil}, -1 if missing.</p><div class="ex">Input: arr=[3,4,4,7,8,10], x=5<br>Output:<pre class="out">[4,7]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan for largest &lt;= x and smallest &gt;= x.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search for both boundaries.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Floor is just before the upper bound, ceil is the lower bound.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] floorCeil(int[] arr, int x) {
+    int floor = -1, ceil = -1, lo = 0, hi = arr.length - 1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &lt;= x) { floor = arr[mid]; lo = mid + 1; } else hi = mid - 1;
+    }
+    lo = 0; hi = arr.length - 1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &gt;= x) { ceil = arr[mid]; hi = mid - 1; } else lo = mid + 1;
+    }
+    return new int[]{floor, ceil};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>floor = last value &lt;= x</li><li>ceil = first value &gt;= x</li><li>Use -1 when none exists</li></ol></div></div>
+</div></section><section class="problem" id="p101">
+<h2>Problem 101: First and Last Occurrence<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return {first, last} index or {-1,-1}.</p><div class="ex">Input: arr=[2,4,6,8,8,8,11,13], x=8<br>Output:<pre class="out">[3,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan and track first and last matches.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two binary searches, one biased left and one right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sorted order places duplicates in one contiguous block.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] firstLast(int[] arr, int x) {
+    int lo = lowerB(arr, x), hi = lowerB(arr, x + 1) - 1;
+    if (lo &gt;= arr.length || arr[lo] != x) return new int[]{-1, -1};
+    return new int[]{lo, hi};
+}
+
+private static int lowerB(int[] a, int x) {
+    int l = 0, r = a.length;
+    while (l &lt; r) {
+        int m = l + (r - l) / 2;
+        if (a[m] &gt;= x) r = m; else l = m + 1;
+    }
+    return l;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>First = lower bound if arr[idx]==x</li><li>Last = upper bound - 1</li><li>Return {-1,-1} if absent</li></ol></div></div>
+</div></section><section class="problem" id="p102">
+<h2>Problem 102: Count Occurrences in Sorted Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Number of times x appears.</p><div class="ex">Input: arr=[2,4,6,8,8,8,11,13], x=8<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count while scanning.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>last - first + 1 from the two binary searches.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Duplicates form a single block.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countOccurrences(int[] arr, int x) {
+    int lo = lb(arr, x), hi = lb(arr, x + 1);
+    return hi - lo;
+}
+
+private static int lb(int[] a, int x) {
+    int l = 0, r = a.length;
+    while (l &lt; r) {
+        int m = l + (r - l) / 2;
+        if (a[m] &gt;= x) r = m; else l = m + 1;
+    }
+    return l;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find first and last</li><li>Return 0 if missing</li><li>Else last-first+1</li></ol></div></div>
+</div></section><section class="problem" id="p103">
+<h2>Problem 103: Minimum in Rotated Sorted Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Minimum element.</p><div class="ex">Input: arr=[4,5,6,7,0,1,2]<br>Output:<pre class="out">0</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan for the minimum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search comparing mid to the right end.</p></div>
+<div class="card w"><h3>Why it works</h3><p>If mid &gt; hi the pivot is on the right, otherwise on the left including mid.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findMin(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &gt; arr[hi]) lo = mid + 1; else hi = mid;
+    }
+    return arr[lo];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo, hi</li><li>If arr[mid] &gt; arr[hi] lo = mid+1</li><li>Else hi = mid</li><li>Return arr[lo]</li></ol></div></div>
+</div></section><section class="problem" id="p104">
+<h2>Problem 104: Find Rotation Count<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>How many times a sorted array was rotated.</p><div class="ex">Input: arr=[4,5,6,7,0,1,2]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Find the index of the minimum by scanning.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Rotation count equals the index of the minimum.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A sorted array rotated k times has its minimum at index k.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int rotationCount(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &gt; arr[hi]) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Binary search for the minimum index</li><li>Return that index</li></ol></div></div>
+</div></section><section class="problem" id="p105">
+<h2>Problem 105: Single Element in Sorted Array<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All appear twice except one.</p><div class="ex">Input: arr=[1,1,2,3,3,4,4,8,8]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>XOR all elements.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on index parity.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Before the single element pairs start at even indices; after it, at odd indices.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int singleNonDuplicate(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (mid % 2 == 1) mid--;
+        if (arr[mid] == arr[mid + 1]) lo = mid + 2; else hi = mid;
+    }
+    return arr[lo];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Make mid even</li><li>If arr[mid]==arr[mid+1] go right</li><li>Else go left</li></ol></div></div>
+</div></section><section class="problem" id="p106">
+<h2>Problem 106: Square Root of N<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Floor of square root.</p><div class="ex">Input: n=28<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every i until i*i &gt; n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the answer.</p></div>
+<div class="card w"><h3>Why it works</h3><p>i*i is monotone so the largest valid i is found in O(log n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int sqrt(int n) {
+    int lo = 1, hi = n, ans = 0;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if ((long) mid * mid &lt;= n) { ans = mid; lo = mid + 1; } else hi = mid - 1;
+    }
+    return ans;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = 1, hi = n</li><li>If mid*mid &lt;= n record and go right</li><li>Else go left</li></ol></div></div>
+</div></section><section class="problem" id="p107">
+<h2>Problem 107: N-th Root of M<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Integer x with x^n = m, else -1.</p><div class="ex">Input: n=3, m=27<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every x from 1 to m.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on x with a power check.</p></div>
+<div class="card w"><h3>Why it works</h3><p>x^n grows monotonically so comparing with m decides direction.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int nthRoot(int n, int m) {
+    int lo = 1, hi = m;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        long p = 1;
+        for (int i = 0; i &lt; n &amp;&amp; p &lt;= m; i++) p *= mid;
+        if (p == m) return mid;
+        if (p &lt; m) lo = mid + 1; else hi = mid - 1;
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute x^n capped above m</li><li>Equal -&gt; return x</li><li>Smaller -&gt; go right</li><li>Larger -&gt; go left</li></ol></div></div>
+</div></section><section class="problem" id="p108">
+<h2>Problem 108: Search in Rotated Sorted Array I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Distinct values.</p><div class="ex">Input: arr=[4,5,6,7,0,1,2], target=0<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Linear scan.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search; one half is always sorted.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Check which half is sorted and whether the target lies inside it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int searchRotated(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[lo] &lt;= arr[mid]) {
+            if (arr[lo] &lt;= target &amp;&amp; target &lt; arr[mid]) hi = mid - 1; else lo = mid + 1;
+        } else {
+            if (arr[mid] &lt; target &amp;&amp; target &lt;= arr[hi]) lo = mid + 1; else hi = mid - 1;
+        }
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If arr[lo] &lt;= arr[mid] left is sorted</li><li>Check if target is in the sorted half</li><li>Narrow accordingly</li></ol></div></div>
+</div></section><section class="problem" id="p109">
+<h2>Problem 109: Search in Rotated Sorted Array II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>With duplicates.</p><div class="ex">Input: arr=[2,5,6,0,0,1,2], target=0<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Linear scan.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Same as I but shrink both ends when arr[lo]==arr[mid]==arr[hi].</p></div>
+<div class="card w"><h3>Why it works</h3><p>Duplicates hide which half is sorted so we drop one element each side.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean searchRotatedDup(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] == target) return true;
+        if (arr[lo] == arr[mid] &amp;&amp; arr[mid] == arr[hi]) { lo++; hi--; }
+        else if (arr[lo] &lt;= arr[mid]) {
+            if (arr[lo] &lt;= target &amp;&amp; target &lt; arr[mid]) hi = mid - 1; else lo = mid + 1;
+        } else {
+            if (arr[mid] &lt; target &amp;&amp; target &lt;= arr[hi]) lo = mid + 1; else hi = mid - 1;
+        }
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If all three equal shrink</li><li>Else decide the sorted half</li><li>Narrow as in version I</li></ol></div></div>
+</div></section><section class="problem" id="p110">
+<h2>Problem 110: Find Peak Element<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Index of any peak element.</p><div class="ex">Input: arr=[1,2,3,1]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan for an element greater than neighbours.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search by slope direction.</p></div>
+<div class="card w"><h3>Why it works</h3><p>If arr[mid] &lt; arr[mid+1] a peak lies to the right, otherwise on the left including mid.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findPeak(int[] arr) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] &lt; arr[mid + 1]) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo, hi = n-1</li><li>If arr[mid] &lt; arr[mid+1] lo = mid+1</li><li>Else hi = mid</li></ol></div></div>
+</div></section><section class="problem" id="p111">
+<h2>Problem 111: Koko Eating Bananas<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min speed k to finish in h hours.</p><div class="ex">Input: piles=[3,6,7,11], h=8<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every speed from 1 up to max pile.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on speed with an hours check.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Hours needed decreases monotonically as speed increases.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minEatingSpeed(int[] piles, int h) {
+    int lo = 1, hi = 0;
+    for (int p : piles) hi = Math.max(hi, p);
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        long hours = 0;
+        for (int p : piles) hours += (p + mid - 1) / mid;
+        if (hours &lt;= h) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = 1, hi = max(piles)</li><li>hours = sum of ceil(pile/speed)</li><li>If hours &lt;= h try smaller speed</li></ol></div></div>
+</div></section><section class="problem" id="p112">
+<h2>Problem 112: Minimum Days to Make M Bouquets<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min days to make m bouquets of k adjacent flowers.</p><div class="ex">Input: bloomDay=[1,10,3,10,2], m=3, k=1<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try each day and count bouquets.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on days with a bouquet counter.</p></div>
+<div class="card w"><h3>Why it works</h3><p>If bouquets can be made on day d they can also be made on any later day.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minDays(int[] bloomDay, int m, int k) {
+    if ((long) m * k &gt; bloomDay.length) return -1;
+    int lo = Integer.MAX_VALUE, hi = 0;
+    for (int b : bloomDay) { lo = Math.min(lo, b); hi = Math.max(hi, b); }
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, run = 0, cnt = 0;
+        for (int b : bloomDay) {
+            if (b &lt;= mid) { if (++run == k) { cnt++; run = 0; } } else run = 0;
+        }
+        if (cnt &gt;= m) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If m*k &gt; n return -1</li><li>Check(day) counts runs of k bloomed flowers</li><li>Binary search min day</li></ol></div></div>
+</div></section><section class="problem" id="p113">
+<h2>Problem 113: Smallest Divisor Given a Threshold<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest divisor so sum of ceil(arr[i]/d) &lt;= threshold.</p><div class="ex">Input: arr=[1,2,5,9], threshold=6<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try each divisor from 1 to max.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the divisor.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sum of ceilings decreases as the divisor grows.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int smallestDivisor(int[] arr, int threshold) {
+    int lo = 1, hi = 0;
+    for (int a : arr) hi = Math.max(hi, a);
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        long sum = 0;
+        for (int a : arr) sum += (a + mid - 1) / mid;
+        if (sum &lt;= threshold) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = 1, hi = max</li><li>Compute sum of ceil(a/d)</li><li>If sum &lt;= threshold go left</li></ol></div></div>
+</div></section><section class="problem" id="p114">
+<h2>Problem 114: Capacity to Ship Packages in D Days<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Least ship capacity.</p><div class="ex">Input: weights=[1,2,3,4,5,6,7,8,9,10], days=5<br>Output:<pre class="out">15</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every capacity.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search from max weight to total weight.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Required days decrease as capacity increases.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int shipWithinDays(int[] weights, int days) {
+    int lo = 0, hi = 0;
+    for (int w : weights) { lo = Math.max(lo, w); hi += w; }
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, d = 1, load = 0;
+        for (int w : weights) {
+            if (load + w &gt; mid) { d++; load = 0; }
+            load += w;
+        }
+        if (d &lt;= days) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = max, hi = sum</li><li>Greedily count days with capacity mid</li><li>If days &lt;= D go left</li></ol></div></div>
+</div></section><section class="problem" id="p115">
+<h2>Problem 115: Kth Missing Positive Number<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>K-th missing positive integer.</p><div class="ex">Input: arr=[2,3,4,7,11], k=5<br>Output:<pre class="out">9</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Walk numbers from 1 counting the missing ones.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on how many are missing before index i (arr[i]-(i+1)).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Missing count before an index is monotone non-decreasing.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findKthPositive(int[] arr, int k) {
+    int lo = 0, hi = arr.length;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (arr[mid] - (mid + 1) &gt;= k) hi = mid; else lo = mid + 1;
+    }
+    return lo + k;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find the first index where missing &gt;= k</li><li>Answer is k + lo</li></ol></div></div>
+</div></section><section class="problem" id="p116">
+<h2>Problem 116: Aggressive Cows<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Maximize min distance between cows.</p><div class="ex">Input: stalls=[0,3,4,7,10,9], cows=4<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every distance and place cows greedily.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort then binary search the largest feasible minimum distance.</p></div>
+<div class="card w"><h3>Why it works</h3><p>If distance d is feasible any smaller distance is too.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int aggressiveCows(int[] stalls, int cows) {
+    Arrays.sort(stalls);
+    int lo = 1, hi = stalls[stalls.length - 1] - stalls[0], ans = 0;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2, placed = 1, last = stalls[0];
+        for (int s : stalls) if (s - last &gt;= mid) { placed++; last = s; }
+        if (placed &gt;= cows) { ans = mid; lo = mid + 1; } else hi = mid - 1;
+    }
+    return ans;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort stalls</li><li>Greedy placement check for distance d</li><li>Binary search the maximum feasible d</li></ol></div></div>
+</div></section><section class="problem" id="p117">
+<h2>Problem 117: Book Allocation Problem<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Minimize the maximum pages assigned.</p><div class="ex">Input: pages=[12,34,67,90], students=2<br>Output:<pre class="out">113</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every possible maximum page count.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the max pages per student.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Required students decrease as the limit grows.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int allocateBooks(int[] pages, int students) {
+    if (students &gt; pages.length) return -1;
+    int lo = 0, hi = 0;
+    for (int p : pages) { lo = Math.max(lo, p); hi += p; }
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 1, cur = 0;
+        for (int p : pages) {
+            if (cur + p &gt; mid) { cnt++; cur = 0; }
+            cur += p;
+        }
+        if (cnt &lt;= students) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = max page, hi = total</li><li>Greedily count students</li><li>If count &lt;= k go left</li></ol></div></div>
+</div></section><section class="problem" id="p118">
+<h2>Problem 118: Split Array - Largest Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Minimize largest subarray sum among k parts.</p><div class="ex">Input: arr=[7,2,5,10,8], k=2<br>Output:<pre class="out">18</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all ways to split into k parts.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the largest allowed sum.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Same monotone structure as book allocation.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int splitArray(int[] arr, int k) {
+    int lo = 0, hi = 0;
+    for (int a : arr) { lo = Math.max(lo, a); hi += a; }
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, parts = 1, cur = 0;
+        for (int a : arr) {
+            if (cur + a &gt; mid) { parts++; cur = 0; }
+            cur += a;
+        }
+        if (parts &lt;= k) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = max element, hi = sum</li><li>Greedy count of parts</li><li>If parts &lt;= k go left</li></ol></div></div>
+</div></section><section class="problem" id="p119">
+<h2>Problem 119: Row with Maximum Number of 1s<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rows are sorted of 0/1.</p><div class="ex">Input: matrix=[[0,1,1,1],[0,0,1,1],[1,1,1,1],[0,0,0,0]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count ones in every row.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search the first 1 in each row.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Rows are sorted so ones = m - lowerBound(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int rowWithMaxOnes(int[][] matrix) {
+    int best = -1, max = 0, m = matrix[0].length;
+    for (int i = 0; i &lt; matrix.length; i++) {
+        int lo = 0, hi = m;
+        while (lo &lt; hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (matrix[i][mid] == 1) hi = mid; else lo = mid + 1;
+        }
+        if (m - lo &gt; max) { max = m - lo; best = i; }
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each row find first 1</li><li>ones = m - idx</li><li>Track the row with the maximum</li></ol></div></div>
+</div></section><section class="problem" id="p120">
+<h2>Problem 120: Search in 2D Matrix I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Fully sorted when flattened.</p><div class="ex">Input: matrix=[[1,3,5,7],[10,11,16,20],[23,30,34,60]], target=3<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan every cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search over the flattened index.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Rows chain in sorted order so the flattened array is sorted.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean searchMatrix1(int[][] matrix, int target) {
+    int n = matrix.length, m = matrix[0].length, lo = 0, hi = n * m - 1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2, v = matrix[mid / m][mid % m];
+        if (v == target) return true;
+        if (v &lt; target) lo = mid + 1; else hi = mid - 1;
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = 0, hi = n*m-1</li><li>row = mid/m, col = mid%m</li><li>Compare and narrow</li></ol></div></div>
+</div></section><section class="problem" id="p121">
+<h2>Problem 121: Search in 2D Matrix II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Rows and columns sorted independently.</p><div class="ex">Input: matrix=[[1,4,7,11],[2,5,8,12],[3,6,9,16]], target=5<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Scan every cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Staircase search from the top-right corner.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Moving left decreases and moving down increases, so each step removes a row or column.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean searchMatrix2(int[][] matrix, int target) {
+    int r = 0, c = matrix[0].length - 1;
+    while (r &lt; matrix.length &amp;&amp; c &gt;= 0) {
+        int v = matrix[r][c];
+        if (v == target) return true;
+        if (v &gt; target) c--; else r++;
+    }
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start at (0, m-1)</li><li>If value &gt; target move left</li><li>If value &lt; target move down</li><li>Stop on match</li></ol></div></div>
+</div></section><section class="problem" id="p122">
+<h2>Problem 122: Find Peak Element in 2D Matrix<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return {row,col} of a peak.</p><div class="ex">Input: mat=[[1,4],[3,2]]<br>Output:<pre class="out">[0,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every cell against its neighbours.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on columns, pick max row in the middle column.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The max in a column is greater than its vertical neighbours; compare horizontally to pick a side.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] findPeakGrid(int[][] mat) {
+    int lo = 0, hi = mat[0].length - 1;
+    while (lo &lt;= hi) {
+        int mid = lo + (hi - lo) / 2, row = 0;
+        for (int i = 0; i &lt; mat.length; i++) if (mat[i][mid] &gt; mat[row][mid]) row = i;
+        int left = mid &gt; 0 ? mat[row][mid - 1] : -1, right = mid &lt; mat[0].length - 1 ? mat[row][mid + 1] : -1;
+        if (mat[row][mid] &gt; left &amp;&amp; mat[row][mid] &gt; right) return new int[]{row, mid};
+        if (left &gt; mat[row][mid]) hi = mid - 1; else lo = mid + 1;
+    }
+    return new int[]{-1, -1};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>mid column</li><li>Find the row of maximum</li><li>Compare with left and right</li><li>Move toward the larger neighbour</li></ol></div></div>
+</div></section><section class="problem" id="p123">
+<h2>Problem 123: Painter&#x27;s Partition<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Minimize time to paint all boards.</p><div class="ex">Input: boards=[10,20,30,40], painters=2<br>Output:<pre class="out">60</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all partitions of boards.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the maximum time per painter.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Same structure as book allocation on contiguous boards.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int paintersPartition(int[] boards, int painters) {
+    int lo = 0, hi = 0;
+    for (int b : boards) { lo = Math.max(lo, b); hi += b; }
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 1, cur = 0;
+        for (int b : boards) {
+            if (cur + b &gt; mid) { cnt++; cur = 0; }
+            cur += b;
+        }
+        if (cnt &lt;= painters) hi = mid; else lo = mid + 1;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = max, hi = sum</li><li>Count painters needed</li><li>Narrow range</li></ol></div></div>
+</div></section><section class="problem" id="p124">
+<h2>Problem 124: Minimize Max Distance to Gas Station<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Add k stations to minimize max gap.</p><div class="ex">Input: stations=[1,2,3,4,5], k=4<br>Output:<pre class="out">0.5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try placing stations one by one at the biggest gap.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on the answer (a real number) with a counting check.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Stations needed for max gap d is sum(floor(gap/d)); it decreases as d grows.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static double minMaxGasDistance(int[] stations, int k) {
+    double lo = 0, hi = 0;
+    for (int i = 1; i &lt; stations.length; i++) hi = Math.max(hi, stations[i] - stations[i - 1]);
+    while (hi - lo &gt; 1e-6) {
+        double mid = (lo + hi) / 2;
+        int need = 0;
+        for (int i = 1; i &lt; stations.length; i++) need += (int) ((stations[i] - stations[i - 1]) / mid);
+        if (need &lt;= k) hi = mid; else lo = mid;
+    }
+    return hi;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = 0, hi = max gap</li><li>Count stations needed for mid</li><li>If needed &lt;= k go left</li><li>Repeat until precision 1e-6</li></ol></div></div>
+</div></section><section class="problem" id="p125">
+<h2>Problem 125: Median of Two Sorted Arrays<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Median of merged arrays in O(log(min)).</p><div class="ex">Input: a=[1,3], b=[2]<br>Output:<pre class="out">2.0</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Merge both arrays and take the median.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search the partition on the smaller array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A correct partition has left maxima &lt;= right minima.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static double findMedian(int[] a, int[] b) {
+    if (a.length &gt; b.length) return findMedian(b, a);
+    int n = a.length, m = b.length, lo = 0, hi = n, half = (n + m + 1) / 2;
+    while (lo &lt;= hi) {
+        int i = (lo + hi) / 2, j = half - i;
+        int l1 = i == 0 ? Integer.MIN_VALUE : a[i - 1], r1 = i == n ? Integer.MAX_VALUE : a[i];
+        int l2 = j == 0 ? Integer.MIN_VALUE : b[j - 1], r2 = j == m ? Integer.MAX_VALUE : b[j];
+        if (l1 &lt;= r2 &amp;&amp; l2 &lt;= r1) {
+            if ((n + m) % 2 == 1) return Math.max(l1, l2);
+            return (Math.max(l1, l2) + Math.min(r1, r2)) / 2.0;
+        }
+        if (l1 &gt; r2) hi = i - 1; else lo = i + 1;
+    }
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Ensure a is shorter</li><li>Pick cut i in a and j in b</li><li>Check cross conditions</li><li>Compute the median from the borders</li></ol></div></div>
+</div></section><section class="problem" id="p126">
+<h2>Problem 126: K-th Element of Two Sorted Arrays<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>K-th element of merged arrays.</p><div class="ex">Input: a=[2,3,6,7,9], b=[1,4,8,10], k=5<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Merge and take index k-1.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search the partition to take k elements from both.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Same partition logic as median with total left size k.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int kthElement(int[] a, int[] b, int k) {
+    if (a.length &gt; b.length) return kthElement(b, a, k);
+    int n = a.length, m = b.length;
+    int lo = Math.max(0, k - m), hi = Math.min(k, n);
+    while (lo &lt;= hi) {
+        int i = (lo + hi) / 2, j = k - i;
+        int l1 = i == 0 ? Integer.MIN_VALUE : a[i - 1], r1 = i == n ? Integer.MAX_VALUE : a[i];
+        int l2 = j == 0 ? Integer.MIN_VALUE : b[j - 1], r2 = j == m ? Integer.MAX_VALUE : b[j];
+        if (l1 &lt;= r2 &amp;&amp; l2 &lt;= r1) return Math.max(l1, l2);
+        if (l1 &gt; r2) hi = i - 1; else lo = i + 1;
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Ensure a is shorter</li><li>Pick i from a and k-i from b</li><li>Validate crossings</li><li>Answer is max of left side</li></ol></div></div>
+</div></section><section class="problem" id="p127">
+<h2>Problem 127: Median of Row-wise Sorted Matrix<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Median of all elements.</p><div class="ex">Input: matrix=[[1,3,5],[2,6,9],[3,6,9]]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Flatten, sort, take the middle.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Binary search on value with row-wise upper bounds.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The median is the smallest value with at least (n*m+1)/2 elements &lt;= it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int matrixMedian(int[][] matrix) {
+    int n = matrix.length, m = matrix[0].length, lo = Integer.MAX_VALUE, hi = Integer.MIN_VALUE;
+    for (int[] r : matrix) { lo = Math.min(lo, r[0]); hi = Math.max(hi, r[m - 1]); }
+    int need = (n * m + 1) / 2;
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2, cnt = 0;
+        for (int[] r : matrix) {
+            int l = 0, h = m;
+            while (l &lt; h) { int x = (l + h) / 2; if (r[x] &lt;= mid) l = x + 1; else h = x; }
+            cnt += l;
+        }
+        if (cnt &lt; need) lo = mid + 1; else hi = mid;
+    }
+    return lo;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lo = min of first col, hi = max of last col</li><li>Count elements &lt;= mid per row</li><li>Adjust range</li></ol></div></div>
+</div></section></main></body></html>

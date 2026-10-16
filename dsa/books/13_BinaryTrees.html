@@ -1,0 +1,1056 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>13 - Binary Trees</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>13 - Binary Trees</h1></header><main><nav class="toc"><a href="#p293">293. Inorder Traversal</a><a href="#p294">294. Preorder Traversal</a><a href="#p295">295. Postorder Traversal</a><a href="#p296">296. Maximum Depth of Binary Tree</a><a href="#p297">297. Check for Balanced Binary Tree</a><a href="#p298">298. Check if Two Trees are Identical</a><a href="#p299">299. Search in a BST</a><a href="#p300">300. Minimum/Maximum in BST</a><a href="#p301">301. Ceil in BST</a><a href="#p302">302. Floor in BST</a><a href="#p303">303. Level Order Traversal</a><a href="#p304">304. Iterative Preorder Traversal</a><a href="#p305">305. Iterative Inorder Traversal</a><a href="#p306">306. Iterative Postorder (2 Stacks)</a><a href="#p307">307. Iterative Postorder (1 Stack)</a><a href="#p308">308. Preorder, Inorder and Postorder in One Traversal</a><a href="#p309">309. Diameter of Binary Tree</a><a href="#p310">310. Zigzag Level Order Traversal</a><a href="#p311">311. Boundary Traversal</a><a href="#p312">312. Vertical Order Traversal</a><a href="#p313">313. Top View of Binary Tree</a><a href="#p314">314. Bottom View of Binary Tree</a><a href="#p315">315. Right/Left View of Binary Tree</a><a href="#p316">316. Check for Symmetrical Binary Tree</a><a href="#p317">317. Root to Node Path</a><a href="#p318">318. Lowest Common Ancestor</a><a href="#p319">319. Maximum Width of Binary Tree</a><a href="#p320">320. Children Sum Property</a><a href="#p321">321. Count Complete Tree Nodes</a><a href="#p322">322. Flatten Binary Tree to Linked List</a><a href="#p323">323. Insert a Node in BST</a><a href="#p324">324. Delete a Node in BST</a><a href="#p325">325. Kth Smallest Element in BST</a><a href="#p326">326. Kth Largest Element in BST</a><a href="#p327">327. Validate BST</a><a href="#p328">328. LCA in BST</a><a href="#p329">329. Construct BST from Preorder</a><a href="#p330">330. Inorder Successor / Predecessor in BST</a><a href="#p331">331. BST Iterator</a><a href="#p332">332. Two Sum IV - Input is a BST</a><a href="#p333">333. Maximum Path Sum</a><a href="#p334">334. All Nodes at Distance K</a><a href="#p335">335. Minimum Time to Burn Tree</a><a href="#p336">336. Construct Tree from Preorder and Inorder</a><a href="#p337">337. Construct Tree from Inorder and Postorder</a><a href="#p338">338. Serialize and Deserialize Binary Tree</a><a href="#p339">339. Morris Inorder Traversal</a><a href="#p340">340. Morris Preorder Traversal</a><a href="#p341">341. Recover BST</a><a href="#p342">342. Largest BST in Binary Tree</a></nav><section class="problem" id="p293">
+<h2>Problem 293: Inorder Traversal<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Left, Root, Right.</p><div class="ex">Input: root=[1,null,2,3]<br>Output:<pre class="out">[1,3,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Collect nodes in a list by repeated search.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursive Left, Root, Right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Visiting each node once gives O(n); for a BST the output is sorted.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; inorder(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    go(root, res);
+    return res;
+}
+
+private static void go(TreeNode n, List&lt;Integer&gt; res) {
+    if (n == null) return;
+    go(n.left, res);
+    res.add(n.val);
+    go(n.right, res);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Recurse left</li><li>Add root value</li><li>Recurse right</li></ol></div></div>
+</div></section><section class="problem" id="p294">
+<h2>Problem 294: Preorder Traversal<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Root, Left, Right.</p><div class="ex">Input: root=[1,null,2,3]<br>Output:<pre class="out">[1,2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Collect nodes by repeated search.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursive Root, Left, Right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each node is visited once before its subtrees.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; preorder(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    go(root, res);
+    return res;
+}
+
+private static void go(TreeNode n, List&lt;Integer&gt; res) {
+    if (n == null) return;
+    res.add(n.val);
+    go(n.left, res);
+    go(n.right, res);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add root value</li><li>Recurse left</li><li>Recurse right</li></ol></div></div>
+</div></section><section class="problem" id="p295">
+<h2>Problem 295: Postorder Traversal<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Left, Right, Root.</p><div class="ex">Input: root=[1,null,2,3]<br>Output:<pre class="out">[3,2,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Collect nodes by repeated search.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursive Left, Right, Root.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Children are processed before the parent.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; postorder(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    go(root, res);
+    return res;
+}
+
+private static void go(TreeNode n, List&lt;Integer&gt; res) {
+    if (n == null) return;
+    go(n.left, res);
+    go(n.right, res);
+    res.add(n.val);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Recurse left</li><li>Recurse right</li><li>Add root value</li></ol></div></div>
+</div></section><section class="problem" id="p296">
+<h2>Problem 296: Maximum Depth of Binary Tree<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Height of the tree.</p><div class="ex">Input: root=[3,9,20,null,null,15,7]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>BFS counting levels.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion: 1 + max(height of left, height of right).</p></div>
+<div class="card w"><h3>Why it works</h3><p>The height of a node depends only on its children.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxDepth(TreeNode root) {
+    if (root == null) return 0;
+    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Null returns 0</li><li>Compute both subtree heights</li><li>Return 1 + max</li></ol></div></div>
+</div></section><section class="problem" id="p297">
+<h2>Problem 297: Check for Balanced Binary Tree<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Height difference &lt;= 1 for all nodes.</p><div class="ex">Input: root=[3,9,20,null,null,15,7]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute heights separately at every node, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Return height and -1 for unbalanced in one traversal.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A -1 propagates immediately, avoiding recomputation.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isBalanced(TreeNode root) {
+    return height(root) != -1;
+}
+
+private static int height(TreeNode n) {
+    if (n == null) return 0;
+    int l = height(n.left), r = height(n.right);
+    if (l == -1 || r == -1 || Math.abs(l - r) &gt; 1) return -1;
+    return 1 + Math.max(l, r);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Height of left and right</li><li>If either is -1 or difference &gt; 1 return -1</li><li>Else return 1 + max</li></ol></div></div>
+</div></section><section class="problem" id="p298">
+<h2>Problem 298: Check if Two Trees are Identical<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Structure and values equal.</p><div class="ex">Input: p=[1,2,3], q=[1,2,3]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Serialize both trees and compare.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Compare nodes recursively.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Trees are identical iff roots match and both subtrees are identical.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isSameTree(TreeNode p, TreeNode q) {
+    if (p == null || q == null) return p == q;
+    return p.val == q.val &amp;&amp; isSameTree(p.left, q.left) &amp;&amp; isSameTree(p.right, q.right);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Both null returns true</li><li>One null returns false</li><li>Compare values and recurse</li></ol></div></div>
+</div></section><section class="problem" id="p299">
+<h2>Problem 299: Search in a BST<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Find node with value.</p><div class="ex">Input: root=[4,2,7,1,3], val=2<br>Output:<pre class="out">[2,1,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Traverse the whole tree.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Use the BST property to go left or right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each step discards one subtree, giving O(h).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode searchBST(TreeNode root, int val) {
+    while (root != null &amp;&amp; root.val != val) root = val &lt; root.val ? root.left : root.right;
+    return root;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>While node != null</li><li>If equal return</li><li>Go left if val is smaller else right</li></ol></div></div>
+</div></section><section class="problem" id="p300">
+<h2>Problem 300: Minimum/Maximum in BST<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest value.</p><div class="ex">Input: root=[4,2,7,1,3]<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Traverse everything for the minimum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk to the leftmost node.</p></div>
+<div class="card w"><h3>Why it works</h3><p>In a BST the smallest value is the leftmost node.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findMinBST(TreeNode root) {
+    while (root.left != null) root = root.left;
+    return root.val;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>While left exists go left</li><li>Return the value</li></ol></div></div>
+</div></section><section class="problem" id="p301">
+<h2>Problem 301: Ceil in BST<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest value &gt;= key.</p><div class="ex">Input: root=[10,5,13,2,6,11,14], key=8<br>Output:<pre class="out">10</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Inorder list then search.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk down remembering the best candidate &gt;= key.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Moving left when value &gt;= key tightens the candidate.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int ceilBST(TreeNode root, int key) {
+    int ceil = -1;
+    while (root != null) {
+        if (root.val == key) return key;
+        if (root.val &gt; key) { ceil = root.val; root = root.left; }
+        else root = root.right;
+    }
+    return ceil;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>ceil = -1</li><li>If val == key return it</li><li>If val &gt; key record ceil and go left</li><li>Else go right</li></ol></div></div>
+</div></section><section class="problem" id="p302">
+<h2>Problem 302: Floor in BST<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest value &lt;= key.</p><div class="ex">Input: root=[10,5,13,2,6,11,14], key=8<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Inorder list then search.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk down remembering the best candidate &lt;= key.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Moving right when value &lt;= key tightens the candidate.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int floorBST(TreeNode root, int key) {
+    int floor = -1;
+    while (root != null) {
+        if (root.val == key) return key;
+        if (root.val &lt; key) { floor = root.val; root = root.right; }
+        else root = root.left;
+    }
+    return floor;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>floor = -1</li><li>If val == key return it</li><li>If val &lt; key record floor and go right</li><li>Else go left</li></ol></div></div>
+</div></section><section class="problem" id="p303">
+<h2>Problem 303: Level Order Traversal<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>BFS level by level.</p><div class="ex">Input: root=[3,9,20,null,null,15,7]<br>Output:<pre class="out">[[3],[9,20],[15,7]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute depth of each node and group.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS with a queue, processing one level at a time.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Queue size at the start of a round equals the level size.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; levelOrder(TreeNode root) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    if (root == null) return res;
+    Queue&lt;TreeNode&gt; q = new LinkedList&lt;&gt;();
+    q.add(root);
+    while (!q.isEmpty()) {
+        int sz = q.size();
+        List&lt;Integer&gt; lvl = new ArrayList&lt;&gt;();
+        for (int i = 0; i &lt; sz; i++) {
+            TreeNode n = q.poll();
+            lvl.add(n.val);
+            if (n.left != null) q.add(n.left);
+            if (n.right != null) q.add(n.right);
+        }
+        res.add(lvl);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Queue the root</li><li>For each level take size nodes</li><li>Collect values and enqueue children</li></ol></div></div>
+</div></section><section class="problem" id="p304">
+<h2>Problem 304: Iterative Preorder Traversal<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Using a stack.</p><div class="ex">Input: root=[1,2,3]<br>Output:<pre class="out">[1,2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursive preorder.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Stack: push right then left.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Left is popped first so it is visited before right.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; preorderIterative(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    if (root == null) return res;
+    Deque&lt;TreeNode&gt; st = new ArrayDeque&lt;&gt;();
+    st.push(root);
+    while (!st.isEmpty()) {
+        TreeNode n = st.pop();
+        res.add(n.val);
+        if (n.right != null) st.push(n.right);
+        if (n.left != null) st.push(n.left);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push root</li><li>Pop, record</li><li>Push right then left</li></ol></div></div>
+</div></section><section class="problem" id="p305">
+<h2>Problem 305: Iterative Inorder Traversal<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Using a stack.</p><div class="ex">Input: root=[1,2,3]<br>Output:<pre class="out">[2,1,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursive inorder.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Stack: go left as far as possible then visit and go right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The stack simulates the recursion path.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; inorderIterative(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    Deque&lt;TreeNode&gt; st = new ArrayDeque&lt;&gt;();
+    TreeNode cur = root;
+    while (cur != null || !st.isEmpty()) {
+        while (cur != null) { st.push(cur); cur = cur.left; }
+        cur = st.pop();
+        res.add(cur.val);
+        cur = cur.right;
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push the left chain</li><li>Pop and record</li><li>Move to the right child</li></ol></div></div>
+</div></section><section class="problem" id="p306">
+<h2>Problem 306: Iterative Postorder (2 Stacks)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Using two stacks.</p><div class="ex">Input: root=[1,2,3]<br>Output:<pre class="out">[2,3,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursive postorder.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two stacks: reverse of Root, Right, Left.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Postorder is the reverse of a modified preorder.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; postorderTwoStacks(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    if (root == null) return res;
+    Deque&lt;TreeNode&gt; s1 = new ArrayDeque&lt;&gt;(), s2 = new ArrayDeque&lt;&gt;();
+    s1.push(root);
+    while (!s1.isEmpty()) {
+        TreeNode n = s1.pop();
+        s2.push(n);
+        if (n.left != null) s1.push(n.left);
+        if (n.right != null) s1.push(n.right);
+    }
+    while (!s2.isEmpty()) res.add(s2.pop().val);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Pop from stack 1 and push to stack 2</li><li>Push left then right to stack 1</li><li>Stack 2 pops in postorder</li></ol></div></div>
+</div></section><section class="problem" id="p307">
+<h2>Problem 307: Iterative Postorder (1 Stack)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Using one stack.</p><div class="ex">Input: root=[1,2,3]<br>Output:<pre class="out">[2,3,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Two stacks.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>One stack with a last-visited pointer.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A node is processed only after its right child has been visited.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; postorderOneStack(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    Deque&lt;TreeNode&gt; st = new ArrayDeque&lt;&gt;();
+    TreeNode cur = root, last = null;
+    while (cur != null || !st.isEmpty()) {
+        if (cur != null) { st.push(cur); cur = cur.left; }
+        else {
+            TreeNode top = st.peek();
+            if (top.right != null &amp;&amp; last != top.right) cur = top.right;
+            else { res.add(top.val); last = st.pop(); }
+        }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Go left pushing nodes</li><li>Peek the top</li><li>If it has an unvisited right child go there</li><li>Else pop and record</li></ol></div></div>
+</div></section><section class="problem" id="p308">
+<h2>Problem 308: Preorder, Inorder and Postorder in One Traversal<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Single traversal for all three.</p><div class="ex">Input: root=[1,2,3]<br>Output:<pre class="out">[[1,2,3],[2,1,3],[2,3,1]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Three separate traversals.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>One stack with a visit-count state per node.</p></div>
+<div class="card w"><h3>Why it works</h3><p>State 1 = preorder, 2 = inorder, 3 = postorder; each node is touched three times.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; allTraversals(TreeNode root) {
+    List&lt;Integer&gt; pre = new ArrayList&lt;&gt;(), in = new ArrayList&lt;&gt;(), post = new ArrayList&lt;&gt;();
+    if (root == null) return Arrays.asList(pre, in, post);
+    Deque&lt;Object[]&gt; st = new ArrayDeque&lt;&gt;();
+    st.push(new Object[]{root, 1});
+    while (!st.isEmpty()) {
+        Object[] top = st.pop();
+        TreeNode n = (TreeNode) top[0];
+        int s = (int) top[1];
+        if (s == 1) { pre.add(n.val); st.push(new Object[]{n, 2}); if (n.left != null) st.push(new Object[]{n.left, 1}); }
+        else if (s == 2) { in.add(n.val); st.push(new Object[]{n, 3}); if (n.right != null) st.push(new Object[]{n.right, 1}); }
+        else post.add(n.val);
+    }
+    return Arrays.asList(pre, in, post);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Push (node, 1)</li><li>State 1: add to pre and push left</li><li>State 2: add to in and push right</li><li>State 3: add to post</li></ol></div></div>
+</div></section><section class="problem" id="p309">
+<h2>Problem 309: Diameter of Binary Tree<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest path between any two nodes (edges).</p><div class="ex">Input: root=[1,2,3,4,5]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute height of both sides at every node, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Single DFS updating a global max of left + right heights.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The longest path through a node is leftHeight + rightHeight.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int diameterOfBinaryTree(TreeNode root) {
+    int[] best = {0};
+    height(root, best);
+    return best[0];
+}
+
+private static int height(TreeNode n, int[] best) {
+    if (n == null) return 0;
+    int l = height(n.left, best), r = height(n.right, best);
+    best[0] = Math.max(best[0], l + r);
+    return 1 + Math.max(l, r);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Return height</li><li>At each node update diameter</li><li>Return the diameter</li></ol></div></div>
+</div></section><section class="problem" id="p310">
+<h2>Problem 310: Zigzag Level Order Traversal<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Alternate direction per level.</p><div class="ex">Input: root=[3,9,20,null,null,15,7]<br>Output:<pre class="out">[[3],[20,9],[15,7]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Level order then reverse alternate levels.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS with a direction flag inserting at the front or back.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Placing items in the right index avoids a reverse step.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; zigzagLevelOrder(TreeNode root) {
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    if (root == null) return res;
+    Queue&lt;TreeNode&gt; q = new LinkedList&lt;&gt;();
+    q.add(root);
+    boolean ltr = true;
+    while (!q.isEmpty()) {
+        int sz = q.size();
+        LinkedList&lt;Integer&gt; lvl = new LinkedList&lt;&gt;();
+        for (int i = 0; i &lt; sz; i++) {
+            TreeNode n = q.poll();
+            if (ltr) lvl.addLast(n.val); else lvl.addFirst(n.val);
+            if (n.left != null) q.add(n.left);
+            if (n.right != null) q.add(n.right);
+        }
+        res.add(lvl);
+        ltr = !ltr;
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>BFS by level</li><li>Left to right: add at the end</li><li>Right to left: add at the front</li><li>Flip the flag</li></ol></div></div>
+</div></section><section class="problem" id="p311">
+<h2>Problem 311: Boundary Traversal<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Anticlockwise boundary.</p><div class="ex">Input: root=[1,2,3,4,5,6,7]<br>Output:<pre class="out">[1,2,4,5,6,7,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Traverse and pick boundary nodes by checking each.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Left boundary, leaves, right boundary (reversed).</p></div>
+<div class="card w"><h3>Why it works</h3><p>The boundary is exactly these three parts without duplicates.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; boundaryTraversal(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    if (root == null) return res;
+    if (!isLeaf(root)) res.add(root.val);
+    for (TreeNode n = root.left; n != null; ) {
+        if (!isLeaf(n)) res.add(n.val);
+        n = n.left != null ? n.left : n.right;
+    }
+    leaves(root, res);
+    List&lt;Integer&gt; right = new ArrayList&lt;&gt;();
+    for (TreeNode n = root.right; n != null; ) {
+        if (!isLeaf(n)) right.add(n.val);
+        n = n.right != null ? n.right : n.left;
+    }
+    Collections.reverse(right);
+    res.addAll(right);
+    return res;
+}
+
+private static boolean isLeaf(TreeNode n) { return n.left == null &amp;&amp; n.right == null; }
+
+private static void leaves(TreeNode n, List&lt;Integer&gt; res) {
+    if (n == null) return;
+    if (isLeaf(n)) res.add(n.val);
+    leaves(n.left, res);
+    leaves(n.right, res);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add root if not a leaf</li><li>Walk left boundary skipping leaves</li><li>Add all leaves</li><li>Walk right boundary skipping leaves and reverse</li></ol></div></div>
+</div></section><section class="problem" id="p312">
+<h2>Problem 312: Vertical Order Traversal<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Column by column.</p><div class="ex">Input: root=[3,9,20,null,null,15,7]<br>Output:<pre class="out">[[9],[3,15],[20],[7]]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute coordinates and sort everything.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS tracking (column, row) in a nested TreeMap.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Sorting by column, row and then value matches the required order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;List&lt;Integer&gt;&gt; verticalTraversal(TreeNode root) {
+    TreeMap&lt;Integer, TreeMap&lt;Integer, PriorityQueue&lt;Integer&gt;&gt;&gt; m = new TreeMap&lt;&gt;();
+    Queue&lt;Object[]&gt; q = new LinkedList&lt;&gt;();
+    q.add(new Object[]{root, 0, 0});
+    while (!q.isEmpty()) {
+        Object[] o = q.poll();
+        TreeNode n = (TreeNode) o[0];
+        if (n == null) continue;
+        int c = (int) o[1], r = (int) o[2];
+        m.computeIfAbsent(c, k -&gt; new TreeMap&lt;&gt;()).computeIfAbsent(r, k -&gt; new PriorityQueue&lt;&gt;()).add(n.val);
+        q.add(new Object[]{n.left, c - 1, r + 1});
+        q.add(new Object[]{n.right, c + 1, r + 1});
+    }
+    List&lt;List&lt;Integer&gt;&gt; res = new ArrayList&lt;&gt;();
+    for (TreeMap&lt;Integer, PriorityQueue&lt;Integer&gt;&gt; rows : m.values()) {
+        List&lt;Integer&gt; col = new ArrayList&lt;&gt;();
+        for (PriorityQueue&lt;Integer&gt; pq : rows.values()) while (!pq.isEmpty()) col.add(pq.poll());
+        res.add(col);
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>BFS storing (node, col, row)</li><li>map[col][row] holds a priority queue</li><li>Output columns in order</li></ol></div></div>
+</div></section><section class="problem" id="p313">
+<h2>Problem 313: Top View of Binary Tree<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Nodes visible from top.</p><div class="ex">Input: root=[1,2,3,4,5,6,7]<br>Output:<pre class="out">[4,2,1,3,7]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check each node for blocking nodes above.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS storing the first node per column.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Level order reaches the topmost node of each column first.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; topView(TreeNode root) {
+    TreeMap&lt;Integer, Integer&gt; m = new TreeMap&lt;&gt;();
+    Queue&lt;Object[]&gt; q = new LinkedList&lt;&gt;();
+    if (root != null) q.add(new Object[]{root, 0});
+    while (!q.isEmpty()) {
+        Object[] o = q.poll();
+        TreeNode n = (TreeNode) o[0];
+        int c = (int) o[1];
+        m.putIfAbsent(c, n.val);
+        if (n.left != null) q.add(new Object[]{n.left, c - 1});
+        if (n.right != null) q.add(new Object[]{n.right, c + 1});
+    }
+    return new ArrayList&lt;&gt;(m.values());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Queue (node, column)</li><li>putIfAbsent per column</li><li>Output columns from left to right</li></ol></div></div>
+</div></section><section class="problem" id="p314">
+<h2>Problem 314: Bottom View of Binary Tree<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Nodes visible from bottom.</p><div class="ex">Input: root=[20,8,22,5,3,4,25]<br>Output:<pre class="out">[5,10,3,14,25]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check each node for blockers below.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS overwriting the value per column.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The last node seen in a column during level order is the bottom one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; bottomView(TreeNode root) {
+    TreeMap&lt;Integer, Integer&gt; m = new TreeMap&lt;&gt;();
+    Queue&lt;Object[]&gt; q = new LinkedList&lt;&gt;();
+    if (root != null) q.add(new Object[]{root, 0});
+    while (!q.isEmpty()) {
+        Object[] o = q.poll();
+        TreeNode n = (TreeNode) o[0];
+        int c = (int) o[1];
+        m.put(c, n.val);
+        if (n.left != null) q.add(new Object[]{n.left, c - 1});
+        if (n.right != null) q.add(new Object[]{n.right, c + 1});
+    }
+    return new ArrayList&lt;&gt;(m.values());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Queue (node, column)</li><li>put value for the column each time</li><li>Output columns in order</li></ol></div></div>
+</div></section><section class="problem" id="p315">
+<h2>Problem 315: Right/Left View of Binary Tree<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Nodes visible from right.</p><div class="ex">Input: root=[1,2,3,null,5,null,4]<br>Output:<pre class="out">[1,3,4]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Level order then take the last of each level.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS visiting right first, recording the first node per depth.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first node seen at each depth is the rightmost one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; rightView(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    dfs(root, 0, res);
+    return res;
+}
+
+private static void dfs(TreeNode n, int d, List&lt;Integer&gt; res) {
+    if (n == null) return;
+    if (d == res.size()) res.add(n.val);
+    dfs(n.right, d + 1, res);
+    dfs(n.left, d + 1, res);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Recurse with depth</li><li>If depth == result size add the node</li><li>Visit right before left</li></ol></div></div>
+</div></section><section class="problem" id="p316">
+<h2>Problem 316: Check for Symmetrical Binary Tree<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Mirror of itself.</p><div class="ex">Input: root=[1,2,2,3,4,4,3]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Invert a copy and compare.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursively compare mirrored children.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A tree is symmetric when left and right are mirrors.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isSymmetric(TreeNode root) {
+    return root == null || mirror(root.left, root.right);
+}
+
+private static boolean mirror(TreeNode a, TreeNode b) {
+    if (a == null || b == null) return a == b;
+    return a.val == b.val &amp;&amp; mirror(a.left, b.right) &amp;&amp; mirror(a.right, b.left);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compare left.left with right.right</li><li>Compare left.right with right.left</li><li>Values must match</li></ol></div></div>
+</div></section><section class="problem" id="p317">
+<h2>Problem 317: Root to Node Path<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Path from root to node x.</p><div class="ex">Input: root=[1,2,3,4,5,6,7], x=7<br>Output:<pre class="out">[1,3,7]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Find all paths and filter.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS adding nodes and backtracking.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first path reaching x is the unique root-to-node path.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; rootToNode(TreeNode root, int x) {
+    List&lt;Integer&gt; path = new ArrayList&lt;&gt;();
+    find(root, x, path);
+    return path;
+}
+
+private static boolean find(TreeNode n, int x, List&lt;Integer&gt; p) {
+    if (n == null) return false;
+    p.add(n.val);
+    if (n.val == x || find(n.left, x, p) || find(n.right, x, p)) return true;
+    p.remove(p.size() - 1);
+    return false;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add the node</li><li>If value == x return true</li><li>Recurse into children</li><li>Remove the node if not found</li></ol></div></div>
+</div></section><section class="problem" id="p318">
+<h2>Problem 318: Lowest Common Ancestor<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>LCA of two nodes.</p><div class="ex">Input: root=[3,5,1,6,2,0,8], p=5, q=1<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Find both root paths and compare them.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>One recursion returning the node if it matches or found in subtrees.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first node where p and q split between subtrees is the LCA.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) return root;
+    TreeNode l = lowestCommonAncestor(root.left, p, q), r = lowestCommonAncestor(root.right, p, q);
+    if (l != null &amp;&amp; r != null) return root;
+    return l != null ? l : r;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Null or equals p/q returns the node</li><li>Recurse left and right</li><li>Both non-null means the current node is LCA</li></ol></div></div>
+</div></section><section class="problem" id="p319">
+<h2>Problem 319: Maximum Width of Binary Tree<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max width among levels.</p><div class="ex">Input: root=[1,3,2,5,3,null,9]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use a map of (level, position) pairs.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>BFS with heap-style indexing per node.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Width = last index - first index + 1 per level; normalise to avoid overflow.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int widthOfBinaryTree(TreeNode root) {
+    if (root == null) return 0;
+    Queue&lt;Object[]&gt; q = new LinkedList&lt;&gt;();
+    q.add(new Object[]{root, 0L});
+    long best = 0;
+    while (!q.isEmpty()) {
+        int sz = q.size();
+        long first = (long) q.peek()[1], last = first;
+        for (int i = 0; i &lt; sz; i++) {
+            Object[] o = q.poll();
+            TreeNode n = (TreeNode) o[0];
+            long idx = (long) o[1] - first;
+            last = idx;
+            if (n.left != null) q.add(new Object[]{n.left, 2 * idx});
+            if (n.right != null) q.add(new Object[]{n.right, 2 * idx + 1});
+        }
+        best = Math.max(best, last + 1);
+    }
+    return (int) best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Queue (node, index)</li><li>Left child 2i, right child 2i+1</li><li>Width = last - first + 1</li><li>Subtract first index per level</li></ol></div></div>
+</div></section><section class="problem" id="p320">
+<h2>Problem 320: Children Sum Property<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Node value equals sum of children.</p><div class="ex">Input: root=[10,10]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute child sums repeatedly.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursive check at every node.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Leaves satisfy the property trivially.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean checkChildrenSum(TreeNode root) {
+    if (root == null || (root.left == null &amp;&amp; root.right == null)) return true;
+    int sum = (root.left != null ? root.left.val : 0) + (root.right != null ? root.right.val : 0);
+    return root.val == sum &amp;&amp; checkChildrenSum(root.left) &amp;&amp; checkChildrenSum(root.right);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Leaf returns true</li><li>sum = left + right (0 for null)</li><li>Compare to node value</li><li>Recurse on both children</li></ol></div></div>
+</div></section><section class="problem" id="p321">
+<h2>Problem 321: Count Complete Tree Nodes<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count nodes of complete tree under O(n).</p><div class="ex">Input: root=[1,2,3,4,5,6]<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Traverse all nodes, O(n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Compare left and right heights; a perfect subtree has 2^h - 1 nodes.</p></div>
+<div class="card w"><h3>Why it works</h3><p>One of the subtrees is perfect at each step, so the recursion is O(log^2 n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countNodes(TreeNode root) {
+    if (root == null) return 0;
+    int lh = 0, rh = 0;
+    for (TreeNode n = root; n != null; n = n.left) lh++;
+    for (TreeNode n = root; n != null; n = n.right) rh++;
+    if (lh == rh) return (1 &lt;&lt; lh) - 1;
+    return 1 + countNodes(root.left) + countNodes(root.right);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute leftmost and rightmost heights</li><li>If equal return 2^h - 1</li><li>Else 1 + count(left) + count(right)</li></ol></div></div>
+</div></section><section class="problem" id="p322">
+<h2>Problem 322: Flatten Binary Tree to Linked List<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Flatten in preorder in place.</p><div class="ex">Input: root=[1,2,5,3,4,null,6]<br>Output:<pre class="out">1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Preorder into a list then rebuild.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>For each node attach left subtree&#x27;s rightmost to the right subtree (Morris-like).</p></div>
+<div class="card w"><h3>Why it works</h3><p>In-place and O(1) extra space.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void flatten(TreeNode root) {
+    TreeNode cur = root;
+    while (cur != null) {
+        if (cur.left != null) {
+            TreeNode p = cur.left;
+            while (p.right != null) p = p.right;
+            p.right = cur.right;
+            cur.right = cur.left;
+            cur.left = null;
+        }
+        cur = cur.right;
+    }
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each node with a left child</li><li>Find rightmost node of the left subtree</li><li>Link it to node.right</li><li>Move left subtree to right and clear left</li></ol></div></div>
+</div></section><section class="problem" id="p323">
+<h2>Problem 323: Insert a Node in BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insert value.</p><div class="ex">Input: root=[4,2,7,1,3], val=5<br>Output:<pre class="out">[4,2,7,1,3,5]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild the tree with the value added.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk down and attach as a leaf.</p></div>
+<div class="card w"><h3>Why it works</h3><p>BST insertion always ends at a null child position.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode insertIntoBST(TreeNode root, int val) {
+    if (root == null) return new TreeNode(val);
+    TreeNode cur = root;
+    while (true) {
+        if (val &lt; cur.val) {
+            if (cur.left == null) { cur.left = new TreeNode(val); break; }
+            cur = cur.left;
+        } else {
+            if (cur.right == null) { cur.right = new TreeNode(val); break; }
+            cur = cur.right;
+        }
+    }
+    return root;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If root is null return new node</li><li>Go left or right by comparison</li><li>Attach at the null spot</li></ol></div></div>
+</div></section><section class="problem" id="p324">
+<h2>Problem 324: Delete a Node in BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Delete key.</p><div class="ex">Input: root=[5,3,6,2,4,null,7], key=3<br>Output:<pre class="out">[5,4,6,2,null,null,7]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Rebuild from the inorder list without the key.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursive delete handling 0, 1, 2 children.</p></div>
+<div class="card w"><h3>Why it works</h3><p>With two children replace by the inorder successor.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode deleteNode(TreeNode root, int key) {
+    if (root == null) return null;
+    if (key &lt; root.val) root.left = deleteNode(root.left, key);
+    else if (key &gt; root.val) root.right = deleteNode(root.right, key);
+    else {
+        if (root.left == null) return root.right;
+        if (root.right == null) return root.left;
+        TreeNode s = root.right;
+        while (s.left != null) s = s.left;
+        root.val = s.val;
+        root.right = deleteNode(root.right, s.val);
+    }
+    return root;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Find the node</li><li>No left child returns right</li><li>No right child returns left</li><li>Otherwise copy the successor value and delete it</li></ol></div></div>
+</div></section><section class="problem" id="p325">
+<h2>Problem 325: Kth Smallest Element in BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>K-th smallest.</p><div class="ex">Input: root=[3,1,4,null,2], k=1<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Inorder list and index.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Iterative inorder stopping at the k-th node.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Inorder of a BST is sorted.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int kthSmallest(TreeNode root, int k) {
+    Deque&lt;TreeNode&gt; st = new ArrayDeque&lt;&gt;();
+    TreeNode cur = root;
+    while (cur != null || !st.isEmpty()) {
+        while (cur != null) { st.push(cur); cur = cur.left; }
+        cur = st.pop();
+        if (--k == 0) return cur.val;
+        cur = cur.right;
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Standard iterative inorder</li><li>Decrement k at each visit</li><li>Return when k reaches 0</li></ol></div></div>
+</div></section><section class="problem" id="p326">
+<h2>Problem 326: Kth Largest Element in BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>K-th largest.</p><div class="ex">Input: root=[3,1,4,null,2], k=1<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Inorder list and index from the end.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reverse inorder (Right, Root, Left).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Reverse inorder visits values in descending order.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int kthLargest(TreeNode root, int k) {
+    Deque&lt;TreeNode&gt; st = new ArrayDeque&lt;&gt;();
+    TreeNode cur = root;
+    while (cur != null || !st.isEmpty()) {
+        while (cur != null) { st.push(cur); cur = cur.right; }
+        cur = st.pop();
+        if (--k == 0) return cur.val;
+        cur = cur.left;
+    }
+    return -1;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Mirror the inorder traversal</li><li>Count down k</li><li>Return at zero</li></ol></div></div>
+</div></section><section class="problem" id="p327">
+<h2>Problem 327: Validate BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Check BST property.</p><div class="ex">Input: root=[2,1,3]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check each node against all nodes in its subtree.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion with min and max bounds.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Every node must lie strictly between the bounds inherited from its ancestors.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isValidBST(TreeNode root) {
+    return valid(root, Long.MIN_VALUE, Long.MAX_VALUE);
+}
+
+private static boolean valid(TreeNode n, long lo, long hi) {
+    if (n == null) return true;
+    if (n.val &lt;= lo || n.val &gt;= hi) return false;
+    return valid(n.left, lo, n.val) &amp;&amp; valid(n.right, n.val, hi);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start with (-inf, +inf)</li><li>Check node.val in range</li><li>Narrow bounds for children</li></ol></div></div>
+</div></section><section class="problem" id="p328">
+<h2>Problem 328: LCA in BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>LCA in BST.</p><div class="ex">Input: root=[6,2,8,0,4,7,9], p=2, q=8<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Use general LCA.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk down: if both are smaller go left, both larger go right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first node between p and q is their split point.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode lcaBST(TreeNode root, TreeNode p, TreeNode q) {
+    while (root != null) {
+        if (p.val &lt; root.val &amp;&amp; q.val &lt; root.val) root = root.left;
+        else if (p.val &gt; root.val &amp;&amp; q.val &gt; root.val) root = root.right;
+        else return root;
+    }
+    return null;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>While true</li><li>Both smaller: go left</li><li>Both larger: go right</li><li>Else return the node</li></ol></div></div>
+</div></section><section class="problem" id="p329">
+<h2>Problem 329: Construct BST from Preorder<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Build BST.</p><div class="ex">Input: preorder=[8,5,1,7,10,12]<br>Output:<pre class="out">[8,5,10,1,7,null,12]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Insert each value one by one, O(n^2) worst.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Recursion with an upper bound and a shared index.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Preorder lets each value be placed if it is below the current bound.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode bstFromPreorder(int[] preorder) {
+    return build(preorder, new int[]{0}, Integer.MAX_VALUE);
+}
+
+private static TreeNode build(int[] p, int[] i, int bound) {
+    if (i[0] == p.length || p[i[0]] &gt; bound) return null;
+    TreeNode n = new TreeNode(p[i[0]++]);
+    n.left = build(p, i, n.val);
+    n.right = build(p, i, bound);
+    return n;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>i = 0</li><li>If i == n or value &gt; bound return null</li><li>Create node</li><li>Build left with bound = val</li><li>Build right with parent&#x27;s bound</li></ol></div></div>
+</div></section><section class="problem" id="p330">
+<h2>Problem 330: Inorder Successor / Predecessor in BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Next inorder node.</p><div class="ex">Input: root=[2,1,3], p=1<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Inorder list and find the next after p.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk from the root tracking the candidate successor.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The successor is the lowest ancestor to which p lies in the left subtree.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+    TreeNode succ = null;
+    while (root != null) {
+        if (p.val &lt; root.val) { succ = root; root = root.left; }
+        else root = root.right;
+    }
+    return succ;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>succ = null</li><li>If p.val &lt; node.val set succ = node and go left</li><li>Else go right</li></ol></div></div>
+</div></section><section class="problem" id="p331">
+<h2>Problem 331: BST Iterator<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>next() and hasNext() in O(h) space.</p><div class="ex">Input: root=[7,3,15,null,null,9,20]<br>Output:<pre class="out">3, 7, 9</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store the whole inorder in a list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Stack holding the left path; next() pops and pushes the right child&#x27;s left path.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only O(h) nodes are stored at a time and next is amortized O(1).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void bstIterator() {
+    TreeNode root = new TreeNode(7);
+    root.left = new TreeNode(3);
+    root.right = new TreeNode(15);
+    root.right.left = new TreeNode(9);
+    root.right.right = new TreeNode(20);
+    class It {
+        Deque&lt;TreeNode&gt; st = new ArrayDeque&lt;&gt;();
+        It(TreeNode r) { push(r); }
+        void push(TreeNode n) { while (n != null) { st.push(n); n = n.left; } }
+        int next() { TreeNode n = st.pop(); push(n.right); return n.val; }
+        boolean hasNext() { return !st.isEmpty(); }
+    }
+    It it = new It(root);
+    while (it.hasNext()) System.out.println(it.next());
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Constructor pushes the left chain</li><li>next pops and pushes left chain of right child</li><li>hasNext checks the stack</li></ol></div></div>
+</div></section><section class="problem" id="p332">
+<h2>Problem 332: Two Sum IV - Input is a BST<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Two nodes sum to k.</p><div class="ex">Input: root=[5,3,6,2,4,null,7], k=9<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all pairs of nodes.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Traverse with a HashSet of seen values.</p></div>
+<div class="card w"><h3>Why it works</h3><p>For each node look for k - val among previously seen values.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean findTarget(TreeNode root, int k) {
+    return dfs(root, k, new HashSet&lt;&gt;());
+}
+
+private static boolean dfs(TreeNode n, int k, Set&lt;Integer&gt; seen) {
+    if (n == null) return false;
+    if (seen.contains(k - n.val)) return true;
+    seen.add(n.val);
+    return dfs(n.left, k, seen) || dfs(n.right, k, seen);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>DFS</li><li>If set contains k - val return true</li><li>Add val to the set</li></ol></div></div>
+</div></section><section class="problem" id="p333">
+<h2>Problem 333: Maximum Path Sum<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max sum of any path.</p><div class="ex">Input: root=[-10,9,20,null,null,15,7]<br>Output:<pre class="out">42</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute all paths between node pairs.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DFS returning the best downward path and updating a global best.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Negative branches are dropped with max(0, ...).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxPathSum(TreeNode root) {
+    int[] best = {Integer.MIN_VALUE};
+    dfs(root, best);
+    return best[0];
+}
+
+private static int dfs(TreeNode n, int[] best) {
+    if (n == null) return 0;
+    int l = Math.max(0, dfs(n.left, best)), r = Math.max(0, dfs(n.right, best));
+    best[0] = Math.max(best[0], n.val + l + r);
+    return n.val + Math.max(l, r);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>left = max(0, dfs(left))</li><li>right = max(0, dfs(right))</li><li>best = max(best, val+left+right)</li><li>Return val + max(left, right)</li></ol></div></div>
+</div></section><section class="problem" id="p334">
+<h2>Problem 334: All Nodes at Distance K<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Nodes k away from target.</p><div class="ex">Input: root=[3,5,1,6,2,0,8,null,null,7,4], target=5, k=2<br>Output:<pre class="out">[7,4,1]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute the distance from the target to every node.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Map child to parent then BFS k levels from the target.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Parent pointers let the BFS move up as well as down.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; distanceK(TreeNode root, TreeNode target, int k) {
+    Map&lt;TreeNode, TreeNode&gt; parent = new HashMap&lt;&gt;();
+    Queue&lt;TreeNode&gt; q = new LinkedList&lt;&gt;();
+    q.add(root);
+    while (!q.isEmpty()) {
+        TreeNode n = q.poll();
+        if (n.left != null) { parent.put(n.left, n); q.add(n.left); }
+        if (n.right != null) { parent.put(n.right, n); q.add(n.right); }
+    }
+    Set&lt;TreeNode&gt; seen = new HashSet&lt;&gt;();
+    q.add(target);
+    seen.add(target);
+    int d = 0;
+    while (!q.isEmpty() &amp;&amp; d &lt; k) {
+        for (int i = q.size(); i &gt; 0; i--) {
+            TreeNode n = q.poll();
+            for (TreeNode nb : new TreeNode[]{n.left, n.right, parent.get(n)})
+                if (nb != null &amp;&amp; seen.add(nb)) q.add(nb);
+        }
+        d++;
+    }
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    for (TreeNode n : q) res.add(n.val);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build parent map</li><li>BFS from target with a visited set</li><li>Stop at distance k</li><li>Queue contents are the answer</li></ol></div></div>
+</div></section><section class="problem" id="p335">
+<h2>Problem 335: Minimum Time to Burn Tree<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Time to burn the whole tree from a node.</p><div class="ex">Input: root=[1,2,3,4,5,null,6], start=2<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Simulate burning for each node.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Parent map then BFS from the start node counting levels.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Fire spreads to parent and children each minute.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int timeToBurn(TreeNode root, int start) {
+    Map&lt;TreeNode, TreeNode&gt; parent = new HashMap&lt;&gt;();
+    TreeNode s = null;
+    Queue&lt;TreeNode&gt; q = new LinkedList&lt;&gt;();
+    q.add(root);
+    while (!q.isEmpty()) {
+        TreeNode n = q.poll();
+        if (n.val == start) s = n;
+        if (n.left != null) { parent.put(n.left, n); q.add(n.left); }
+        if (n.right != null) { parent.put(n.right, n); q.add(n.right); }
+    }
+    Set&lt;TreeNode&gt; seen = new HashSet&lt;&gt;();
+    q.add(s);
+    seen.add(s);
+    int t = -1;
+    while (!q.isEmpty()) {
+        for (int i = q.size(); i &gt; 0; i--) {
+            TreeNode n = q.poll();
+            for (TreeNode nb : new TreeNode[]{n.left, n.right, parent.get(n)})
+                if (nb != null &amp;&amp; seen.add(nb)) q.add(nb);
+        }
+        t++;
+    }
+    return t;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build parents and find the start node</li><li>BFS with a visited set</li><li>Count levels beyond the first</li></ol></div></div>
+</div></section><section class="problem" id="p336">
+<h2>Problem 336: Construct Tree from Preorder and Inorder<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Build the tree.</p><div class="ex">Input: preorder=[3,9,20,15,7], inorder=[9,3,15,20,7]<br>Output:<pre class="out">[3,9,20,null,null,15,7]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Search for the root index in inorder every time, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Map value to inorder index and recurse with ranges.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Preorder gives the root; its inorder index splits left and right.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode buildTreePreIn(int[] preorder, int[] inorder) {
+    Map&lt;Integer, Integer&gt; idx = new HashMap&lt;&gt;();
+    for (int i = 0; i &lt; inorder.length; i++) idx.put(inorder[i], i);
+    return build(preorder, new int[]{0}, 0, inorder.length - 1, idx);
+}
+
+private static TreeNode build(int[] pre, int[] p, int l, int r, Map&lt;Integer, Integer&gt; idx) {
+    if (l &gt; r) return null;
+    TreeNode n = new TreeNode(pre[p[0]++]);
+    int m = idx.get(n.val);
+    n.left = build(pre, p, l, m - 1, idx);
+    n.right = build(pre, p, m + 1, r, idx);
+    return n;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Index map for inorder</li><li>Take the next preorder value as root</li><li>Build left then right using inorder bounds</li></ol></div></div>
+</div></section><section class="problem" id="p337">
+<h2>Problem 337: Construct Tree from Inorder and Postorder<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Build the tree.</p><div class="ex">Input: inorder=[9,3,15,20,7], postorder=[9,15,7,20,3]<br>Output:<pre class="out">[3,9,20,null,null,15,7]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Search for the root index every time.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Map value to inorder index; read postorder from the end.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The last postorder value is the root; build right before left.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static TreeNode buildTreeInPost(int[] inorder, int[] postorder) {
+    Map&lt;Integer, Integer&gt; idx = new HashMap&lt;&gt;();
+    for (int i = 0; i &lt; inorder.length; i++) idx.put(inorder[i], i);
+    return build(postorder, new int[]{postorder.length - 1}, 0, inorder.length - 1, idx);
+}
+
+private static TreeNode build(int[] post, int[] p, int l, int r, Map&lt;Integer, Integer&gt; idx) {
+    if (l &gt; r) return null;
+    TreeNode n = new TreeNode(post[p[0]--]);
+    int m = idx.get(n.val);
+    n.right = build(post, p, m + 1, r, idx);
+    n.left = build(post, p, l, m - 1, idx);
+    return n;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Index map</li><li>root = post[p--]</li><li>Build right subtree first then left</li></ol></div></div>
+</div></section><section class="problem" id="p338">
+<h2>Problem 338: Serialize and Deserialize Binary Tree<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Convert tree to string (and back).</p><div class="ex">Input: root=[1,2,3,null,null,4,5]<br>Output:<pre class="out">&quot;1,2,3,#,#,4,5&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Store three traversals.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Level order with &#x27;#&#x27; for null children.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Level order with null markers uniquely identifies a tree.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String serialize(TreeNode root) {
+    if (root == null) return &quot;&quot;;
+    List&lt;String&gt; out = new ArrayList&lt;&gt;();
+    Queue&lt;TreeNode&gt; q = new LinkedList&lt;&gt;();
+    q.add(root);
+    while (!q.isEmpty()) {
+        TreeNode n = q.poll();
+        if (n == null) { out.add(&quot;#&quot;); continue; }
+        out.add(String.valueOf(n.val));
+        q.add(n.left);
+        q.add(n.right);
+    }
+    while (out.get(out.size() - 1).equals(&quot;#&quot;)) out.remove(out.size() - 1);
+    return String.join(&quot;,&quot;, out);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>BFS with null markers</li><li>Trim trailing &#x27;#&#x27;</li><li>Join by commas</li></ol></div></div>
+</div></section><section class="problem" id="p339">
+<h2>Problem 339: Morris Inorder Traversal<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>O(1) space inorder.</p><div class="ex">Input: root=[1,null,2,3]<br>Output:<pre class="out">[1,3,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursive or stack inorder with O(h) space.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Morris: thread the inorder predecessor to the current node.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Temporary right-links replace the stack, giving O(1) space.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; morrisInorder(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    TreeNode cur = root;
+    while (cur != null) {
+        if (cur.left == null) { res.add(cur.val); cur = cur.right; }
+        else {
+            TreeNode p = cur.left;
+            while (p.right != null &amp;&amp; p.right != cur) p = p.right;
+            if (p.right == null) { p.right = cur; cur = cur.left; }
+            else { p.right = null; res.add(cur.val); cur = cur.right; }
+        }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If no left child visit and go right</li><li>Else find predecessor</li><li>If its right is null link it and go left</li><li>Else unlink, visit, go right</li></ol></div></div>
+</div></section><section class="problem" id="p340">
+<h2>Problem 340: Morris Preorder Traversal<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>O(1) space preorder.</p><div class="ex">Input: root=[1,null,2,3]<br>Output:<pre class="out">[1,2,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Stack-based preorder.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Morris with the visit done when creating the thread.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Preorder records the node before going left.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; morrisPreorder(TreeNode root) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    TreeNode cur = root;
+    while (cur != null) {
+        if (cur.left == null) { res.add(cur.val); cur = cur.right; }
+        else {
+            TreeNode p = cur.left;
+            while (p.right != null &amp;&amp; p.right != cur) p = p.right;
+            if (p.right == null) { res.add(cur.val); p.right = cur; cur = cur.left; }
+            else { p.right = null; cur = cur.right; }
+        }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>No left child: visit and go right</li><li>Else find predecessor</li><li>If thread is missing add it, visit, go left</li><li>Else remove the thread and go right</li></ol></div></div>
+</div></section><section class="problem" id="p341">
+<h2>Problem 341: Recover BST<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Two nodes swapped; fix.</p><div class="ex">Input: root=[1,3,null,null,2]<br>Output:<pre class="out">[3,1,null,null,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Sort the inorder values and rewrite.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Inorder traversal tracking the two out-of-order nodes.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Two swapped nodes create one or two descents in the inorder sequence.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static void recoverTree(TreeNode root) {
+    TreeNode first = null, second = null, prev = null;
+    Deque&lt;TreeNode&gt; st = new ArrayDeque&lt;&gt;();
+    TreeNode cur = root;
+    while (cur != null || !st.isEmpty()) {
+        while (cur != null) { st.push(cur); cur = cur.left; }
+        cur = st.pop();
+        if (prev != null &amp;&amp; prev.val &gt; cur.val) {
+            if (first == null) first = prev;
+            second = cur;
+        }
+        prev = cur;
+        cur = cur.right;
+    }
+    int t = first.val; first.val = second.val; second.val = t;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Track prev</li><li>At the first descent record first=prev, second=cur</li><li>At a second descent update second</li><li>Swap values</li></ol></div></div>
+</div></section><section class="problem" id="p342">
+<h2>Problem 342: Largest BST in Binary Tree<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Size of largest BST subtree.</p><div class="ex">Input: root=[10,5,15,1,8,null,7]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Validate every subtree as a BST, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Postorder returning (min, max, size) per subtree.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A node forms a BST if left.max &lt; val &lt; right.min; sizes combine bottom-up.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int largestBST(TreeNode root) {
+    int[] best = {0};
+    go(root, best);
+    return best[0];
+}
+
+private static int[] go(TreeNode n, int[] best) {
+    if (n == null) return new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
+    int[] l = go(n.left, best), r = go(n.right, best);
+    if (l[1] &lt; n.val &amp;&amp; n.val &lt; r[0]) {
+        int size = l[2] + r[2] + 1;
+        best[0] = Math.max(best[0], size);
+        return new int[]{Math.min(l[0], n.val), Math.max(r[1], n.val), size};
+    }
+    return new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE, Math.max(l[2], r[2])};
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Null returns an empty BST</li><li>Combine children if valid</li><li>Otherwise mark invalid</li><li>Track the largest size</li></ol></div></div>
+</div></section></main></body></html>

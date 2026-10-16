@@ -1,0 +1,1161 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>15 - Dynamic Programming</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>15 - Dynamic Programming</h1></header><main><nav class="toc"><a href="#p391">391. Climbing Stairs</a><a href="#p392">392. Frog Jump</a><a href="#p393">393. Frog Jump with K Distances</a><a href="#p394">394. Maximum Sum of Non-Adjacent Elements</a><a href="#p395">395. House Robber II</a><a href="#p396">396. Ninja&#x27;s Training</a><a href="#p397">397. Unique Paths</a><a href="#p398">398. Unique Paths II (Obstacles)</a><a href="#p399">399. Minimum Path Sum in Grid</a><a href="#p400">400. Triangle (Minimum Path Sum)</a><a href="#p401">401. Minimum/Maximum Falling Path Sum</a><a href="#p402">402. Subset Sum Equals to Target</a><a href="#p403">403. Partition Equal Subset Sum</a><a href="#p404">404. Partition Set into Two Subsets with Minimum Absolute Sum Difference</a><a href="#p405">405. Count Subsets with Sum K</a><a href="#p406">406. Count Partitions with Given Difference</a><a href="#p407">407. 0/1 Knapsack</a><a href="#p408">408. Minimum Coins</a><a href="#p409">409. Target Sum</a><a href="#p410">410. Coin Change II</a><a href="#p411">411. Unbounded Knapsack</a><a href="#p412">412. Rod Cutting Problem</a><a href="#p413">413. Longest Common Subsequence</a><a href="#p414">414. Print Longest Common Subsequence</a><a href="#p415">415. Longest Common Substring</a><a href="#p416">416. Longest Palindromic Subsequence</a><a href="#p417">417. Minimum Insertions to Make String Palindrome</a><a href="#p418">418. Minimum Insertions/Deletions to Convert String A to B</a><a href="#p419">419. Shortest Common Supersequence</a><a href="#p420">420. Distinct Subsequences</a><a href="#p421">421. Best Time to Buy and Sell Stock I</a><a href="#p422">422. Best Time to Buy and Sell Stock II</a><a href="#p423">423. Stock with Cooldown</a><a href="#p424">424. Stock with Transaction Fee</a><a href="#p425">425. Longest Increasing Subsequence</a><a href="#p426">426. Print Longest Increasing Subsequence</a><a href="#p427">427. LIS using Binary Search</a><a href="#p428">428. Largest Divisible Subset</a><a href="#p429">429. Longest String Chain</a><a href="#p430">430. Longest Bitonic Subsequence</a><a href="#p431">431. Number of Longest Increasing Subsequences</a><a href="#p432">432. Maximal Square</a><a href="#p433">433. Fibonacci with Memoization</a><a href="#p434">434. Longest Palindromic Substring (DP)</a><a href="#p435">435. Cherry Pickup II</a><a href="#p436">436. Edit Distance</a><a href="#p437">437. Wildcard Matching</a><a href="#p438">438. Regular Expression Matching</a><a href="#p439">439. Best Time to Buy and Sell Stock III</a><a href="#p440">440. Best Time to Buy and Sell Stock IV</a><a href="#p441">441. Matrix Chain Multiplication</a><a href="#p442">442. Minimum Cost to Cut a Stick</a><a href="#p443">443. Burst Balloons</a><a href="#p444">444. Evaluate Boolean Expression to True</a><a href="#p445">445. Palindrome Partitioning II</a><a href="#p446">446. Partition Array for Maximum Sum</a><a href="#p447">447. Maximum Rectangle Area with All 1s</a><a href="#p448">448. Count Square Submatrices with All 1s</a></nav><section class="problem" id="p391">
+<h2>Problem 391: Climbing Stairs<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Distinct ways to climb n steps (1 or 2).</p><div class="ex">Input: n=3<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Plain recursion f(n) = f(n-1) + f(n-2), O(2^n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Bottom-up DP keeping the last two values.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Ways to reach step n come from the two previous steps.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int climbStairs(int n) {
+    if (n &lt;= 2) return n;
+    int a = 1, b = 2;
+    for (int i = 3; i &lt;= n; i++) { int c = a + b; a = b; b = c; }
+    return b;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[1] = 1, dp[2] = 2</li><li>dp[i] = dp[i-1] + dp[i-2]</li><li>Keep only two variables</li></ol></div></div>
+</div></section><section class="problem" id="p392">
+<h2>Problem 392: Frog Jump<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min energy, jump 1 or 2 steps.</p><div class="ex">Input: heights=[10,20,30,10]<br>Output:<pre class="out">20</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion trying both jumps from each stair.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP: dp[i] = min(dp[i-1] + |h[i]-h[i-1]|, dp[i-2] + |h[i]-h[i-2]|).</p></div>
+<div class="card w"><h3>Why it works</h3><p>The best cost to stair i depends only on the previous two stairs.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int frogJump(int[] heights) {
+    int n = heights.length;
+    if (n == 1) return 0;
+    int prev2 = 0, prev = Math.abs(heights[1] - heights[0]);
+    for (int i = 2; i &lt; n; i++) {
+        int cur = Math.min(prev + Math.abs(heights[i] - heights[i - 1]), prev2 + Math.abs(heights[i] - heights[i - 2]));
+        prev2 = prev;
+        prev = cur;
+    }
+    return prev;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0] = 0</li><li>Compute one-step and two-step costs</li><li>Keep two variables</li></ol></div></div>
+</div></section><section class="problem" id="p393">
+<h2>Problem 393: Frog Jump with K Distances<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Jump up to k steps.</p><div class="ex">Input: heights=[10,5,20,0,15], k=2<br>Output:<pre class="out">15</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over up to k jumps from each stair.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP where dp[i] is the min over the last k stairs.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each stair looks back at most k stairs, O(nk).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int frogJumpK(int[] heights, int k) {
+    int n = heights.length;
+    int[] dp = new int[n];
+    for (int i = 1; i &lt; n; i++) {
+        dp[i] = Integer.MAX_VALUE;
+        for (int j = 1; j &lt;= k &amp;&amp; i - j &gt;= 0; j++)
+            dp[i] = Math.min(dp[i], dp[i - j] + Math.abs(heights[i] - heights[i - j]));
+    }
+    return dp[n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0] = 0</li><li>For each i try j from 1 to k</li><li>dp[i] = min(dp[i-j] + |h[i]-h[i-j]|)</li></ol></div></div>
+</div></section><section class="problem" id="p394">
+<h2>Problem 394: Maximum Sum of Non-Adjacent Elements<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>House Robber I variant.</p><div class="ex">Input: arr=[2,1,4,9]<br>Output:<pre class="out">11</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion picking or skipping each element.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP with prev and prev2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Taking element i means the best of i-2 and below, skipping means the best of i-1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxNonAdjacentSum(int[] arr) {
+    int prev = 0, prev2 = 0;
+    for (int x : arr) {
+        int cur = Math.max(x + prev2, prev);
+        prev2 = prev;
+        prev = cur;
+    }
+    return prev;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>take = arr[i] + prev2</li><li>skip = prev</li><li>cur = max(take, skip)</li></ol></div></div>
+</div></section><section class="problem" id="p395">
+<h2>Problem 395: House Robber II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Houses in a circle.</p><div class="ex">Input: arr=[2,3,2]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all circular selections.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Run the linear solution twice: without the first and without the last house.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first and last houses are adjacent, so at most one of them is used.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int robCircular(int[] arr) {
+    int n = arr.length;
+    if (n == 1) return arr[0];
+    return Math.max(rob(arr, 0, n - 2), rob(arr, 1, n - 1));
+}
+
+private static int rob(int[] a, int l, int r) {
+    int prev = 0, prev2 = 0;
+    for (int i = l; i &lt;= r; i++) {
+        int cur = Math.max(a[i] + prev2, prev);
+        prev2 = prev;
+        prev = cur;
+    }
+    return prev;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If n == 1 return arr[0]</li><li>max(rob(0..n-2), rob(1..n-1))</li></ol></div></div>
+</div></section><section class="problem" id="p396">
+<h2>Problem 396: Ninja&#x27;s Training<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max points, no same activity on consecutive days.</p><div class="ex">Input: points=[[10,40,70],[20,50,80],[30,60,90]]<br>Output:<pre class="out">210</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over days and last activity, O(3^n).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP table dp[day][last].</p></div>
+<div class="card w"><h3>Why it works</h3><p>The best total for a day depends only on the previous day&#x27;s best per activity.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int ninjaTraining(int[][] points) {
+    int n = points.length;
+    int[] prev = points[0].clone();
+    for (int i = 1; i &lt; n; i++) {
+        int[] cur = new int[3];
+        for (int a = 0; a &lt; 3; a++)
+            for (int b = 0; b &lt; 3; b++) if (a != b) cur[a] = Math.max(cur[a], points[i][a] + prev[b]);
+        prev = cur;
+    }
+    return Math.max(prev[0], Math.max(prev[1], prev[2]));
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0][a] = points[0][a]</li><li>dp[i][a] = points[i][a] + max over b != a of dp[i-1][b]</li><li>Answer is the max of the last day</li></ol></div></div>
+</div></section><section class="problem" id="p397">
+<h2>Problem 397: Unique Paths<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Paths from top-left to bottom-right.</p><div class="ex">Input: m=3, n=7<br>Output:<pre class="out">28</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion right or down, O(2^(m+n)).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>1D DP: dp[j] += dp[j-1].</p></div>
+<div class="card w"><h3>Why it works</h3><p>Paths to a cell equal paths from above plus paths from the left.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int uniquePaths(int m, int n) {
+    int[] dp = new int[n];
+    Arrays.fill(dp, 1);
+    for (int i = 1; i &lt; m; i++)
+        for (int j = 1; j &lt; n; j++) dp[j] += dp[j - 1];
+    return dp[n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp filled with 1</li><li>For each next row dp[j] += dp[j-1]</li><li>Return dp[n-1]</li></ol></div></div>
+</div></section><section class="problem" id="p398">
+<h2>Problem 398: Unique Paths II (Obstacles)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Grid with obstacles.</p><div class="ex">Input: grid=[[0,0,0],[0,1,0],[0,0,0]]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion avoiding obstacles.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP with obstacle cells set to 0 ways.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A blocked cell contributes no paths.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int uniquePathsWithObstacles(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+    int[] dp = new int[n];
+    dp[0] = grid[0][0] == 0 ? 1 : 0;
+    for (int i = 0; i &lt; m; i++)
+        for (int j = 0; j &lt; n; j++) {
+            if (grid[i][j] == 1) dp[j] = 0;
+            else if (j &gt; 0) dp[j] += dp[j - 1];
+        }
+    return dp[n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0][0] = 1 if open</li><li>Obstacle cell = 0</li><li>Otherwise add top and left</li></ol></div></div>
+</div></section><section class="problem" id="p399">
+<h2>Problem 399: Minimum Path Sum in Grid<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min sum path.</p><div class="ex">Input: grid=[[1,3,1],[1,5,1],[4,2,1]]<br>Output:<pre class="out">7</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over all paths.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP: each cell adds the cheaper of top and left.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The cheapest path to a cell comes through one of its two predecessors.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minPathSum(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+    int[] dp = new int[n];
+    for (int i = 0; i &lt; m; i++)
+        for (int j = 0; j &lt; n; j++) {
+            if (i == 0 &amp;&amp; j == 0) dp[j] = grid[0][0];
+            else if (i == 0) dp[j] = dp[j - 1] + grid[i][j];
+            else if (j == 0) dp[j] += grid[i][j];
+            else dp[j] = grid[i][j] + Math.min(dp[j], dp[j - 1]);
+        }
+    return dp[n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0][0] = grid[0][0]</li><li>First row and column accumulate</li><li>dp[i][j] = grid[i][j] + min(up, left)</li></ol></div></div>
+</div></section><section class="problem" id="p400">
+<h2>Problem 400: Triangle (Minimum Path Sum)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Top to bottom min path.</p><div class="ex">Input: triangle=[[2],[3,4],[6,5,7],[4,1,8,3]]<br>Output:<pre class="out">11</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion down each path.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Bottom-up DP starting from the last row.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each node adds the smaller of its two children&#x27;s best totals.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minimumTotal(List&lt;List&lt;Integer&gt;&gt; triangle) {
+    int n = triangle.size();
+    int[] dp = new int[n];
+    for (int j = 0; j &lt; n; j++) dp[j] = triangle.get(n - 1).get(j);
+    for (int i = n - 2; i &gt;= 0; i--)
+        for (int j = 0; j &lt;= i; j++) dp[j] = triangle.get(i).get(j) + Math.min(dp[j], dp[j + 1]);
+    return dp[0];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp = last row</li><li>For rows above dp[j] = val + min(dp[j], dp[j+1])</li><li>Answer dp[0]</li></ol></div></div>
+</div></section><section class="problem" id="p401">
+<h2>Problem 401: Minimum/Maximum Falling Path Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min falling path.</p><div class="ex">Input: matrix=[[2,1,3],[6,5,4],[7,8,9]]<br>Output:<pre class="out">13</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over three directions.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP row by row using the three cells above.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A falling path moves to the same, left or right column.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minFallingPathSum(int[][] matrix) {
+    int n = matrix.length, m = matrix[0].length;
+    int[] prev = matrix[0].clone();
+    for (int i = 1; i &lt; n; i++) {
+        int[] cur = new int[m];
+        for (int j = 0; j &lt; m; j++) {
+            int best = prev[j];
+            if (j &gt; 0) best = Math.min(best, prev[j - 1]);
+            if (j &lt; m - 1) best = Math.min(best, prev[j + 1]);
+            cur[j] = matrix[i][j] + best;
+        }
+        prev = cur;
+    }
+    int res = Integer.MAX_VALUE;
+    for (int x : prev) res = Math.min(res, x);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start with the first row</li><li>cur[j] = m[i][j] + min(prev[j-1], prev[j], prev[j+1])</li><li>Answer is the min of the last row</li></ol></div></div>
+</div></section><section class="problem" id="p402">
+<h2>Problem 402: Subset Sum Equals to Target<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Subset with sum k?</p><div class="ex">Input: arr=[1,2,3,4], k=4<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all 2^n subsets.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>1D boolean DP over sums.</p></div>
+<div class="card w"><h3>Why it works</h3><p>dp[s] is true if s can be formed from the elements considered so far.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean subsetSumToK(int[] arr, int k) {
+    boolean[] dp = new boolean[k + 1];
+    dp[0] = true;
+    for (int x : arr)
+        for (int s = k; s &gt;= x; s--) dp[s] |= dp[s - x];
+    return dp[k];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0] = true</li><li>For each element iterate s from k down to value</li><li>dp[s] |= dp[s - value]</li></ol></div></div>
+</div></section><section class="problem" id="p403">
+<h2>Problem 403: Partition Equal Subset Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Split into two equal-sum subsets.</p><div class="ex">Input: arr=[1,5,11,5]<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all subsets for half the total.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Subset sum to total/2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Two equal parts exist iff a subset sums to half.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean canPartition(int[] arr) {
+    int total = 0;
+    for (int x : arr) total += x;
+    if (total % 2 != 0) return false;
+    int k = total / 2;
+    boolean[] dp = new boolean[k + 1];
+    dp[0] = true;
+    for (int x : arr)
+        for (int s = k; s &gt;= x; s--) dp[s] |= dp[s - x];
+    return dp[k];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Odd total returns false</li><li>Run subset sum with target total/2</li></ol></div></div>
+</div></section><section class="problem" id="p404">
+<h2>Problem 404: Partition Set into Two Subsets with Minimum Absolute Sum Difference<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Minimize difference.</p><div class="ex">Input: arr=[1,6,11,5]<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all subsets and compare sums.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Subset sum table; choose the reachable sum closest to total/2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>diff = total - 2*s1 is minimized when s1 is nearest to half.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minSubsetSumDifference(int[] arr) {
+    int total = 0;
+    for (int x : arr) total += x;
+    boolean[] dp = new boolean[total + 1];
+    dp[0] = true;
+    for (int x : arr)
+        for (int s = total; s &gt;= x; s--) dp[s] |= dp[s - x];
+    int best = Integer.MAX_VALUE;
+    for (int s = 0; s &lt;= total / 2; s++) if (dp[s]) best = Math.min(best, total - 2 * s);
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build reachable sums up to total</li><li>For s &lt;= total/2 that is reachable minimize total - 2s</li></ol></div></div>
+</div></section><section class="problem" id="p405">
+<h2>Problem 405: Count Subsets with Sum K<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count subsets.</p><div class="ex">Input: arr=[1,2,2,3], k=3<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all subsets.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>1D count DP over sums.</p></div>
+<div class="card w"><h3>Why it works</h3><p>dp[s] counts ways to reach sum s, updated per element in reverse.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countSubsetsWithSumK(int[] arr, int k) {
+    int[] dp = new int[k + 1];
+    dp[0] = 1;
+    for (int x : arr)
+        for (int s = k; s &gt;= x; s--) dp[s] += dp[s - x];
+    return dp[k];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0] = 1</li><li>For each element iterate s from k down</li><li>dp[s] += dp[s - x]</li></ol></div></div>
+</div></section><section class="problem" id="p406">
+<h2>Problem 406: Count Partitions with Given Difference<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Subsets S1-S2=d.</p><div class="ex">Input: arr=[5,2,6,4], d=3<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all subset assignments.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Reduce to counting subsets with sum (total - d)/2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>S1 - S2 = d and S1 + S2 = total give S1 = (total + d)/2 (equivalently S2 = (total-d)/2).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countPartitions(int[] arr, int d) {
+    int total = 0;
+    for (int x : arr) total += x;
+    if (total - d &lt; 0 || (total - d) % 2 != 0) return 0;
+    int k = (total - d) / 2;
+    int[] dp = new int[k + 1];
+    dp[0] = 1;
+    for (int x : arr)
+        for (int s = k; s &gt;= x; s--) dp[s] += dp[s - x];
+    return dp[k];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If total - d is negative or odd return 0</li><li>target = (total - d)/2</li><li>Count subsets with that sum</li></ol></div></div>
+</div></section><section class="problem" id="p407">
+<h2>Problem 407: 0/1 Knapsack<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max value.</p><div class="ex">Input: wt=[1,2,4,5], val=[5,4,8,6], w=5<br>Output:<pre class="out">13</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion picking or skipping each item.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>1D DP iterating capacity downwards.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Going downward uses each item at most once.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int knapsack(int[] wt, int[] val, int w) {
+    int[] dp = new int[w + 1];
+    for (int i = 0; i &lt; wt.length; i++)
+        for (int c = w; c &gt;= wt[i]; c--) dp[c] = Math.max(dp[c], dp[c - wt[i]] + val[i]);
+    return dp[w];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[c] = best value with capacity c</li><li>For each item for c from W to wt</li><li>dp[c] = max(dp[c], dp[c-wt] + val)</li></ol></div></div>
+</div></section><section class="problem" id="p408">
+<h2>Problem 408: Minimum Coins<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Fewest coins, -1 if impossible.</p><div class="ex">Input: coins=[1,2,5], amount=11<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion trying every coin.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP over amounts.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The fewest coins for an amount is one plus the best for the remainder.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int coinChange(int[] coins, int amount) {
+    int INF = amount + 1;
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, INF);
+    dp[0] = 0;
+    for (int a = 1; a &lt;= amount; a++)
+        for (int c : coins) if (c &lt;= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+    return dp[amount] &gt;= INF ? -1 : dp[amount];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0] = 0, others INF</li><li>For each amount try each coin</li><li>Return -1 if INF</li></ol></div></div>
+</div></section><section class="problem" id="p409">
+<h2>Problem 409: Target Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Assign +/- to reach target.</p><div class="ex">Input: arr=[1,1,1,1,1], target=3<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all 2^n sign choices.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Count subsets with sum (total + target)/2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>With P positives and N negatives, P - N = target and P + N = total.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findTargetSumWays(int[] arr, int target) {
+    int total = 0;
+    for (int x : arr) total += x;
+    if (Math.abs(target) &gt; total || (total + target) % 2 != 0) return 0;
+    int s = (total + target) / 2;
+    int[] dp = new int[s + 1];
+    dp[0] = 1;
+    for (int x : arr)
+        for (int j = s; j &gt;= x; j--) dp[j] += dp[j - x];
+    return dp[s];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Check parity and range</li><li>s = (total + target)/2</li><li>Count subsets summing to s</li></ol></div></div>
+</div></section><section class="problem" id="p410">
+<h2>Problem 410: Coin Change II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Number of ways.</p><div class="ex">Input: amount=5, coins=[1,2,5]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion with unlimited coins.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>1D DP with coins in the outer loop.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Ordering coins in the outer loop counts combinations, not permutations.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int change(int amount, int[] coins) {
+    int[] dp = new int[amount + 1];
+    dp[0] = 1;
+    for (int c : coins)
+        for (int a = c; a &lt;= amount; a++) dp[a] += dp[a - c];
+    return dp[amount];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0] = 1</li><li>For each coin for a from coin to amount</li><li>dp[a] += dp[a - coin]</li></ol></div></div>
+</div></section><section class="problem" id="p411">
+<h2>Problem 411: Unbounded Knapsack<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Unlimited items.</p><div class="ex">Input: wt=[2,4,6], val=[5,11,13], w=10<br>Output:<pre class="out">27</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion with unlimited use of each item.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>1D DP iterating capacity upwards.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Going upward allows reusing the same item.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int unboundedKnapsack(int[] wt, int[] val, int w) {
+    int[] dp = new int[w + 1];
+    for (int i = 0; i &lt; wt.length; i++)
+        for (int c = wt[i]; c &lt;= w; c++) dp[c] = Math.max(dp[c], dp[c - wt[i]] + val[i]);
+    return dp[w];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[c] = best value at capacity c</li><li>For each item for c from wt to W</li><li>dp[c] = max(dp[c], dp[c - wt] + val)</li></ol></div></div>
+</div></section><section class="problem" id="p412">
+<h2>Problem 412: Rod Cutting Problem<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max profit from rod.</p><div class="ex">Input: price=[2,5,7,8,10], n=5<br>Output:<pre class="out">12</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursively try every first cut.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Unbounded knapsack with piece lengths 1..n.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each piece length is available any number of times.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int cutRod(int[] price, int n) {
+    int[] dp = new int[n + 1];
+    for (int len = 1; len &lt;= n; len++)
+        for (int i = 1; i &lt;= len; i++) dp[len] = Math.max(dp[len], price[i - 1] + dp[len - i]);
+    return dp[n];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[len] = best profit</li><li>Try every cut length i</li><li>dp[len] = max(dp[len], price[i-1] + dp[len-i])</li></ol></div></div>
+</div></section><section class="problem" id="p413">
+<h2>Problem 413: Longest Common Subsequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>LCS length.</p><div class="ex">Input: a=&quot;abcde&quot;, b=&quot;ace&quot;<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over all subsequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>2D DP table.</p></div>
+<div class="card w"><h3>Why it works</h3><p>dp[i][j] extends the diagonal on a match or takes the better of skipping one character.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestCommonSubsequence(String a, String b) {
+    int n = a.length(), m = b.length();
+    int[][] dp = new int[n + 1][m + 1];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++)
+            dp[i][j] = a.charAt(i - 1) == b.charAt(j - 1) ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    return dp[n][m];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp sized (n+1) x (m+1)</li><li>Equal chars: dp[i-1][j-1] + 1</li><li>Else max(dp[i-1][j], dp[i][j-1])</li></ol></div></div>
+</div></section><section class="problem" id="p414">
+<h2>Problem 414: Print Longest Common Subsequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return LCS.</p><div class="ex">Input: a=&quot;abcde&quot;, b=&quot;ace&quot;<br>Output:<pre class="out">&quot;ace&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all subsequences and compare.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Build the LCS table then walk back.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The table tells which move produced each value.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String printLCS(String a, String b) {
+    int n = a.length(), m = b.length();
+    int[][] dp = new int[n + 1][m + 1];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++)
+            dp[i][j] = a.charAt(i - 1) == b.charAt(j - 1) ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    StringBuilder sb = new StringBuilder();
+    int i = n, j = m;
+    while (i &gt; 0 &amp;&amp; j &gt; 0) {
+        if (a.charAt(i - 1) == b.charAt(j - 1)) { sb.append(a.charAt(i - 1)); i--; j--; }
+        else if (dp[i - 1][j] &gt;= dp[i][j - 1]) i--;
+        else j--;
+    }
+    return sb.reverse().toString();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Fill the table</li><li>From (n, m) go diagonally on a match and append the char</li><li>Otherwise move toward the larger neighbour</li><li>Reverse the result</li></ol></div></div>
+</div></section><section class="problem" id="p415">
+<h2>Problem 415: Longest Common Substring<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length.</p><div class="ex">Input: a=&quot;abcjklp&quot;, b=&quot;acjkp&quot;<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare every pair of substrings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP where a mismatch resets the count to 0.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A common substring must be contiguous, so dp[i][j] depends only on the diagonal.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestCommonSubstring(String a, String b) {
+    int n = a.length(), m = b.length(), best = 0;
+    int[][] dp = new int[n + 1][m + 1];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++)
+            if (a.charAt(i - 1) == b.charAt(j - 1)) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                best = Math.max(best, dp[i][j]);
+            }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Equal chars: dp[i][j] = dp[i-1][j-1] + 1</li><li>Else 0</li><li>Track the max</li></ol></div></div>
+</div></section><section class="problem" id="p416">
+<h2>Problem 416: Longest Palindromic Subsequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length.</p><div class="ex">Input: s=&quot;bbbab&quot;<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over all subsequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>LCS of the string and its reverse.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A palindromic subsequence reads the same forward and backward.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestPalindromeSubseq(String s) {
+    String r = new StringBuilder(s).reverse().toString();
+    int n = s.length();
+    int[][] dp = new int[n + 1][n + 1];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= n; j++)
+            dp[i][j] = s.charAt(i - 1) == r.charAt(j - 1) ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    return dp[n][n];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Reverse s</li><li>Compute LCS</li><li>Return its length</li></ol></div></div>
+</div></section><section class="problem" id="p417">
+<h2>Problem 417: Minimum Insertions to Make String Palindrome<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min insertions.</p><div class="ex">Input: s=&quot;mbadm&quot;<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try inserting at every position.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>n - longest palindromic subsequence.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Characters not in the LPS each need a mirror inserted.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minInsertions(String s) {
+    String r = new StringBuilder(s).reverse().toString();
+    int n = s.length();
+    int[][] dp = new int[n + 1][n + 1];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= n; j++)
+            dp[i][j] = s.charAt(i - 1) == r.charAt(j - 1) ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    return n - dp[n][n];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute LPS length</li><li>Return n - LPS</li></ol></div></div>
+</div></section><section class="problem" id="p418">
+<h2>Problem 418: Minimum Insertions/Deletions to Convert String A to B<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Insertions + deletions.</p><div class="ex">Input: a=&quot;heap&quot;, b=&quot;pea&quot;<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all edit sequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Keep the LCS; delete the rest of a and insert the rest of b.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Characters in the LCS never need changing.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minOperations(String a, String b) {
+    int n = a.length(), m = b.length();
+    int[][] dp = new int[n + 1][m + 1];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++)
+            dp[i][j] = a.charAt(i - 1) == b.charAt(j - 1) ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    return n + m - 2 * dp[n][m];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lcs = LCS(a, b)</li><li>deletions = |a| - lcs</li><li>insertions = |b| - lcs</li></ol></div></div>
+</div></section><section class="problem" id="p419">
+<h2>Problem 419: Shortest Common Supersequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Shortest string containing both.</p><div class="ex">Input: a=&quot;brute&quot;, b=&quot;groot&quot;<br>Output:<pre class="out">&quot;bgruoote&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all interleavings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Use the LCS table and walk back, emitting characters from both strings.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Characters in the LCS are shared, all others appear once.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String shortestCommonSupersequence(String a, String b) {
+    int n = a.length(), m = b.length();
+    int[][] dp = new int[n + 1][m + 1];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++)
+            dp[i][j] = a.charAt(i - 1) == b.charAt(j - 1) ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    StringBuilder sb = new StringBuilder();
+    int i = n, j = m;
+    while (i &gt; 0 &amp;&amp; j &gt; 0) {
+        if (a.charAt(i - 1) == b.charAt(j - 1)) { sb.append(a.charAt(i - 1)); i--; j--; }
+        else if (dp[i - 1][j] &gt; dp[i][j - 1]) sb.append(a.charAt(--i));
+        else sb.append(b.charAt(--j));
+    }
+    while (i &gt; 0) sb.append(a.charAt(--i));
+    while (j &gt; 0) sb.append(b.charAt(--j));
+    return sb.reverse().toString();
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Build the LCS table</li><li>From (n, m): match emits one char</li><li>Otherwise emit from the larger side</li><li>Append leftovers and reverse</li></ol></div></div>
+</div></section><section class="problem" id="p420">
+<h2>Problem 420: Distinct Subsequences<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count subsequences of s equal to t.</p><div class="ex">Input: s=&quot;rabbbit&quot;, t=&quot;rabbit&quot;<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion choosing to match or skip.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP: dp[i][j] = ways to form t[0..j) from s[0..i).</p></div>
+<div class="card w"><h3>Why it works</h3><p>A matching character adds the ways using it plus the ways skipping it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int numDistinct(String s, String t) {
+    int n = s.length(), m = t.length();
+    long[][] dp = new long[n + 1][m + 1];
+    for (int i = 0; i &lt;= n; i++) dp[i][0] = 1;
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++) {
+            dp[i][j] = dp[i - 1][j];
+            if (s.charAt(i - 1) == t.charAt(j - 1)) dp[i][j] += dp[i - 1][j - 1];
+        }
+    return (int) dp[n][m];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[i][0] = 1</li><li>If chars equal dp[i][j] = dp[i-1][j-1] + dp[i-1][j]</li><li>Else dp[i-1][j]</li></ol></div></div>
+</div></section><section class="problem" id="p421">
+<h2>Problem 421: Best Time to Buy and Sell Stock I<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>One transaction.</p><div class="ex">Input: prices=[7,1,5,3,6,4]<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every buy and sell day.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track the minimum price so far.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The best profit on day i uses the cheapest earlier price.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProfitI(int[] prices) {
+    int min = Integer.MAX_VALUE, best = 0;
+    for (int p : prices) {
+        min = Math.min(min, p);
+        best = Math.max(best, p - min);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>min = prices[0]</li><li>profit = max(profit, p - min)</li><li>Update min</li></ol></div></div>
+</div></section><section class="problem" id="p422">
+<h2>Problem 422: Best Time to Buy and Sell Stock II<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Unlimited transactions.</p><div class="ex">Input: prices=[7,1,5,3,6,4]<br>Output:<pre class="out">7</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion buy/sell/skip.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Add every positive day-to-day difference.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Any upward trend can be captured by summing consecutive gains.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProfitII(int[] prices) {
+    int profit = 0;
+    for (int i = 1; i &lt; prices.length; i++)
+        if (prices[i] &gt; prices[i - 1]) profit += prices[i] - prices[i - 1];
+    return profit;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For i from 1</li><li>If prices[i] &gt; prices[i-1] add the difference</li></ol></div></div>
+</div></section><section class="problem" id="p423">
+<h2>Problem 423: Stock with Cooldown<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>One day cooldown after sell.</p><div class="ex">Input: prices=[1,2,3,0,2]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over hold/sold/rest states.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>State DP: hold, sold, rest.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A sale forces the next day to be a rest.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProfitCooldown(int[] prices) {
+    int hold = Integer.MIN_VALUE, sold = 0, rest = 0;
+    for (int p : prices) {
+        int prevSold = sold;
+        sold = hold + p;
+        hold = Math.max(hold, rest - p);
+        rest = Math.max(rest, prevSold);
+    }
+    return Math.max(sold, rest);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>hold = max(hold, rest - price)</li><li>sold = hold + price</li><li>rest = max(rest, previous sold)</li></ol></div></div>
+</div></section><section class="problem" id="p424">
+<h2>Problem 424: Stock with Transaction Fee<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Fee per transaction.</p><div class="ex">Input: prices=[1,3,2,8,4,9], fee=2<br>Output:<pre class="out">8</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion with transactions.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Two-state DP: free and hold.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The fee is paid once at the sale.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProfitFee(int[] prices, int fee) {
+    int free = 0, hold = -prices[0];
+    for (int i = 1; i &lt; prices.length; i++) {
+        free = Math.max(free, hold + prices[i] - fee);
+        hold = Math.max(hold, free - prices[i]);
+    }
+    return free;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>free = max(free, hold + price - fee)</li><li>hold = max(hold, free - price)</li></ol></div></div>
+</div></section><section class="problem" id="p425">
+<h2>Problem 425: Longest Increasing Subsequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>LIS length.</p><div class="ex">Input: arr=[10,9,2,5,3,7,101,18]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all subsequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>O(n^2) DP: dp[i] = 1 + max dp[j] for smaller earlier values.</p></div>
+<div class="card w"><h3>Why it works</h3><p>An increasing subsequence ending at i extends one ending at a smaller earlier element.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int lengthOfLIS(int[] arr) {
+    int n = arr.length, best = 0;
+    int[] dp = new int[n];
+    for (int i = 0; i &lt; n; i++) {
+        dp[i] = 1;
+        for (int j = 0; j &lt; i; j++) if (arr[j] &lt; arr[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+        best = Math.max(best, dp[i]);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[i] = 1</li><li>For j &lt; i with arr[j] &lt; arr[i] update</li><li>Answer is the max of dp</li></ol></div></div>
+</div></section><section class="problem" id="p426">
+<h2>Problem 426: Print Longest Increasing Subsequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Return a LIS.</p><div class="ex">Input: arr=[5,4,11,1,16,8]<br>Output:<pre class="out">[5,11,16]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Generate all subsequences and test.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP with a parent array, then rebuild.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The parent link records which earlier element each LIS extended.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; printLIS(int[] arr) {
+    int n = arr.length, best = 0, last = 0;
+    int[] dp = new int[n], par = new int[n];
+    for (int i = 0; i &lt; n; i++) {
+        dp[i] = 1;
+        par[i] = -1;
+        for (int j = 0; j &lt; i; j++)
+            if (arr[j] &lt; arr[i] &amp;&amp; dp[j] + 1 &gt; dp[i]) { dp[i] = dp[j] + 1; par[i] = j; }
+        if (dp[i] &gt; best) { best = dp[i]; last = i; }
+    }
+    LinkedList&lt;Integer&gt; res = new LinkedList&lt;&gt;();
+    for (int i = last; i != -1; i = par[i]) res.addFirst(arr[i]);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp and parent arrays</li><li>Find the index with max dp</li><li>Follow parents back and reverse</li></ol></div></div>
+</div></section><section class="problem" id="p427">
+<h2>Problem 427: LIS using Binary Search<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>O(n log n).</p><div class="ex">Input: arr=[10,9,2,5,3,7,101,18]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>O(n^2) DP.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Patience sorting: keep the smallest tail for each length.</p></div>
+<div class="card w"><h3>Why it works</h3><p>tails is sorted, so binary search finds the position to replace.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int lisBinarySearch(int[] arr) {
+    int[] tails = new int[arr.length];
+    int size = 0;
+    for (int x : arr) {
+        int lo = 0, hi = size;
+        while (lo &lt; hi) {
+            int mid = (lo + hi) / 2;
+            if (tails[mid] &lt; x) lo = mid + 1; else hi = mid;
+        }
+        tails[lo] = x;
+        if (lo == size) size++;
+    }
+    return size;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>tails list</li><li>For each x binary search the first tail &gt;= x</li><li>Replace or append</li><li>Size is the LIS length</li></ol></div></div>
+</div></section><section class="problem" id="p428">
+<h2>Problem 428: Largest Divisible Subset<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Each pair divisible.</p><div class="ex">Input: arr=[1,2,3]<br>Output:<pre class="out">[1,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all subsets and check divisibility.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort then LIS-style DP with divisibility.</p></div>
+<div class="card w"><h3>Why it works</h3><p>After sorting, divisibility is transitive along the chain.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; largestDivisibleSubset(int[] arr) {
+    int[] a = arr.clone();
+    Arrays.sort(a);
+    int n = a.length, best = 0, last = 0;
+    int[] dp = new int[n], par = new int[n];
+    for (int i = 0; i &lt; n; i++) {
+        dp[i] = 1;
+        par[i] = -1;
+        for (int j = 0; j &lt; i; j++)
+            if (a[i] % a[j] == 0 &amp;&amp; dp[j] + 1 &gt; dp[i]) { dp[i] = dp[j] + 1; par[i] = j; }
+        if (dp[i] &gt; best) { best = dp[i]; last = i; }
+    }
+    LinkedList&lt;Integer&gt; res = new LinkedList&lt;&gt;();
+    for (int i = last; i != -1 &amp;&amp; n &gt; 0; i = par[i]) res.addFirst(a[i]);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort</li><li>dp[i] = longest chain ending at i using divisible earlier elements</li><li>Rebuild with parents</li></ol></div></div>
+</div></section><section class="problem" id="p429">
+<h2>Problem 429: Longest String Chain<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Add one char each step.</p><div class="ex">Input: words=[&quot;a&quot;,&quot;b&quot;,&quot;ba&quot;,&quot;bca&quot;,&quot;bda&quot;,&quot;bdca&quot;]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all chains.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sort by length and DP with a map of best chain per word.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A chain extends from any word obtained by deleting one character.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestStrChain(String[] words) {
+    String[] w = words.clone();
+    Arrays.sort(w, (a, b) -&gt; a.length() - b.length());
+    Map&lt;String, Integer&gt; dp = new HashMap&lt;&gt;();
+    int best = 0;
+    for (String s : w) {
+        int cur = 1;
+        for (int i = 0; i &lt; s.length(); i++) {
+            String prev = s.substring(0, i) + s.substring(i + 1);
+            cur = Math.max(cur, dp.getOrDefault(prev, 0) + 1);
+        }
+        dp.put(s, cur);
+        best = Math.max(best, cur);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Sort by length</li><li>For each word try deleting each char</li><li>dp[word] = max(dp[prev] + 1)</li></ol></div></div>
+</div></section><section class="problem" id="p430">
+<h2>Problem 430: Longest Bitonic Subsequence<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Increasing then decreasing.</p><div class="ex">Input: arr=[1,11,2,10,4,5,2,1]<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every peak with brute-force sequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>LIS from the left plus LDS from the right.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A bitonic sequence peaks at i with lengths inc[i] + dec[i] - 1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestBitonicSubsequence(int[] arr) {
+    int n = arr.length, best = 0;
+    int[] inc = new int[n], dec = new int[n];
+    for (int i = 0; i &lt; n; i++) {
+        inc[i] = 1;
+        for (int j = 0; j &lt; i; j++) if (arr[j] &lt; arr[i]) inc[i] = Math.max(inc[i], inc[j] + 1);
+    }
+    for (int i = n - 1; i &gt;= 0; i--) {
+        dec[i] = 1;
+        for (int j = n - 1; j &gt; i; j--) if (arr[j] &lt; arr[i]) dec[i] = Math.max(dec[i], dec[j] + 1);
+    }
+    for (int i = 0; i &lt; n; i++) best = Math.max(best, inc[i] + dec[i] - 1);
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>inc[i] = LIS ending at i</li><li>dec[i] = LDS starting at i</li><li>Max of inc + dec - 1</li></ol></div></div>
+</div></section><section class="problem" id="p431">
+<h2>Problem 431: Number of Longest Increasing Subsequences<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count LIS.</p><div class="ex">Input: arr=[1,3,5,4,7]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all subsequences.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP with length and count arrays.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Counts add when a longer chain is found or ties an existing one.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int findNumberOfLIS(int[] arr) {
+    int n = arr.length, maxLen = 0, res = 0;
+    int[] len = new int[n], cnt = new int[n];
+    for (int i = 0; i &lt; n; i++) {
+        len[i] = cnt[i] = 1;
+        for (int j = 0; j &lt; i; j++) {
+            if (arr[j] &lt; arr[i]) {
+                if (len[j] + 1 &gt; len[i]) { len[i] = len[j] + 1; cnt[i] = cnt[j]; }
+                else if (len[j] + 1 == len[i]) cnt[i] += cnt[j];
+            }
+        }
+        maxLen = Math.max(maxLen, len[i]);
+    }
+    for (int i = 0; i &lt; n; i++) if (len[i] == maxLen) res += cnt[i];
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>len[i], cnt[i] = 1</li><li>For j &lt; i with smaller value</li><li>If len[j]+1 &gt; len[i] reset</li><li>If equal add counts</li><li>Sum counts at the max length</li></ol></div></div>
+</div></section><section class="problem" id="p432">
+<h2>Problem 432: Maximal Square<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest square of 1s area.</p><div class="ex">Input: matrix=[[1,0,1],[1,1,1],[1,1,1]]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every square for all ones.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP: side = 1 + min(top, left, top-left).</p></div>
+<div class="card w"><h3>Why it works</h3><p>A square at a cell is limited by the smallest of the three neighbouring squares.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maximalSquare(char[][] matrix) {
+    int m = matrix.length, n = matrix[0].length, best = 0;
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 1; i &lt;= m; i++)
+        for (int j = 1; j &lt;= n; j++)
+            if (matrix[i - 1][j - 1] == &#x27;1&#x27;) {
+                dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+                best = Math.max(best, dp[i][j]);
+            }
+    return best * best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Copy the first row and column</li><li>For &#x27;1&#x27; cells dp = 1 + min of the three neighbours</li><li>Track the largest side and return its area</li></ol></div></div>
+</div></section><section class="problem" id="p433">
+<h2>Problem 433: Fibonacci with Memoization<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Top-down DP.</p><div class="ex">Input: n=10<br>Output:<pre class="out">55</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Plain recursion, exponential.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Memoize results of subproblems.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each fib(k) is computed once, giving O(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int fibMemo(int n) {
+    return fib(n, new int[n + 1]);
+}
+
+private static int fib(int n, int[] memo) {
+    if (n &lt;= 1) return n;
+    if (memo[n] != 0) return memo[n];
+    return memo[n] = fib(n - 1, memo) + fib(n - 2, memo);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>memo array filled with -1</li><li>Return the stored value if present</li><li>Else compute and store</li></ol></div></div>
+</div></section><section class="problem" id="p434">
+<h2>Problem 434: Longest Palindromic Substring (DP)<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Using DP table.</p><div class="ex">Input: s=&quot;cbbd&quot;<br>Output:<pre class="out">&quot;bb&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check all substrings.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP table where dp[i][j] means s[i..j] is a palindrome.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A substring is a palindrome if its ends match and the inside is a palindrome.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String longestPalindromeDP(String s) {
+    int n = s.length(), start = 0, best = 1;
+    boolean[][] dp = new boolean[n][n];
+    for (int len = 1; len &lt;= n; len++)
+        for (int i = 0; i + len &lt;= n; i++) {
+            int j = i + len - 1;
+            if (s.charAt(i) == s.charAt(j) &amp;&amp; (len &lt;= 2 || dp[i + 1][j - 1])) {
+                dp[i][j] = true;
+                if (len &gt; best) { best = len; start = i; }
+            }
+        }
+    return s.substring(start, start + best);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Fill by increasing length</li><li>dp[i][j] = s[i]==s[j] &amp;&amp; (len &lt;= 2 || dp[i+1][j-1])</li><li>Track the longest</li></ol></div></div>
+</div></section><section class="problem" id="p435">
+<h2>Problem 435: Cherry Pickup II<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Two robots collect cherries.</p><div class="ex">Input: grid=[[3,1,1],[2,5,1],[1,5,5],[2,1,1]]<br>Output:<pre class="out">24</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over both robots&#x27; moves.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP over row with states (col1, col2).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Both robots move one row per step, so the state is just the pair of columns.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int cherryPickup(int[][] grid) {
+    int r = grid.length, c = grid[0].length;
+    int[][] dp = new int[c][c];
+    for (int[] row : dp) Arrays.fill(row, Integer.MIN_VALUE);
+    dp[0][c - 1] = grid[0][0] + (c &gt; 1 ? grid[0][c - 1] : 0);
+    for (int i = 1; i &lt; r; i++) {
+        int[][] nd = new int[c][c];
+        for (int[] row : nd) Arrays.fill(row, Integer.MIN_VALUE);
+        for (int a = 0; a &lt; c; a++)
+            for (int b = 0; b &lt; c; b++) {
+                int best = Integer.MIN_VALUE;
+                for (int da = -1; da &lt;= 1; da++)
+                    for (int db = -1; db &lt;= 1; db++) {
+                        int pa = a + da, pb = b + db;
+                        if (pa &gt;= 0 &amp;&amp; pa &lt; c &amp;&amp; pb &gt;= 0 &amp;&amp; pb &lt; c) best = Math.max(best, dp[pa][pb]);
+                    }
+                if (best == Integer.MIN_VALUE) continue;
+                nd[a][b] = best + grid[i][a] + (a != b ? grid[i][b] : 0);
+            }
+        dp = nd;
+    }
+    int res = 0;
+    for (int[] row : dp) for (int x : row) res = Math.max(res, x);
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start dp at row 0</li><li>Each robot moves to col-1, col, col+1</li><li>Add cherries (once if same cell)</li><li>Take the best from the previous row</li></ol></div></div>
+</div></section><section class="problem" id="p436">
+<h2>Problem 436: Edit Distance<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min ops to convert.</p><div class="ex">Input: a=&quot;horse&quot;, b=&quot;ros&quot;<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion trying insert, delete, replace.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>2D DP table.</p></div>
+<div class="card w"><h3>Why it works</h3><p>dp[i][j] is the cost to convert the first i chars of a to the first j chars of b.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minDistance(String a, String b) {
+    int n = a.length(), m = b.length();
+    int[][] dp = new int[n + 1][m + 1];
+    for (int i = 0; i &lt;= n; i++) dp[i][0] = i;
+    for (int j = 0; j &lt;= m; j++) dp[0][j] = j;
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++)
+            dp[i][j] = a.charAt(i - 1) == b.charAt(j - 1) ? dp[i - 1][j - 1]
+                : 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));
+    return dp[n][m];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[i][0] = i, dp[0][j] = j</li><li>Equal chars: diagonal</li><li>Else 1 + min(delete, insert, replace)</li></ol></div></div>
+</div></section><section class="problem" id="p437">
+<h2>Problem 437: Wildcard Matching<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>&#x27;?&#x27; and &#x27;*&#x27; matching.</p><div class="ex">Input: s=&quot;aa&quot;, p=&quot;*&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion branching at every &#x27;*&#x27;.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>2D DP over (i, j) of s and p.</p></div>
+<div class="card w"><h3>Why it works</h3><p>&#x27;*&#x27; matches empty (dp[i][j-1]) or one more char (dp[i-1][j]).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isMatchWildcard(String s, String p) {
+    int n = s.length(), m = p.length();
+    boolean[][] dp = new boolean[n + 1][m + 1];
+    dp[0][0] = true;
+    for (int j = 1; j &lt;= m; j++) dp[0][j] = dp[0][j - 1] &amp;&amp; p.charAt(j - 1) == &#x27;*&#x27;;
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++) {
+            char c = p.charAt(j - 1);
+            if (c == &#x27;*&#x27;) dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+            else if (c == &#x27;?&#x27; || c == s.charAt(i - 1)) dp[i][j] = dp[i - 1][j - 1];
+        }
+    return dp[n][m];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0][0] = true</li><li>Leading stars match empty</li><li>&#x27;?&#x27; or equal char: diagonal</li><li>&#x27;*&#x27;: dp[i][j-1] || dp[i-1][j]</li></ol></div></div>
+</div></section><section class="problem" id="p438">
+<h2>Problem 438: Regular Expression Matching<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>&#x27;.&#x27; and &#x27;*&#x27; matching.</p><div class="ex">Input: s=&quot;aa&quot;, p=&quot;a*&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion trying zero or more repeats.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>2D DP over (i, j).</p></div>
+<div class="card w"><h3>Why it works</h3><p>&#x27;x*&#x27; either matches zero times (dp[i][j-2]) or one more matching char (dp[i-1][j]).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean isMatchRegex(String s, String p) {
+    int n = s.length(), m = p.length();
+    boolean[][] dp = new boolean[n + 1][m + 1];
+    dp[0][0] = true;
+    for (int j = 2; j &lt;= m; j++) dp[0][j] = p.charAt(j - 1) == &#x27;*&#x27; &amp;&amp; dp[0][j - 2];
+    for (int i = 1; i &lt;= n; i++)
+        for (int j = 1; j &lt;= m; j++) {
+            char c = p.charAt(j - 1);
+            if (c == &#x27;*&#x27;) {
+                dp[i][j] = dp[i][j - 2];
+                char prev = p.charAt(j - 2);
+                if (prev == &#x27;.&#x27; || prev == s.charAt(i - 1)) dp[i][j] |= dp[i - 1][j];
+            } else if (c == &#x27;.&#x27; || c == s.charAt(i - 1)) dp[i][j] = dp[i - 1][j - 1];
+        }
+    return dp[n][m];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[0][0] = true</li><li>Handle patterns like a*b*c* matching empty</li><li>&#x27;.&#x27; or equal char: diagonal</li><li>&#x27;*&#x27;: zero or one more repeat</li></ol></div></div>
+</div></section><section class="problem" id="p439">
+<h2>Problem 439: Best Time to Buy and Sell Stock III<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>At most two transactions.</p><div class="ex">Input: prices=[3,3,5,0,0,3,1,4]<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every pair of transactions, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Four-state DP: buy1, sell1, buy2, sell2.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each state keeps the best profit achievable in that stage.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProfitIII(int[] prices) {
+    int buy1 = Integer.MIN_VALUE, sell1 = 0, buy2 = Integer.MIN_VALUE, sell2 = 0;
+    for (int p : prices) {
+        buy1 = Math.max(buy1, -p);
+        sell1 = Math.max(sell1, buy1 + p);
+        buy2 = Math.max(buy2, sell1 - p);
+        sell2 = Math.max(sell2, buy2 + p);
+    }
+    return sell2;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>buy1 = max(buy1, -p)</li><li>sell1 = max(sell1, buy1 + p)</li><li>buy2 = max(buy2, sell1 - p)</li><li>sell2 = max(sell2, buy2 + p)</li></ol></div></div>
+</div></section><section class="problem" id="p440">
+<h2>Problem 440: Best Time to Buy and Sell Stock IV<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>At most k transactions.</p><div class="ex">Input: k=2, prices=[2,4,1]<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over day, holding state and remaining transactions.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP with buy[t] and sell[t] for each transaction count.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Generalizes the two-transaction solution to k.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxProfitIV(int k, int[] prices) {
+    int n = prices.length;
+    if (n &lt; 2) return 0;
+    if (k &gt;= n / 2) {
+        int profit = 0;
+        for (int i = 1; i &lt; n; i++) if (prices[i] &gt; prices[i - 1]) profit += prices[i] - prices[i - 1];
+        return profit;
+    }
+    int[] buy = new int[k + 1], sell = new int[k + 1];
+    Arrays.fill(buy, Integer.MIN_VALUE);
+    for (int p : prices)
+        for (int t = 1; t &lt;= k; t++) {
+            buy[t] = Math.max(buy[t], sell[t - 1] - p);
+            sell[t] = Math.max(sell[t], buy[t] + p);
+        }
+    return sell[k];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>If k &gt;= n/2 use the unlimited solution</li><li>buy[t] = max(buy[t], sell[t-1] - p)</li><li>sell[t] = max(sell[t], buy[t] + p)</li></ol></div></div>
+</div></section><section class="problem" id="p441">
+<h2>Problem 441: Matrix Chain Multiplication<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min multiplications.</p><div class="ex">Input: arr=[10,20,30,40,50]<br>Output:<pre class="out">38000</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over all parenthesizations.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Interval DP: try every split point.</p></div>
+<div class="card w"><h3>Why it works</h3><p>dp[i][j] = min over k of dp[i][k] + dp[k+1][j] + arr[i-1]*arr[k]*arr[j].</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int matrixMultiplication(int[] arr) {
+    int n = arr.length;
+    int[][] dp = new int[n][n];
+    for (int len = 2; len &lt; n; len++)
+        for (int i = 1; i + len - 1 &lt; n; i++) {
+            int j = i + len - 1;
+            dp[i][j] = Integer.MAX_VALUE;
+            for (int k = i; k &lt; j; k++)
+                dp[i][j] = Math.min(dp[i][j], dp[i][k] + dp[k + 1][j] + arr[i - 1] * arr[k] * arr[j]);
+        }
+    return dp[1][n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>dp[i][i] = 0</li><li>For increasing lengths try each k</li><li>Take the minimum cost</li></ol></div></div>
+</div></section><section class="problem" id="p442">
+<h2>Problem 442: Minimum Cost to Cut a Stick<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min cost.</p><div class="ex">Input: n=7, cuts=[1,3,4,5]<br>Output:<pre class="out">16</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every cut order.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Interval DP on sorted cuts with the stick ends added.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The first cut in a segment splits it and costs its length.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minCostCutStick(int n, int[] cuts) {
+    int m = cuts.length + 2;
+    int[] c = new int[m];
+    System.arraycopy(cuts, 0, c, 1, cuts.length);
+    c[m - 1] = n;
+    Arrays.sort(c);
+    int[][] dp = new int[m][m];
+    for (int len = 2; len &lt; m; len++)
+        for (int i = 0; i + len &lt; m; i++) {
+            int j = i + len;
+            dp[i][j] = Integer.MAX_VALUE;
+            for (int k = i + 1; k &lt; j; k++)
+                dp[i][j] = Math.min(dp[i][j], dp[i][k] + dp[k][j] + c[j] - c[i]);
+        }
+    return dp[0][m - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>cuts = [0] + sorted cuts + [n]</li><li>dp[i][j] = min over k of dp[i][k] + dp[k][j] + (c[j] - c[i])</li><li>Answer dp[0][m-1]</li></ol></div></div>
+</div></section><section class="problem" id="p443">
+<h2>Problem 443: Burst Balloons<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max coins.</p><div class="ex">Input: nums=[3,1,5,8]<br>Output:<pre class="out">167</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all bursting orders.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Interval DP choosing the last balloon to burst.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The last balloon k in (i, j) has neighbours i and j, making subproblems independent.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxCoins(int[] nums) {
+    int n = nums.length;
+    int[] a = new int[n + 2];
+    a[0] = a[n + 1] = 1;
+    for (int i = 0; i &lt; n; i++) a[i + 1] = nums[i];
+    int[][] dp = new int[n + 2][n + 2];
+    for (int len = 2; len &lt;= n + 1; len++)
+        for (int i = 0; i + len &lt;= n + 1; i++) {
+            int j = i + len;
+            for (int k = i + 1; k &lt; j; k++)
+                dp[i][j] = Math.max(dp[i][j], dp[i][k] + dp[k][j] + a[i] * a[k] * a[j]);
+        }
+    return dp[0][n + 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Pad with 1 at both ends</li><li>dp[i][j] = max over k of dp[i][k] + dp[k][j] + a[i]*a[k]*a[j]</li><li>Answer dp[0][n+1]</li></ol></div></div>
+</div></section><section class="problem" id="p444">
+<h2>Problem 444: Evaluate Boolean Expression to True<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Ways to parenthesize to true.</p><div class="ex">Input: exp=&quot;T or F and T&quot;<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Enumerate all parenthesizations.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Interval DP storing ways for true and false.</p></div>
+<div class="card w"><h3>Why it works</h3><p>For each operator split, combine left and right counts by the operator&#x27;s truth table.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int evaluateExp(String exp) {
+    String[] tok = exp.trim().split(&quot;\\s+&quot;);
+    int n = (tok.length + 1) / 2;
+    boolean[] v = new boolean[n];
+    String[] op = new String[n - 1];
+    for (int i = 0; i &lt; n; i++) v[i] = tok[2 * i].equals(&quot;T&quot;);
+    for (int i = 0; i + 1 &lt; n; i++) op[i] = tok[2 * i + 1];
+    long[][] T = new long[n][n], F = new long[n][n];
+    for (int i = 0; i &lt; n; i++) { T[i][i] = v[i] ? 1 : 0; F[i][i] = v[i] ? 0 : 1; }
+    for (int len = 2; len &lt;= n; len++)
+        for (int i = 0; i + len &lt;= n; i++) {
+            int j = i + len - 1;
+            for (int k = i; k &lt; j; k++) {
+                long lt = T[i][k], lf = F[i][k], rt = T[k + 1][j], rf = F[k + 1][j];
+                long tot = (lt + lf) * (rt + rf);
+                long t;
+                switch (op[k]) {
+                    case &quot;and&quot;: t = lt * rt; break;
+                    case &quot;or&quot;: t = tot - lf * rf; break;
+                    default: t = lt * rf + lf * rt;
+                }
+                T[i][j] += t;
+                F[i][j] += tot - t;
+            }
+        }
+    return (int) T[0][n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Parse operands and operators</li><li>T[i][j], F[i][j] for each interval</li><li>For each operator k combine counts</li><li>Answer T[0][n-1]</li></ol></div></div>
+</div></section><section class="problem" id="p445">
+<h2>Problem 445: Palindrome Partitioning II<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min cuts.</p><div class="ex">Input: s=&quot;aab&quot;<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all partitions recursively.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Precompute palindromes then DP over cut counts.</p></div>
+<div class="card w"><h3>Why it works</h3><p>cuts[i] = min over palindromic suffixes of cuts[j] + 1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minCutPalindrome(String s) {
+    int n = s.length();
+    boolean[][] pal = new boolean[n][n];
+    for (int i = n - 1; i &gt;= 0; i--)
+        for (int j = i; j &lt; n; j++) pal[i][j] = s.charAt(i) == s.charAt(j) &amp;&amp; (j - i &lt; 2 || pal[i + 1][j - 1]);
+    int[] cuts = new int[n];
+    for (int i = 0; i &lt; n; i++) {
+        if (pal[0][i]) { cuts[i] = 0; continue; }
+        cuts[i] = Integer.MAX_VALUE;
+        for (int j = 0; j &lt; i; j++) if (pal[j + 1][i]) cuts[i] = Math.min(cuts[i], cuts[j] + 1);
+    }
+    return cuts[n - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>pal[i][j] table</li><li>cuts[i] = 0 if s[0..i] is a palindrome</li><li>Otherwise min cuts[j] + 1 over palindromic s[j+1..i]</li></ol></div></div>
+</div></section><section class="problem" id="p446">
+<h2>Problem 446: Partition Array for Maximum Sum<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Subarrays up to size k.</p><div class="ex">Input: arr=[1,15,7,9,2,5,10], k=3<br>Output:<pre class="out">84</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion over every partition.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP: dp[i] = best using the last len &lt;= k elements as one partition.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each partition becomes the maximum of the block times its length.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxSumAfterPartitioning(int[] arr, int k) {
+    int n = arr.length;
+    int[] dp = new int[n + 1];
+    for (int i = 1; i &lt;= n; i++) {
+        int max = 0;
+        for (int len = 1; len &lt;= k &amp;&amp; i - len &gt;= 0; len++) {
+            max = Math.max(max, arr[i - len]);
+            dp[i] = Math.max(dp[i], dp[i - len] + max * len);
+        }
+    }
+    return dp[n];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For each i try block lengths 1..k</li><li>Track the max in the block</li><li>dp[i] = max(dp[i - len] + max * len)</li></ol></div></div>
+</div></section><section class="problem" id="p447">
+<h2>Problem 447: Maximum Rectangle Area with All 1s<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Largest rectangle of 1s.</p><div class="ex">Input: matrix=[[1,0,1],[1,1,1]]<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every rectangle.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Histogram per row plus the largest rectangle in a histogram.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each row&#x27;s column heights form a histogram.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maximalRectangleDP(int[][] matrix) {
+    int n = matrix[0].length, best = 0;
+    int[] h = new int[n];
+    for (int[] row : matrix) {
+        for (int j = 0; j &lt; n; j++) h[j] = row[j] == 1 ? h[j] + 1 : 0;
+        Deque&lt;Integer&gt; st = new ArrayDeque&lt;&gt;();
+        for (int i = 0; i &lt;= n; i++) {
+            int cur = i == n ? 0 : h[i];
+            while (!st.isEmpty() &amp;&amp; h[st.peek()] &gt; cur) {
+                int height = h[st.pop()];
+                int w = st.isEmpty() ? i : i - st.peek() - 1;
+                best = Math.max(best, height * w);
+            }
+            st.push(i);
+        }
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>heights[j] = consecutive ones</li><li>Largest rectangle with a stack</li><li>Track the best per row</li></ol></div></div>
+</div></section><section class="problem" id="p448">
+<h2>Problem 448: Count Square Submatrices with All 1s<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Count squares.</p><div class="ex">Input: matrix=[[0,1,1,1],[1,1,1,1],[0,1,1,1]]<br>Output:<pre class="out">15</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check each square at every cell.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>DP: dp[i][j] = 1 + min of the three neighbours.</p></div>
+<div class="card w"><h3>Why it works</h3><p>dp[i][j] is both the largest square side and the count of squares ending there.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int countSquares(int[][] matrix) {
+    int m = matrix.length, n = matrix[0].length, total = 0;
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 1; i &lt;= m; i++)
+        for (int j = 1; j &lt;= n; j++)
+            if (matrix[i - 1][j - 1] == 1) {
+                dp[i][j] = 1 + Math.min(dp[i - 1][j], Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+                total += dp[i][j];
+            }
+    return total;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>For &#x27;1&#x27; cells compute dp</li><li>Sum all dp values</li></ol></div></div>
+</div></section></main></body></html>

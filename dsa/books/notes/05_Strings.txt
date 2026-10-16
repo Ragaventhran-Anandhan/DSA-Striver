@@ -1,0 +1,213 @@
+=== 128
+brute: Decompose into primitives and rebuild each without its outer pair.
+opt: Track depth; append a char only if it is not an outer parenthesis.
+why: Outer '(' is at depth 0 before increment and outer ')' at depth 0 after decrement.
+expl: depth = 0 | For '(' append if depth > 0 then depth++ | For ')' depth-- then append if depth > 0
+code:
+public static String removeOuterParentheses(String s) {
+    StringBuilder sb = new StringBuilder();
+    int depth = 0;
+    for (char c : s.toCharArray()) {
+        if (c == '(') { if (depth++ > 0) sb.append(c); }
+        else { if (--depth > 0) sb.append(c); }
+    }
+    return sb.toString();
+}
+=== 129
+brute: Split on spaces and reverse with a list.
+opt: Scan from the end and collect words.
+why: Skipping spaces handles leading, trailing and repeated spaces.
+expl: Trim and split on whitespace | Append from the last word to the first | Join with single spaces
+code:
+public static String reverseWords(String s) {
+    String[] w = s.trim().split("\\s+");
+    StringBuilder sb = new StringBuilder();
+    for (int i = w.length - 1; i >= 0; i--) {
+        sb.append(w[i]);
+        if (i > 0) sb.append(' ');
+    }
+    return sb.toString();
+}
+=== 130
+brute: Check every substring for oddness.
+opt: Scan from the right for the first odd digit.
+why: Oddness depends only on the last digit; the longest prefix ends at the last odd digit.
+expl: Loop i from the end | Stop at the first odd digit | Return the prefix up to i
+code:
+public static String largestOddNumber(String num) {
+    for (int i = num.length() - 1; i >= 0; i--)
+        if ((num.charAt(i) - '0') % 2 == 1) return num.substring(0, i + 1);
+    return "";
+}
+=== 131
+brute: Test every prefix of the first string against all others.
+opt: Sort and compare first and last strings, or shrink a prefix.
+why: Extremes in lexicographic order share the common prefix of everything between them.
+expl: prefix = strs[0] | While a string does not start with prefix, shorten it | Return prefix
+code:
+public static String longestCommonPrefix(String[] strs) {
+    String p = strs[0];
+    for (String s : strs) while (!s.startsWith(p)) p = p.substring(0, p.length() - 1);
+    return p;
+}
+=== 132
+brute: Try all mappings.
+opt: Map each character to its last seen index in both strings.
+why: Equal last-seen positions at each step mean the mapping is consistent and one-to-one.
+expl: Two arrays of size 256 | For each i compare stored positions | Update both with i+1
+code:
+public static boolean isIsomorphic(String s, String t) {
+    if (s.length() != t.length()) return false;
+    int[] a = new int[256], b = new int[256];
+    for (int i = 0; i < s.length(); i++) {
+        if (a[s.charAt(i)] != b[t.charAt(i)]) return false;
+        a[s.charAt(i)] = b[t.charAt(i)] = i + 1;
+    }
+    return true;
+}
+=== 133
+brute: Try every rotation.
+opt: Check if goal is a substring of s + s.
+why: Every rotation of s appears inside s concatenated with itself.
+expl: Lengths must match | Build s+s | Check contains(goal)
+code:
+public static boolean isRotation(String s, String goal) {
+    return s.length() == goal.length() && (s + s).contains(goal);
+}
+=== 134
+brute: Sort both strings and compare.
+opt: Count letters in one array.
+why: Anagrams have identical letter counts.
+expl: Equal lengths required | Increment for s and decrement for t | All counts must be zero
+code:
+public static boolean isAnagram(String s, String t) {
+    if (s.length() != t.length()) return false;
+    int[] c = new int[26];
+    for (int i = 0; i < s.length(); i++) { c[s.charAt(i) - 'a']++; c[t.charAt(i) - 'a']--; }
+    for (int x : c) if (x != 0) return false;
+    return true;
+}
+=== 135
+brute: Use a stack to track open parentheses.
+opt: A single counter of open brackets.
+why: Stack size equals the current depth, so a counter is enough.
+expl: depth = max = 0 | '(' increments and updates max | ')' decrements
+code:
+public static int maxDepth(String s) {
+    int d = 0, max = 0;
+    for (char c : s.toCharArray()) {
+        if (c == '(') max = Math.max(max, ++d);
+        else if (c == ')') d--;
+    }
+    return max;
+}
+=== 136
+brute: Match fixed patterns with many ifs.
+opt: Map symbols to values; subtract when the next is larger.
+why: Subtractive notation is exactly a smaller symbol before a larger one.
+expl: Value map | Add value | If next value is larger subtract instead
+code:
+public static int romanToInt(String s) {
+    Map<Character, Integer> m = Map.of('I', 1, 'V', 5, 'X', 10, 'L', 50, 'C', 100, 'D', 500, 'M', 1000);
+    int total = 0;
+    for (int i = 0; i < s.length(); i++) {
+        int v = m.get(s.charAt(i));
+        if (i + 1 < s.length() && v < m.get(s.charAt(i + 1))) total -= v; else total += v;
+    }
+    return total;
+}
+=== 137
+brute: Generate all substrings and count.
+opt: Formula n*(n+1)/2.
+why: A string of length n has n choose 2 + n start/end pairs.
+expl: n = length | Return n*(n+1)/2
+code:
+public static int countSubstrings(String s) {
+    int n = s.length();
+    return n * (n + 1) / 2;
+}
+=== 138
+brute: Count frequencies then selection-sort characters.
+opt: Frequency map and sort characters by count descending.
+why: Sorting distinct characters is cheaper than sorting the whole string.
+expl: Count with a map | Sort entries by count descending | Repeat each char by its count
+code:
+public static String frequencySort(String s) {
+    Map<Character, Integer> m = new HashMap<>();
+    for (char c : s.toCharArray()) m.merge(c, 1, Integer::sum);
+    List<Map.Entry<Character, Integer>> l = new ArrayList<>(m.entrySet());
+    l.sort((a, b) -> b.getValue() - a.getValue());
+    StringBuilder sb = new StringBuilder();
+    for (Map.Entry<Character, Integer> e : l)
+        for (int i = 0; i < e.getValue(); i++) sb.append(e.getKey());
+    return sb.toString();
+}
+=== 139
+brute: Use library parsing with try/catch.
+opt: Manual parse with sign, digits and overflow clamp.
+why: Clamping before overflow keeps results in int range.
+expl: Skip leading spaces | Read optional sign | Accumulate digits | Clamp to int limits
+code:
+public static int myAtoi(String s) {
+    int i = 0, n = s.length(), sign = 1;
+    while (i < n && s.charAt(i) == ' ') i++;
+    if (i < n && (s.charAt(i) == '+' || s.charAt(i) == '-')) sign = s.charAt(i++) == '-' ? -1 : 1;
+    long r = 0;
+    while (i < n && Character.isDigit(s.charAt(i))) {
+        r = r * 10 + (s.charAt(i++) - '0');
+        if (r * sign > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        if (r * sign < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+    }
+    return (int) (r * sign);
+}
+=== 140
+brute: Check every substring for palindrome, O(n^3).
+opt: Expand around each center.
+why: A palindrome mirrors around its center, giving O(n^2).
+expl: For each i try odd and even centers | Expand while chars match | Keep the longest
+code:
+public static String longestPalindrome(String s) {
+    int start = 0, best = 0;
+    for (int c = 0; c < s.length(); c++) {
+        for (int w = 0; w < 2; w++) {
+            int l = c, r = c + w;
+            while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+            if (r - l - 1 > best) { best = r - l - 1; start = l + 1; }
+        }
+    }
+    return s.substring(start, start + best);
+}
+=== 141
+brute: Compute frequency of every substring from scratch.
+opt: For each start extend the end while updating counts.
+why: Updating counts incrementally avoids recomputation, O(26 n^2).
+expl: For each i reset counts | Extend j and update count | Beauty = max - min among non-zero counts
+code:
+public static int beautySum(String s) {
+    int total = 0;
+    for (int i = 0; i < s.length(); i++) {
+        int[] f = new int[26];
+        for (int j = i; j < s.length(); j++) {
+            f[s.charAt(j) - 'a']++;
+            int max = 0, min = Integer.MAX_VALUE;
+            for (int x : f) if (x > 0) { max = Math.max(max, x); min = Math.min(min, x); }
+            total += max - min;
+        }
+    }
+    return total;
+}
+=== 142
+brute: Reverse the whole string and then reorder the words.
+opt: Split by space and reverse each word.
+why: Reversing each word independently keeps the word order.
+expl: Split on spaces | Reverse every token with StringBuilder | Join with spaces
+code:
+public static String reverseEachWord(String s) {
+    String[] w = s.split(" ");
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < w.length; i++) {
+        sb.append(new StringBuilder(w[i]).reverse());
+        if (i + 1 < w.length) sb.append(' ');
+    }
+    return sb.toString();
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>17 - Strings Advanced</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>17 - Strings Advanced</h1></header><main><nav class="toc"><a href="#p455">455. Minimum Characters to Add at Front for Palindrome</a><a href="#p456">456. Shortest Palindrome</a><a href="#p457">457. Rabin-Karp Algorithm</a><a href="#p458">458. Z-Function</a><a href="#p459">459. KMP Algorithm / LPS Array</a><a href="#p460">460. KMP - Find Pattern Occurrences</a><a href="#p461">461. Count and Say</a><a href="#p462">462. Compare Version Numbers</a><a href="#p463">463. Repeated Substring Pattern</a></nav><section class="problem" id="p455">
+<h2>Problem 455: Minimum Characters to Add at Front for Palindrome<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Min chars at front.</p><div class="ex">Input: s=&quot;aacecaaa&quot;<br>Output:<pre class="out">1</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try adding characters until the string is a palindrome.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Length minus the longest palindromic prefix, found with the KMP LPS of s + &quot;#&quot; + reverse(s).</p></div>
+<div class="card w"><h3>Why it works</h3><p>The LPS value at the end is the length of the longest prefix that is also a suffix of the reverse, i.e. a palindromic prefix.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int minCharsForPalindrome(String s) {
+    String t = s + &quot;#&quot; + new StringBuilder(s).reverse();
+    int[] lps = new int[t.length()];
+    for (int i = 1, k = 0; i &lt; t.length(); i++) {
+        while (k &gt; 0 &amp;&amp; t.charAt(i) != t.charAt(k)) k = lps[k - 1];
+        if (t.charAt(i) == t.charAt(k)) k++;
+        lps[i] = k;
+    }
+    return s.length() - lps[t.length() - 1];
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>t = s + &quot;#&quot; + reverse(s)</li><li>Compute the LPS array</li><li>answer = n - lps[last]</li></ol></div></div>
+</div></section><section class="problem" id="p456">
+<h2>Problem 456: Shortest Palindrome<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Shortest palindrome by adding at front.</p><div class="ex">Input: s=&quot;aacecaaa&quot;<br>Output:<pre class="out">&quot;aaacecaaa&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try each prefix to see if it is a palindrome.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Find the longest palindromic prefix with LPS and prepend the reversed remainder.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Only the part after the palindromic prefix needs to be mirrored.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String shortestPalindrome(String s) {
+    String t = s + &quot;#&quot; + new StringBuilder(s).reverse();
+    int[] lps = new int[t.length()];
+    for (int i = 1, k = 0; i &lt; t.length(); i++) {
+        while (k &gt; 0 &amp;&amp; t.charAt(i) != t.charAt(k)) k = lps[k - 1];
+        if (t.charAt(i) == t.charAt(k)) k++;
+        lps[i] = k;
+    }
+    int p = lps[t.length() - 1];
+    return new StringBuilder(s.substring(p)).reverse() + s;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute the longest palindromic prefix length p</li><li>Reverse s[p..]</li><li>Prepend it to s</li></ol></div></div>
+</div></section><section class="problem" id="p457">
+<h2>Problem 457: Rabin-Karp Algorithm<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Pattern match using rolling hash.</p><div class="ex">Input: text=&quot;abcabc&quot;, pattern=&quot;bc&quot;<br>Output:<pre class="out">[1,4]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare the pattern at every position, O(nm).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Rolling hash: update the window hash in O(1) and verify on a hash match.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Equal hashes are candidates; verifying avoids false positives, giving O(n + m) on average.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; rabinKarp(String text, String pattern) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int n = text.length(), m = pattern.length();
+    if (m &gt; n) return res;
+    long B = 256, M = 1_000_000_007L, h = 1, ph = 0, th = 0;
+    for (int i = 0; i &lt; m - 1; i++) h = h * B % M;
+    for (int i = 0; i &lt; m; i++) {
+        ph = (ph * B + pattern.charAt(i)) % M;
+        th = (th * B + text.charAt(i)) % M;
+    }
+    for (int i = 0; i + m &lt;= n; i++) {
+        if (ph == th &amp;&amp; text.startsWith(pattern, i)) res.add(i);
+        if (i + m &lt; n) th = ((th - text.charAt(i) * h % M + M) * B + text.charAt(i + m)) % M;
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Hash the pattern and the first window</li><li>Roll: remove the left char and add the right</li><li>On equal hash compare the strings</li><li>Record the index</li></ol></div></div>
+</div></section><section class="problem" id="p458">
+<h2>Problem 458: Z-Function<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Compute Z array.</p><div class="ex">Input: s=&quot;aabxaab&quot;<br>Output:<pre class="out">[7,1,0,0,3,1,0]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare each suffix with the string character by character, O(n^2).</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Z-algorithm maintaining a window [l, r] that matches a prefix.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Values inside the window are reused from earlier results, so the total work is O(n).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] zFunction(String s) {
+    int n = s.length();
+    int[] z = new int[n];
+    z[0] = n;
+    for (int i = 1, l = 0, r = 0; i &lt; n; i++) {
+        if (i &lt;= r) z[i] = Math.min(r - i + 1, z[i - l]);
+        while (i + z[i] &lt; n &amp;&amp; s.charAt(z[i]) == s.charAt(i + z[i])) z[i]++;
+        if (i + z[i] - 1 &gt; r) { l = i; r = i + z[i] - 1; }
+    }
+    return z;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>z[0] = n</li><li>If i &lt;= r start from min(r - i + 1, z[i - l])</li><li>Extend while characters match</li><li>Update the window</li></ol></div></div>
+</div></section><section class="problem" id="p459">
+<h2>Problem 459: KMP Algorithm / LPS Array<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest prefix suffix array.</p><div class="ex">Input: pattern=&quot;abab&quot;<br>Output:<pre class="out">[0,0,1,2]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>For every prefix check all border lengths.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Build the LPS array incrementally, falling back with lps[k-1] on a mismatch.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A border of a prefix extends from a shorter border, so mismatches reuse earlier values.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] computeLPS(String pattern) {
+    int n = pattern.length();
+    int[] lps = new int[n];
+    for (int i = 1, k = 0; i &lt; n; i++) {
+        while (k &gt; 0 &amp;&amp; pattern.charAt(i) != pattern.charAt(k)) k = lps[k - 1];
+        if (pattern.charAt(i) == pattern.charAt(k)) k++;
+        lps[i] = k;
+    }
+    return lps;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>lps[0] = 0, k = 0</li><li>If chars match k++ and store</li><li>Else fall back k = lps[k-1]</li><li>Store lps[i] = k</li></ol></div></div>
+</div></section><section class="problem" id="p460">
+<h2>Problem 460: KMP - Find Pattern Occurrences<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>All start indices.</p><div class="ex">Input: text=&quot;aabaabaa&quot;, pattern=&quot;aab&quot;<br>Output:<pre class="out">[0,3]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compare the pattern at each text position.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>KMP: never move backwards in the text, use LPS to shift the pattern.</p></div>
+<div class="card w"><h3>Why it works</h3><p>After a mismatch the LPS tells how much of the pattern still matches, giving O(n + m).</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static List&lt;Integer&gt; kmpSearch(String text, String pattern) {
+    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();
+    int m = pattern.length();
+    int[] lps = new int[m];
+    for (int i = 1, k = 0; i &lt; m; i++) {
+        while (k &gt; 0 &amp;&amp; pattern.charAt(i) != pattern.charAt(k)) k = lps[k - 1];
+        if (pattern.charAt(i) == pattern.charAt(k)) k++;
+        lps[i] = k;
+    }
+    for (int i = 0, k = 0; i &lt; text.length(); i++) {
+        while (k &gt; 0 &amp;&amp; text.charAt(i) != pattern.charAt(k)) k = lps[k - 1];
+        if (text.charAt(i) == pattern.charAt(k)) k++;
+        if (k == m) { res.add(i - m + 1); k = lps[k - 1]; }
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Compute LPS</li><li>Scan text with pattern index k</li><li>On a full match record i - m + 1 and set k = lps[k-1]</li></ol></div></div>
+</div></section><section class="problem" id="p461">
+<h2>Problem 461: Count and Say<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>n-th term.</p><div class="ex">Input: n=4<br>Output:<pre class="out">&quot;1211&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Recursion generating each term.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Iteratively build each term by run-length encoding the previous one.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Each term is derived only from the one before it.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String countAndSay(int n) {
+    String s = &quot;1&quot;;
+    for (int i = 2; i &lt;= n; i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j &lt; s.length(); ) {
+            int k = j;
+            while (k &lt; s.length() &amp;&amp; s.charAt(k) == s.charAt(j)) k++;
+            sb.append(k - j).append(s.charAt(j));
+            j = k;
+        }
+        s = sb.toString();
+    }
+    return s;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start with &quot;1&quot;</li><li>For each next term count runs of equal digits</li><li>Append count then digit</li></ol></div></div>
+</div></section><section class="problem" id="p462">
+<h2>Problem 462: Compare Version Numbers<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Compare.</p><div class="ex">Input: v1=&quot;1.01&quot;, v2=&quot;1.001&quot;<br>Output:<pre class="out">0</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Split and parse every revision into a list.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Walk both strings parsing revision numbers on the fly.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Missing revisions count as 0 and leading zeros vanish when parsed as integers.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int compareVersion(String v1, String v2) {
+    String[] a = v1.split(&quot;\\.&quot;), b = v2.split(&quot;\\.&quot;);
+    for (int i = 0; i &lt; Math.max(a.length, b.length); i++) {
+        int x = i &lt; a.length ? Integer.parseInt(a[i]) : 0;
+        int y = i &lt; b.length ? Integer.parseInt(b[i]) : 0;
+        if (x != y) return x &lt; y ? -1 : 1;
+    }
+    return 0;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Split on &#x27;.&#x27;</li><li>Compare revision by revision</li><li>Treat missing as 0</li><li>Return -1, 0 or 1</li></ol></div></div>
+</div></section><section class="problem" id="p463">
+<h2>Problem 463: Repeated Substring Pattern<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Is built by repeating substring.</p><div class="ex">Input: s=&quot;abab&quot;<br>Output:<pre class="out">true</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every substring length that divides n.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Check whether s occurs inside (s + s) with the first and last characters removed.</p></div>
+<div class="card w"><h3>Why it works</h3><p>A string made of repeats appears in a non-trivial rotation of itself.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static boolean repeatedSubstringPattern(String s) {
+    String d = s + s;
+    return d.substring(1, d.length() - 1).contains(s);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>d = s + s</li><li>Remove the first and last character</li><li>If s is found it is a repeated pattern</li></ol></div></div>
+</div></section></main></body></html>

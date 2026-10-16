@@ -1,0 +1,290 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>10 - Sliding Window Two Pointers</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#1f2937}
+header{background:#111827;color:#fff;padding:24px 40px}header a{color:#93c5fd;text-decoration:none}
+header h1{margin:8px 0 0}main{max-width:1200px;margin:0 auto;padding:24px 40px}
+nav.toc{background:#fff;border-radius:8px;padding:16px 24px;margin-bottom:32px;columns:2}
+nav.toc a{display:block;color:#1d4ed8;text-decoration:none;padding:2px 0;break-inside:avoid}
+section.problem{background:#fff;border-radius:8px;padding:28px 32px;margin-bottom:32px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+section.problem>h2{margin:0 0 20px;padding-bottom:12px;border-bottom:2px solid #1e293b;font-size:24px}
+.badge{font-size:12px;padding:2px 10px;border-radius:12px;margin-left:10px;color:#fff;vertical-align:middle}
+.easy{background:#16a34a}.medium{background:#d97706}.hard{background:#dc2626}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px}@media(max-width:900px){.cols{grid-template-columns:1fr}}
+.card{border-left:4px solid #94a3b8;background:#f8fafc;padding:12px 18px;margin-bottom:18px;border-radius:0 6px 6px 0}
+.card.q{border-color:#64748b}.card.b{border-color:#f97316}.card.o{border-color:#2563eb}.card.w{border-color:#16a34a}
+.card h3{margin:0 0 6px;font-size:16px}.card p{margin:0;color:#475569}
+.card .ex{font-family:Consolas,monospace;font-size:13px;color:#334155;margin-top:6px}
+.right h3{color:#2563eb;font-size:18px;margin:0 0 10px}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5;margin:0 0 20px}
+.todo{color:#94a3b8;font-style:italic}.steps{color:#475569}.steps ol{margin:0;padding-left:22px}
+.card pre.out{background:none;color:#334155;padding:0;margin:2px 0 0;font-size:13px;display:inline-block;vertical-align:top}
+</style></head><body><header><a href="index.html">&larr; All topics</a><h1>10 - Sliding Window Two Pointers</h1></header><main><nav class="toc"><a href="#p246">246. Longest Substring Without Repeating Characters</a><a href="#p247">247. Max Consecutive Ones III</a><a href="#p248">248. Fruit Into Baskets</a><a href="#p249">249. Longest Substring with At Most K Distinct Characters</a><a href="#p250">250. Number of Substrings Containing All Three Characters</a><a href="#p251">251. Longest Repeating Character Replacement</a><a href="#p252">252. Binary Subarrays with Sum</a><a href="#p253">253. Count Number of Nice Subarrays</a><a href="#p254">254. Maximum Points You Can Obtain from Cards</a><a href="#p255">255. Subarrays with K Different Integers</a><a href="#p256">256. Minimum Window Substring</a><a href="#p257">257. Minimum Window Subsequence</a><a href="#p258">258. Sliding Window Maximum</a></nav><section class="problem" id="p246">
+<h2>Problem 246: Longest Substring Without Repeating Characters<span class="badge easy">easy</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Length of longest unique substring.</p><div class="ex">Input: s=&quot;abcabcbb&quot;<br>Output:<pre class="out">3</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every substring for uniqueness.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sliding window with a last-seen index array.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The left pointer jumps past the previous occurrence, so each char is processed once.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int lengthOfLongestSubstring(String s) {
+    int[] last = new int[256];
+    Arrays.fill(last, -1);
+    int l = 0, best = 0;
+    for (int r = 0; r &lt; s.length(); r++) {
+        char c = s.charAt(r);
+        if (last[c] &gt;= l) l = last[c] + 1;
+        last[c] = r;
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>l = 0</li><li>If char seen at index &gt;= l move l past it</li><li>Update last seen</li><li>Track max window</li></ol></div></div>
+</div></section><section class="problem" id="p247">
+<h2>Problem 247: Max Consecutive Ones III<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Flip at most k zeros.</p><div class="ex">Input: arr=[1,1,1,0,0,0,1,1,1,1,0], k=2<br>Output:<pre class="out">6</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every subarray and count zeros.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Window with at most k zeros.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Shrink from the left whenever zeros exceed k.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestOnes(int[] arr, int k) {
+    int l = 0, zeros = 0, best = 0;
+    for (int r = 0; r &lt; arr.length; r++) {
+        if (arr[r] == 0) zeros++;
+        while (zeros &gt; k) if (arr[l++] == 0) zeros--;
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Expand r and count zeros</li><li>While zeros &gt; k shrink l</li><li>Update best</li></ol></div></div>
+</div></section><section class="problem" id="p248">
+<h2>Problem 248: Fruit Into Baskets<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest subarray with at most 2 distinct values.</p><div class="ex">Input: fruits=[1,2,3,2,2]<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every subarray and count distinct fruit types.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Sliding window with at most 2 distinct.</p></div>
+<div class="card w"><h3>Why it works</h3><p>It is the longest-substring-with-k-distinct problem with k = 2.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int totalFruit(int[] fruits) {
+    Map&lt;Integer, Integer&gt; m = new HashMap&lt;&gt;();
+    int l = 0, best = 0;
+    for (int r = 0; r &lt; fruits.length; r++) {
+        m.merge(fruits[r], 1, Integer::sum);
+        while (m.size() &gt; 2) {
+            if (m.merge(fruits[l], -1, Integer::sum) == 0) m.remove(fruits[l]);
+            l++;
+        }
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count map</li><li>Shrink while distinct &gt; 2</li><li>Track max</li></ol></div></div>
+</div></section><section class="problem" id="p249">
+<h2>Problem 249: Longest Substring with At Most K Distinct Characters<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest substring with &lt;= k distinct.</p><div class="ex">Input: s=&quot;aaabb&quot;, k=2<br>Output:<pre class="out">5</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every substring.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Window plus a count map.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Shrinking only when distinct &gt; k keeps the window valid.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int longestKDistinct(String s, int k) {
+    Map&lt;Character, Integer&gt; m = new HashMap&lt;&gt;();
+    int l = 0, best = 0;
+    for (int r = 0; r &lt; s.length(); r++) {
+        m.merge(s.charAt(r), 1, Integer::sum);
+        while (m.size() &gt; k) {
+            char c = s.charAt(l++);
+            if (m.merge(c, -1, Integer::sum) == 0) m.remove(c);
+        }
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Add s[r]</li><li>While map size &gt; k remove s[l]</li><li>best = max length</li></ol></div></div>
+</div></section><section class="problem" id="p250">
+<h2>Problem 250: Number of Substrings Containing All Three Characters<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Substrings containing a, b, c.</p><div class="ex">Input: s=&quot;abcabc&quot;<br>Output:<pre class="out">10</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check each substring for a, b and c.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Track last seen index of each letter.</p></div>
+<div class="card w"><h3>Why it works</h3><p>At position r, valid starts are 0..min(last)+... so add min(last)+1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int numberOfSubstrings(String s) {
+    int[] last = {-1, -1, -1};
+    int count = 0;
+    for (int i = 0; i &lt; s.length(); i++) {
+        last[s.charAt(i) - &#x27;a&#x27;] = i;
+        count += 1 + Math.min(last[0], Math.min(last[1], last[2]));
+    }
+    return count;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>last = [-1,-1,-1]</li><li>Update last for s[r]</li><li>If all seen add min(last)+1</li></ol></div></div>
+</div></section><section class="problem" id="p251">
+<h2>Problem 251: Longest Repeating Character Replacement<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Longest same-char substring after k replacements.</p><div class="ex">Input: s=&quot;AABABBA&quot;, k=1<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try every substring and check replacements.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Window where (length - maxFreq) &lt;= k.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Replacements needed equal length minus the most frequent letter count.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int characterReplacement(String s, int k) {
+    int[] c = new int[26];
+    int l = 0, maxF = 0, best = 0;
+    for (int r = 0; r &lt; s.length(); r++) {
+        maxF = Math.max(maxF, ++c[s.charAt(r) - &#x27;A&#x27;]);
+        if (r - l + 1 - maxF &gt; k) c[s.charAt(l++) - &#x27;A&#x27;]--;
+        best = Math.max(best, r - l + 1);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Count letters in window</li><li>Track maxFreq</li><li>If length - maxFreq &gt; k move l</li><li>Track best</li></ol></div></div>
+</div></section><section class="problem" id="p252">
+<h2>Problem 252: Binary Subarrays with Sum<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Subarrays with sum goal.</p><div class="ex">Input: arr=[1,0,1,0,1], goal=2<br>Output:<pre class="out">4</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every subarray sum.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>atMost(goal) - atMost(goal - 1).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Subarrays with sum exactly goal are those with sum &lt;= goal minus those &lt;= goal-1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int numSubarraysWithSum(int[] arr, int goal) {
+    return atMost(arr, goal) - atMost(arr, goal - 1);
+}
+
+private static int atMost(int[] a, int g) {
+    if (g &lt; 0) return 0;
+    int l = 0, sum = 0, c = 0;
+    for (int r = 0; r &lt; a.length; r++) {
+        sum += a[r];
+        while (sum &gt; g) sum -= a[l++];
+        c += r - l + 1;
+    }
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>atMost uses a sliding window</li><li>Handle goal &lt; 0 as 0</li><li>Subtract the two</li></ol></div></div>
+</div></section><section class="problem" id="p253">
+<h2>Problem 253: Count Number of Nice Subarrays<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Subarrays with k odd numbers.</p><div class="ex">Input: arr=[1,1,2,1,1], k=3<br>Output:<pre class="out">2</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count odd numbers for every subarray.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>atMost(k) - atMost(k - 1) on odd counts.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Converting values to parity reduces this to binary subarray sum.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int numberOfSubarrays(int[] arr, int k) {
+    return atMost(arr, k) - atMost(arr, k - 1);
+}
+
+private static int atMost(int[] a, int k) {
+    int l = 0, odd = 0, c = 0;
+    for (int r = 0; r &lt; a.length; r++) {
+        odd += a[r] &amp; 1;
+        while (odd &gt; k) odd -= a[l++] &amp; 1;
+        c += r - l + 1;
+    }
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Treat odd as 1</li><li>Sliding window atMost</li><li>Subtract</li></ol></div></div>
+</div></section><section class="problem" id="p254">
+<h2>Problem 254: Maximum Points You Can Obtain from Cards<span class="badge medium">medium</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Pick k cards from ends.</p><div class="ex">Input: cards=[1,2,3,4,5,6,1], k=3<br>Output:<pre class="out">12</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Try all ways to pick from the ends.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Slide a window of size k across the boundary.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Choosing i from the left and k-i from the right covers every case.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int maxScore(int[] cards, int k) {
+    int sum = 0, n = cards.length;
+    for (int i = 0; i &lt; k; i++) sum += cards[i];
+    int best = sum;
+    for (int i = 0; i &lt; k; i++) {
+        sum += cards[n - 1 - i] - cards[k - 1 - i];
+        best = Math.max(best, sum);
+    }
+    return best;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Start with the sum of the first k</li><li>Move one card from left to right at a time</li><li>Track the max</li></ol></div></div>
+</div></section><section class="problem" id="p255">
+<h2>Problem 255: Subarrays with K Different Integers<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Subarrays with exactly k distinct.</p><div class="ex">Input: arr=[1,2,1,2,3], k=2<br>Output:<pre class="out">7</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Count distinct elements for every subarray.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>atMost(k) - atMost(k - 1).</p></div>
+<div class="card w"><h3>Why it works</h3><p>Exactly k = at most k minus at most k-1.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int subarraysWithKDistinct(int[] arr, int k) {
+    return atMost(arr, k) - atMost(arr, k - 1);
+}
+
+private static int atMost(int[] a, int k) {
+    Map&lt;Integer, Integer&gt; m = new HashMap&lt;&gt;();
+    int l = 0, c = 0;
+    for (int r = 0; r &lt; a.length; r++) {
+        m.merge(a[r], 1, Integer::sum);
+        while (m.size() &gt; k) {
+            if (m.merge(a[l], -1, Integer::sum) == 0) m.remove(a[l]);
+            l++;
+        }
+        c += r - l + 1;
+    }
+    return c;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Window with a frequency map</li><li>Count subarrays ending at r</li><li>Subtract</li></ol></div></div>
+</div></section><section class="problem" id="p256">
+<h2>Problem 256: Minimum Window Substring<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest window containing all chars of t.</p><div class="ex">Input: s=&quot;ADOBECODEBANC&quot;, t=&quot;ABC&quot;<br>Output:<pre class="out">&quot;BANC&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every substring for coverage.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Window with a need counter.</p></div>
+<div class="card w"><h3>Why it works</h3><p>Expand until valid, then shrink as far as possible.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String minWindow(String s, String t) {
+    int[] need = new int[128];
+    for (char c : t.toCharArray()) need[c]++;
+    int missing = t.length(), l = 0, start = 0, best = Integer.MAX_VALUE;
+    for (int r = 0; r &lt; s.length(); r++) {
+        if (need[s.charAt(r)]-- &gt; 0) missing--;
+        while (missing == 0) {
+            if (r - l + 1 &lt; best) { best = r - l + 1; start = l; }
+            if (++need[s.charAt(l++)] &gt; 0) missing++;
+        }
+    }
+    return best == Integer.MAX_VALUE ? &quot;&quot; : s.substring(start, start + best);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>need[] from t and missing = |t|</li><li>Expand r reducing missing</li><li>While missing == 0 shrink l and record</li><li>Return the best window</li></ol></div></div>
+</div></section><section class="problem" id="p257">
+<h2>Problem 257: Minimum Window Subsequence<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Smallest window where t is a subsequence.</p><div class="ex">Input: s=&quot;abcdebdde&quot;, t=&quot;bde&quot;<br>Output:<pre class="out">&quot;bcde&quot;</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Check every substring for the subsequence.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Match t forward, then walk back to the shortest start.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The backward pass shrinks the window from the first end that completes t.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static String minWindowSubsequence(String s, String t) {
+    int best = Integer.MAX_VALUE, start = -1, i = 0, n = s.length(), m = t.length();
+    while (i &lt; n) {
+        int j = 0;
+        while (i &lt; n) {
+            if (s.charAt(i) == t.charAt(j) &amp;&amp; ++j == m) break;
+            i++;
+        }
+        if (i == n) break;
+        int end = i;
+        j = m - 1;
+        while (j &gt;= 0) {
+            if (s.charAt(i) == t.charAt(j)) j--;
+            i--;
+        }
+        i++;
+        if (end - i + 1 &lt; best) { best = end - i + 1; start = i; }
+        i++;
+    }
+    return start == -1 ? &quot;&quot; : s.substring(start, start + best);
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Scan s matching t forward</li><li>When t is fully matched go backwards to find the start</li><li>Record the length</li><li>Restart after the start</li></ol></div></div>
+</div></section><section class="problem" id="p258">
+<h2>Problem 258: Sliding Window Maximum<span class="badge hard">hard</span></h2>
+<div class="cols">
+<div class="left"><div class="card q"><h3>Question Statement</h3><p>Max of each window of size k.</p><div class="ex">Input: arr=[1,3,-1,-3,5,3,6,7], k=3<br>Output:<pre class="out">[3,3,5,5,6,7]</pre></div></div>
+<div class="card b"><h3>Brute force</h3><p>Compute the max of every window.</p></div>
+<div class="card o"><h3>Optimized idea</h3><p>Monotonic deque of indices.</p></div>
+<div class="card w"><h3>Why it works</h3><p>The deque front always holds the maximum of the window.</p></div></div>
+<div class="right"><h3>Java implementation</h3><pre><code>public static int[] maxSlidingWindow(int[] arr, int k) {
+    int n = arr.length;
+    int[] res = new int[n - k + 1];
+    Deque&lt;Integer&gt; dq = new ArrayDeque&lt;&gt;();
+    for (int i = 0; i &lt; n; i++) {
+        if (!dq.isEmpty() &amp;&amp; dq.peekFirst() &lt;= i - k) dq.pollFirst();
+        while (!dq.isEmpty() &amp;&amp; arr[dq.peekLast()] &lt; arr[i]) dq.pollLast();
+        dq.addLast(i);
+        if (i &gt;= k - 1) res[i - k + 1] = arr[dq.peekFirst()];
+    }
+    return res;
+}</code></pre>
+<h3>Explanation</h3><div class="steps"><ol><li>Remove indices out of the window</li><li>Pop smaller values from the back</li><li>Add the current index</li><li>Front is the answer once the window is full</li></ol></div></div>
+</div></section></main></body></html>

@@ -1,0 +1,562 @@
+=== 1
+brute: Print stars with nested loops, row by row.
+opt: Same nested loops; n rows, each with n stars, is already optimal for output size.
+why: Output has n*n characters, so O(n^2) is the minimum.
+expl: Loop i over rows | Loop j over columns and print * | Print a newline after each row
+code:
+public static void pattern1(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) System.out.print("*");
+        System.out.println();
+    }
+}
+=== 2
+brute: Hard-code each row for a given n.
+opt: Row i prints i stars, so the inner loop bound is the row index.
+why: Inner loop bound ties the column count directly to the row number.
+expl: Outer loop i from 1 to n | Inner loop prints i stars | Newline after each row
+code:
+public static void pattern2(int n) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) System.out.print("*");
+        System.out.println();
+    }
+}
+=== 3
+brute: Build each row as a string by concatenation.
+opt: Print the column index j for j in 1..i.
+why: Column index itself is the value to print, so no extra state is needed.
+expl: Outer loop i from 1 to n | Inner loop j from 1 to i prints j | Newline per row
+code:
+public static void pattern3(int n) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) System.out.print(j);
+        System.out.println();
+    }
+}
+=== 4
+brute: Compute the row string separately then repeat it.
+opt: Print the row number i exactly i times.
+why: Value depends only on the row, count depends only on the row.
+expl: Outer loop i from 1 to n | Inner loop prints i, i times | Newline per row
+code:
+public static void pattern4(int n) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) System.out.print(i);
+        System.out.println();
+    }
+}
+=== 5
+brute: Print the triangle then reverse the rows in a list.
+opt: Row i prints n-i+1 stars directly.
+why: Counting the star count down from n gives the inverted shape without extra storage.
+expl: Outer loop i from 0 to n-1 | Print n-i stars | Newline per row
+code:
+public static void pattern5(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i; j++) System.out.print("*");
+        System.out.println();
+    }
+}
+=== 6
+brute: Build pattern 3 rows then print in reverse order.
+opt: Row i prints 1..n-i+1.
+why: The upper bound shrinks by one per row.
+expl: Outer loop i from 0 to n-1 | Inner loop j from 1 to n-i prints j | Newline per row
+code:
+public static void pattern6(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 1; j <= n - i; j++) System.out.print(j);
+        System.out.println();
+    }
+}
+=== 7
+brute: Hard-code spaces and stars for each row.
+opt: Row i has n-i-1 leading spaces then 2i+1 stars.
+why: Each row grows by two stars and shifts one space left, keeping the center aligned.
+expl: Outer loop i from 0 to n-1 | Print n-i-1 spaces | Print 2i+1 stars | Newline
+code:
+public static void pattern7(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i - 1; j++) System.out.print(" ");
+        for (int j = 0; j < 2 * i + 1; j++) System.out.print("*");
+        System.out.println();
+    }
+}
+=== 8
+brute: Build pyramid then print rows backwards.
+opt: Row i has i leading spaces then 2(n-i)-1 stars.
+why: Mirror of the pyramid: stars shrink by two, spaces grow by one.
+expl: Outer loop i from 0 to n-1 | Print i spaces | Print 2(n-i)-1 stars | Newline
+code:
+public static void pattern8(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < i; j++) System.out.print(" ");
+        for (int j = 0; j < 2 * (n - i) - 1; j++) System.out.print("*");
+        System.out.println();
+    }
+}
+=== 9
+brute: Write the two halves by hand.
+opt: Call the pyramid logic then the inverted pyramid logic.
+why: Diamond is exactly pyramid followed by inverted pyramid.
+expl: Print pyramid rows | Print inverted pyramid rows | Both use space and star counts from patterns 7 and 8
+code:
+public static void pattern9(int n) {
+    pattern7(n);
+    pattern8(n);
+}
+=== 10
+brute: Print each row with a hard-coded count.
+opt: Row count goes 1..n then n-1..1; compute stars as min(i, 2n-i).
+why: One formula covers both the growing and shrinking half.
+expl: Loop i from 1 to 2n-1 | stars = i if i <= n else 2n-i | Print stars and a newline
+code:
+public static void pattern10(int n) {
+    for (int i = 1; i <= 2 * n - 1; i++) {
+        int stars = i <= n ? i : 2 * n - i;
+        for (int j = 0; j < stars; j++) System.out.print("*");
+        System.out.println();
+    }
+}
+=== 11
+brute: Build a string per row using a toggle flag.
+opt: Start value is 1 for even rows (0-indexed) and 0 for odd; flip each column.
+why: Parity of row index decides the first bit, XOR 1 flips it every step.
+expl: start = 1 for first row, flipped each row | Inner loop prints current bit | Flip bit after each print
+code:
+public static void pattern11(int n) {
+    int start = 1;
+    for (int i = 0; i < n; i++) {
+        int bit = start;
+        for (int j = 0; j <= i; j++) {
+            System.out.print(bit);
+            bit ^= 1;
+        }
+        start ^= 1;
+        System.out.println();
+    }
+}
+=== 12
+brute: Print left, spaces and right parts via string concatenation.
+opt: Per row: print 1..i, 2(n-i) spaces, then i..1.
+why: Left and right halves are mirror images separated by shrinking spaces.
+expl: Print 1..i | Print 2*(n-i) spaces | Print i..1 | Newline
+code:
+public static void pattern12(int n) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) System.out.print(j);
+        for (int j = 0; j < 2 * (n - i); j++) System.out.print(" ");
+        for (int j = i; j >= 1; j--) System.out.print(j);
+        System.out.println();
+    }
+}
+=== 13
+brute: Precompute all numbers in a list.
+opt: Keep a running counter across rows.
+why: The counter increments once per printed value, so no index math is needed.
+expl: counter = 1 | Row i prints i numbers | Increment counter after each print
+code:
+public static void pattern13(int n) {
+    int c = 1;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) System.out.print(c++ + " ");
+        System.out.println();
+    }
+}
+=== 14
+brute: Use an array of letters and index into it.
+opt: Cast (char)('A' + j) in the inner loop.
+why: Characters are consecutive integers so offset from 'A' gives the letter.
+expl: Outer loop rows | Inner loop j from 0 to i | Print (char)('A'+j)
+code:
+public static void pattern14(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= i; j++) System.out.print((char) ('A' + j));
+        System.out.println();
+    }
+}
+=== 15
+brute: Print pattern 14 and reverse rows.
+opt: Row i prints n-i letters starting at A.
+why: Shrinking bound plus letter offset.
+expl: Outer loop i from 0 to n-1 | Inner loop j below n-i | Print (char)('A'+j)
+code:
+public static void pattern15(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i; j++) System.out.print((char) ('A' + j));
+        System.out.println();
+    }
+}
+=== 16
+brute: Repeat letter string using String methods.
+opt: Print (char)('A'+i) exactly i+1 times.
+why: Letter depends only on the row.
+expl: Outer loop i | Inner loop prints the i-th letter i+1 times | Newline
+code:
+public static void pattern16(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j <= i; j++) System.out.print((char) ('A' + i));
+        System.out.println();
+    }
+}
+=== 17
+brute: Build each row string and its reverse.
+opt: Spaces, then ascending letters, then descending letters excluding the peak.
+why: Row i has a palindrome of 2i+1 letters centered under the peak.
+expl: Print n-i-1 spaces | Print A.. up to the i-th letter | Print the letters before the peak backwards
+code:
+public static void pattern17(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i - 1; j++) System.out.print(" ");
+        for (int j = 0; j <= i; j++) System.out.print((char) ('A' + j));
+        for (int j = i - 1; j >= 0; j--) System.out.print((char) ('A' + j));
+        System.out.println();
+    }
+}
+=== 18
+brute: Store letters in a list and slice.
+opt: Row i starts at letter n-i-1 and goes up to the n-th letter.
+why: Start index moves back by one each row while the end stays fixed.
+expl: Outer loop i from 0 to n-1 | Inner loop from n-i-1 to n-1 | Print (char)('A'+j)
+code:
+public static void pattern18(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = n - i - 1; j < n; j++) System.out.print((char) ('A' + j));
+        System.out.println();
+    }
+}
+=== 19
+brute: Hard-code the shapes.
+opt: Upper and lower halves with border stars only; spaces fill the gap.
+why: Left wing, gap and right wing are independent, symmetric segments.
+expl: For each of 2n-1 rows compute k = row size | Print wing borders only | Gap is 2*(n-k) spaces
+code:
+public static void pattern19(int n) {
+    for (int r = 1; r <= 2 * n - 1; r++) {
+        int k = r <= n ? r : 2 * n - r;
+        for (int j = 1; j <= k; j++) System.out.print(j == 1 || j == k ? "*" : " ");
+        for (int j = 0; j < 2 * (n - k); j++) System.out.print(" ");
+        for (int j = 1; j <= k; j++) System.out.print(j == 1 || j == k ? "*" : " ");
+        System.out.println();
+    }
+}
+=== 20
+brute: Hard-code the 2n-1 rows.
+opt: Rows 1..n then n-1..1: k stars, 2(n-k) spaces, k stars.
+why: Same formula handles upper and lower half through the symmetric k.
+expl: k = i if i<=n else 2n-i | Print k stars | Print 2(n-k) spaces | Print k stars
+code:
+public static void pattern20(int n) {
+    for (int r = 1; r <= 2 * n - 1; r++) {
+        int k = r <= n ? r : 2 * n - r;
+        for (int j = 0; j < k; j++) System.out.print("*");
+        for (int j = 0; j < 2 * (n - k); j++) System.out.print(" ");
+        for (int j = 0; j < k; j++) System.out.print("*");
+        System.out.println();
+    }
+}
+=== 21
+brute: Print the full square and blank out the inside afterwards.
+opt: Print * only when on the first/last row or first/last column.
+why: Border cells are exactly those with i or j at 0 or n-1.
+expl: Loop i, j over n x n | If i or j equals 0 or n-1 print * | Else print space
+code:
+public static void pattern21(int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            System.out.print(i == 0 || j == 0 || i == n - 1 || j == n - 1 ? "*" : " ");
+        System.out.println();
+    }
+}
+=== 22
+brute: Build layers one by one in a 2D array.
+opt: Value at (i,j) = n - min(i, j, size-1-i, size-1-j) with size = 2n-1.
+why: Distance to the nearest edge gives the ring number directly.
+expl: size = 2n-1 | For each cell find the minimum distance to any border | Print n minus that distance
+code:
+public static void pattern22(int n) {
+    int size = 2 * n - 1;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            int d = Math.min(Math.min(i, j), Math.min(size - 1 - i, size - 1 - j));
+            System.out.print(n - d);
+        }
+        System.out.println();
+    }
+}
+=== 23
+brute: Convert to a string and take length.
+opt: Divide by 10 until the number is 0, counting steps.
+why: Each division removes exactly one digit.
+expl: Handle n = 0 as one digit | While n > 0 divide by 10 | Count iterations
+code:
+public static int countDigits(int n) {
+    if (n == 0) return 1;
+    n = Math.abs(n);
+    int c = 0;
+    while (n > 0) { c++; n /= 10; }
+    return c;
+}
+=== 24
+brute: Convert to a string and reverse it.
+opt: Extract last digit with % 10 and push it onto the result.
+why: rev = rev*10 + digit rebuilds the digits in reverse order.
+expl: rev = 0 | digit = n % 10 | rev = rev*10 + digit, n /= 10 | Repeat until n is 0
+code:
+public static int reverseNumber(int n) {
+    int rev = 0;
+    while (n != 0) {
+        rev = rev * 10 + n % 10;
+        n /= 10;
+    }
+    return rev;
+}
+=== 25
+brute: Convert to string and compare with its reverse.
+opt: Reverse the number mathematically and compare.
+why: A palindrome equals its own reverse.
+expl: Negative numbers are not palindromes | Reverse the digits | Compare with the original
+code:
+public static boolean isPalindrome(int n) {
+    if (n < 0) return false;
+    int rev = 0, t = n;
+    while (t > 0) { rev = rev * 10 + t % 10; t /= 10; }
+    return rev == n;
+}
+=== 26
+brute: Try every number from min(a,b) down to 1.
+opt: Euclid: gcd(a, b) = gcd(b, a % b).
+why: Common divisors of a and b are the same as those of b and a mod b.
+expl: While b != 0 | Replace (a, b) with (b, a % b) | Return a
+code:
+public static int gcd(int a, int b) {
+    while (b != 0) {
+        int t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
+}
+=== 27
+brute: Convert to string and use Math.pow per digit.
+opt: Count digits then sum digit^count by integer multiplication.
+why: Armstrong definition is exactly that sum.
+expl: Count digits k | Sum each digit raised to k | Compare with n
+code:
+public static boolean isArmstrong(int n) {
+    int k = String.valueOf(n).length(), sum = 0, t = n;
+    while (t > 0) {
+        int d = t % 10, p = 1;
+        for (int i = 0; i < k; i++) p *= d;
+        sum += p;
+        t /= 10;
+    }
+    return sum == n;
+}
+=== 28
+brute: Check every i from 1 to n.
+opt: Check i up to sqrt(n); each i gives divisors i and n/i.
+why: Divisors come in pairs around sqrt(n).
+expl: Loop i while i*i <= n | If i divides n add i to the front list | Add n/i to the back list if different | Join front and reversed back
+code:
+public static List<Integer> divisors(int n) {
+    List<Integer> small = new ArrayList<>(), large = new ArrayList<>();
+    for (int i = 1; (long) i * i <= n; i++) {
+        if (n % i == 0) {
+            small.add(i);
+            if (i != n / i) large.add(n / i);
+        }
+    }
+    Collections.reverse(large);
+    small.addAll(large);
+    return small;
+}
+=== 29
+brute: Test divisibility by every number from 2 to n-1.
+opt: Test only up to sqrt(n).
+why: A composite number has a factor no larger than its square root.
+expl: n < 2 is not prime | Loop i from 2 while i*i <= n | Any divisor means not prime
+code:
+public static boolean isPrime(int n) {
+    if (n < 2) return false;
+    for (int i = 2; (long) i * i <= n; i++)
+        if (n % i == 0) return false;
+    return true;
+}
+=== 30
+brute: Loop adding 1..n.
+opt: Use the formula n*(n+1)/2.
+why: Pairing first and last terms gives n/2 pairs each summing to n+1.
+expl: Compute n*(n+1)/2 | Return the result
+code:
+public static int sumToN(int n) {
+    return n * (n + 1) / 2;
+}
+=== 31
+brute: Run isPrime on every number below n.
+opt: Sieve of Eratosthenes.
+why: Marking multiples of each prime removes all composites in O(n log log n).
+expl: Boolean array initialised to prime | For each prime p, mark p*p, p*p+p, ... composite | Count unmarked numbers from 2 to n-1
+code:
+public static int countPrimes(int n) {
+    if (n < 3) return 0;
+    boolean[] comp = new boolean[n];
+    int count = 0;
+    for (int i = 2; i < n; i++) {
+        if (!comp[i]) {
+            count++;
+            for (long j = (long) i * i; j < n; j += i) comp[(int) j] = true;
+        }
+    }
+    return count;
+}
+=== 32
+brute: Test multiples of the larger number until divisible by the other.
+opt: lcm = a / gcd * b.
+why: gcd(a,b) * lcm(a,b) = a * b.
+expl: Compute gcd with Euclid | Divide first to avoid overflow | Multiply by b
+code:
+public static int lcm(int a, int b) {
+    int x = a, y = b;
+    while (y != 0) { int t = x % y; x = y; y = t; }
+    return a / x * b;
+}
+=== 33
+brute: Loop n times printing the name.
+opt: Recursion: print once and recurse with n-1.
+why: Base case n == 0 stops the recursion after exactly n prints.
+expl: If n == 0 return | Print the name | Recurse with n-1
+code:
+public static void printNameNTimes(String name, int n) {
+    if (n == 0) return;
+    System.out.println(name);
+    printNameNTimes(name, n - 1);
+}
+=== 34
+brute: Loop from 1 to n.
+opt: Recurse to n-1 first, print after returning (backtracking).
+why: Printing after the recursive call prints smaller numbers first.
+expl: If n == 0 return | Recurse on n-1 | Print n
+code:
+public static void print1ToN(int n) {
+    if (n == 0) return;
+    print1ToN(n - 1);
+    System.out.println(n);
+}
+=== 35
+brute: Loop from n down to 1.
+opt: Print n then recurse on n-1.
+why: Printing before the call prints larger numbers first.
+expl: If n == 0 return | Print n | Recurse on n-1
+code:
+public static void printNTo1(int n) {
+    if (n == 0) return;
+    System.out.println(n);
+    printNTo1(n - 1);
+}
+=== 36
+brute: Iterative loop sum.
+opt: sum(n) = n + sum(n-1), base sum(0) = 0.
+why: Each call reduces the problem by one until the base case.
+expl: If n == 0 return 0 | Return n plus the recursive result
+code:
+public static int sumOfN(int n) {
+    if (n == 0) return 0;
+    return n + sumOfN(n - 1);
+}
+=== 37
+brute: Multiply in a loop.
+opt: n! = n * (n-1)!, base 0! = 1.
+why: Definition of factorial maps directly onto recursion.
+expl: If n <= 1 return 1 | Return n * factorial(n-1)
+code:
+public static long factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+=== 38
+brute: Copy into a new array in reverse.
+opt: Recursively swap the two ends and move inward.
+why: Swapping mirrored pairs reverses the array in place with O(1) extra space besides stack.
+expl: Pass left and right indices | If left >= right stop | Swap and recurse on (left+1, right-1)
+code:
+public static void reverseArray(int[] arr) {
+    reverseHelper(arr, 0, arr.length - 1);
+}
+
+private static void reverseHelper(int[] arr, int l, int r) {
+    if (l >= r) return;
+    int t = arr[l]; arr[l] = arr[r]; arr[r] = t;
+    reverseHelper(arr, l + 1, r - 1);
+}
+=== 39
+brute: Reverse the string and compare.
+opt: Compare the two ends recursively.
+why: A palindrome must match at mirrored positions.
+expl: If i >= j return true | If chars differ return false | Recurse on (i+1, j-1)
+code:
+public static boolean isPalindromeString(String s) {
+    return check(s, 0, s.length() - 1);
+}
+
+private static boolean check(String s, int i, int j) {
+    if (i >= j) return true;
+    if (s.charAt(i) != s.charAt(j)) return false;
+    return check(s, i + 1, j - 1);
+}
+=== 40
+brute: Plain recursion f(n-1) + f(n-2) is O(2^n).
+opt: Iterate keeping the last two values.
+why: Each value needs only its two predecessors, giving O(n) time and O(1) space.
+expl: Handle n <= 1 | Keep prev and curr | Advance n-1 times
+code:
+public static int fibonacci(int n) {
+    if (n <= 1) return n;
+    int a = 0, b = 1;
+    for (int i = 2; i <= n; i++) {
+        int c = a + b;
+        a = b;
+        b = c;
+    }
+    return b;
+}
+=== 41
+brute: For each element count occurrences by scanning the array, O(n^2).
+opt: Use a HashMap to count in one pass.
+why: Hash lookups and updates are O(1) on average.
+expl: Create a map | For each element increment its count | Return the map
+code:
+public static Map<Integer, Integer> countFrequencies(int[] arr) {
+    Map<Integer, Integer> map = new LinkedHashMap<>();
+    for (int x : arr) map.merge(x, 1, Integer::sum);
+    return map;
+}
+=== 42
+brute: Count each letter by scanning the string 26 times.
+opt: One pass using an int[26] array.
+why: Letter minus 'a' is a direct array index.
+expl: Create int[26] | For each char increment arr[c-'a'] | Return the array
+code:
+public static int[] charFrequency(String s) {
+    int[] f = new int[26];
+    for (char c : s.toCharArray()) f[c - 'a']++;
+    return f;
+}
+=== 43
+brute: Count each element by scanning, O(n^2).
+opt: Build a frequency map and scan it for max and min with tie-breaking.
+why: One pass for counts and one over distinct keys is O(n).
+expl: Count frequencies | Track the best max (ties pick smaller) | Track the best min (ties pick smaller) | Return both
+code:
+public static int[] highLowFrequency(int[] arr) {
+    Map<Integer, Integer> m = new HashMap<>();
+    for (int x : arr) m.merge(x, 1, Integer::sum);
+    int hi = -1, lo = -1, hf = 0, lf = Integer.MAX_VALUE;
+    for (Map.Entry<Integer, Integer> e : m.entrySet()) {
+        int k = e.getKey(), f = e.getValue();
+        if (f > hf || (f == hf && k < hi)) { hf = f; hi = k; }
+        if (f < lf || (f == lf && k < lo)) { lf = f; lo = k; }
+    }
+    return new int[]{hi, lo};
+}
